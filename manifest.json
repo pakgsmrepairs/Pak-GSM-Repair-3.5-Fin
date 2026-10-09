@@ -1,0 +1,11 @@
+{
+  "name": "Pak GSM Repair 3.7",
+  "short_name": "Pak GSM Repair",
+  "description": "Pak GSM Repair 3.7",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f7f5",
+  "theme_color": "#0b6b57",
+  "icons": []
+}
