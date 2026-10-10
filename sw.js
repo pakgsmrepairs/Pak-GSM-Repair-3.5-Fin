@@ -1,5 +1,5 @@
-/* Pak GSM Repair 3.7.6 service worker. Network-first for HTML/update metadata so stale app versions do not stick. */
-const CACHE_NAME = 'pgr-3-7-6-shell-v1';
+/* Pak GSM Repair 3.7.7 service worker. Network-first for HTML/update metadata so stale app versions do not stick. */
+const CACHE_NAME = 'pgr-3-7-7-shell-v1';
 const APP_SHELL = ['./', './index.html', './manifest.json', './update.json'];
 self.addEventListener('install', event => {
   event.waitUntil((async () => {

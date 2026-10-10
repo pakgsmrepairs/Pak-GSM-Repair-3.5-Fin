@@ -1,5 +1,5 @@
 {
-  "version": "3.7.6",
-  "versionCode": 376,
-  "changelog": "Rebuilt the authentication screen hit-testing layer for mobile taps; Sign Up tab label; Register button sends the email OTP for registration; cache version bumped to avoid serving the old page."
+  "version": "3.7.7",
+  "versionCode": 377,
+  "changelog": "Targeted Android keyboard typing fix for authentication fields; preserves app data and existing features. Register button and Sign Up labels retained."
 }
