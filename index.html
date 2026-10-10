@@ -284,10 +284,12 @@ function finishSplash(){if(splashTimer){clearTimeout(splashTimer);splashTimer=nu
 function beginSplash(){const splash=document.querySelector('#splashScreen');if(!splash)return;const attemptAudio=()=>{if(!splash.classList.contains('splash-out')&&soundEnabled()){startSplashMusic();startSplashVoice()}};attemptAudio();['pointerdown','touchstart','keydown'].forEach(ev=>splash.addEventListener(ev,attemptAudio,{once:true,passive:true}));splashTimer=setTimeout(finishSplash,3000)}
  function parseJwt(t){let p=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(decodeURIComponent(atob(p).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')))}
 window.addEventListener('load',()=>setTimeout(beginSplash,120));
-// v3.7.7 Android keyboard typing fix:
-// Keep native inputs editable and prevent unrelated ancestor handlers from swallowing
-// keyboard/input events. Never call preventDefault here, so normal typing and IME work.
-(function protectAuthTyping(){
+// v3.7.7 keyboard typing correction:
+// Do not intercept keydown, keypress, beforeinput, input, or composition events.
+// Android keyboards and IMEs need the browser's native event flow to insert characters.
+// The earlier capture-phase stopImmediatePropagation handler could interfere with
+// native keyboard input even though paste continued to work. Keep inputs editable only.
+(function keepAuthInputsNative(){
  const authSelector='#loginGate input, #loginGate textarea';
  document.addEventListener('focusin',e=>{
    const el=e.target;
@@ -295,15 +297,10 @@ window.addEventListener('load',()=>setTimeout(beginSplash,120));
      el.style.pointerEvents='auto';
      el.style.webkitUserSelect='text';
      el.style.userSelect='text';
-     if(el.hasAttribute('readonly')) el.removeAttribute('readonly');
+     el.removeAttribute('readonly');
+     el.removeAttribute('disabled');
    }
  },true);
- ['keydown','keypress','beforeinput'].forEach(type=>{
-   document.addEventListener(type,e=>{
-     const el=e.target;
-     if(el && el.matches && el.matches(authSelector)) e.stopImmediatePropagation();
-   },true);
- });
 })();
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();
