@@ -44,8 +44,8 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select
     <div class="auth-field"><label for="authName">Full Name *</label><input id="authName" type="text" required autocomplete="name" placeholder="Enter your full name" maxlength="100"></div>
     <div class="auth-field"><label for="authEmail">Email Address *</label><input id="authEmail" type="email" required autocomplete="email" placeholder="Enter your email address" inputmode="email"></div>
     <div class="auth-field"><label for="authPhone">Mobile Number *</label><input id="authPhone" type="tel" required autocomplete="tel" placeholder="+92 300 1234567" maxlength="25"></div>
-    <div class="auth-field"><label for="authPassword">Password *</label><input id="authPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></div>
-    <div class="auth-field"><label for="authConfirmPassword">Confirm Password *</label><input id="authConfirmPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Confirm your password"></div>
+    <div class="auth-field"><label for="authPassword">Password *</label><input id="authPassword" type="password" required minlength="4" autocomplete="new-password" placeholder="At least 4 characters: A-Z, a-z, 0-9"></div>
+    <div class="auth-field"><label for="authConfirmPassword">Confirm Password *</label><input id="authConfirmPassword" type="password" required minlength="4" autocomplete="new-password" placeholder="Confirm your password"></div>
     <button type="button" id="sendEmailOtp" style="width:100%;margin-top:12px">Create Account &amp; Get Email OTP</button>
    </div>
    <div id="loginFields" class="hidden">
@@ -198,9 +198,10 @@ function initLogin(){
   if(signup){
    if(!document.querySelector('#authName').value.trim()){showAuthPopup('Please enter your full name.','Missing information');return}
    if(!document.querySelector('#authPhone').value.trim()){showAuthPopup('Please enter your mobile number.','Missing information');return}
-   if(password.length<8){showAuthPopup('Password must be at least 8 characters.','Check your password');return}
+   if(password.length<4){showAuthPopup('Password must be at least 4 characters.','Check your password');return}
+   if(!/[A-Z]/.test(password)||!/[a-z]/.test(password)||!/[0-9]/.test(password)){showAuthPopup('Password must include at least one uppercase letter (A-Z), one lowercase letter (a-z), and one digit (0-9).','Password requirements');return}
    if(password!==document.querySelector('#authConfirmPassword').value){showAuthPopup('Password and confirm password do not match.','Check your password');return}
-  }else if(password.length<8){showAuthPopup('Enter the password for your registered account (at least 8 characters).','Check your password');return}
+  }else if(password.length<4){showAuthPopup('Enter your registered password (at least 4 characters).','Check your password');return}
   const b=document.querySelector(signup?'#sendEmailOtp':'#sendLoginOtp');b.disabled=true;msg.textContent=signup?'Checking account and sending OTP…':'Checking your account…';
   try{
    const passwordHash=await passwordDigest(password);
