@@ -23,6 +23,15 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select
 .otp-login-row{display:flex;gap:8px;align-items:end;margin-top:8px}.otp-login-row>div{flex:1;min-width:0}.otp-login-row button{white-space:nowrap}.guest-view-btn{width:100%;margin-top:9px;background:transparent;color:var(--g);border:1px solid var(--g)}.login-audio-note{font-size:11px;color:var(--muted);text-align:center;margin:7px 0 0}
 
 .auth-field{margin:10px 0}.otp-step{border:1px solid var(--line,#d8dee8);border-radius:12px;padding:14px;margin-top:12px;background:rgba(127,127,127,.05)}.auth-help{font-size:12px;line-height:1.45;opacity:.8;margin-top:12px}.otp-step h3{font-size:18px}.auth-field input{width:100%;box-sizing:border-box}
+
+/* Compact Pak GSM Repair authentication notice */
+#pgrNoticeOverlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,35,28,.22)}
+#pgrNoticeBox{width:min(310px,100%);background:#fff;border:1px solid #d9eee5;border-radius:14px;padding:18px 18px 14px;box-shadow:0 12px 35px rgba(0,45,32,.18);text-align:center;animation:pgrNoticeIn .16s ease-out}
+#pgrNoticeTitle{margin:0 0 8px;color:#0b6b57;font-size:17px;font-weight:800}
+#pgrNoticeText{margin:0 0 16px;color:#0b6b57;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+#pgrNoticeOk{min-width:76px;padding:8px 18px;border-radius:8px;background:#0b6b57;color:#fff;font-size:14px;font-weight:700}
+@keyframes pgrNoticeIn{from{opacity:0;transform:translateY(5px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){#pgrNoticeBox{animation:none}}
 </style></head><body>
 <div id="loginGate">
  <div class="login-card">
@@ -158,6 +167,19 @@ function chooseAuth(mode){
  document.querySelector('#loginMsg').textContent=mode==='login'?'Enter your registered email and password to log in.':'Create your account with your name, email, mobile number and password.';document.querySelector('#authHeading').textContent=mode==='login'?'Welcome Back':'Create Account';document.querySelector('#authSubheading').textContent=mode==='login'?'Sign in to continue':'Register once to get started';
 }
 function otpServerCall(action,email,otp,extra={}){return new Promise((resolve,reject)=>{const base=window.PGR_OTP_SERVER_URL;if(!base){reject(new Error('OTP server URL is missing from cloud-config.js.'));return}let url;try{url=new URL(base)}catch(e){reject(new Error('OTP server URL is invalid.'));return}const callback='pgrOtp_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),script=document.createElement('script');let finished=false;const timer=setTimeout(()=>finish(new Error('OTP server timed out.')),15000);function finish(err,data){if(finished)return;finished=true;clearTimeout(timer);try{delete window[callback]}catch(e){}script.remove();err?reject(err):resolve(data)}window[callback]=data=>finish(null,data);script.onerror=()=>finish(new Error('Could not reach OTP server. Check its deployment and internet connection.'));url.searchParams.set('action',action);url.searchParams.set('email',email);if(otp)url.searchParams.set('otp',otp);Object.entries(extra||{}).forEach(([k,v])=>url.searchParams.set(k,String(v??'')));url.searchParams.set('callback',callback);url.searchParams.set('_',String(Date.now()));script.src=url.toString();document.body.appendChild(script)})}
+
+function showAuthPopup(message,title='Notice'){
+ const old=document.getElementById('pgrNoticeOverlay');if(old)old.remove();
+ const overlay=document.createElement('div');overlay.id='pgrNoticeOverlay';overlay.setAttribute('role','presentation');
+ const box=document.createElement('div');box.id='pgrNoticeBox';box.setAttribute('role','alertdialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','pgrNoticeTitle');box.setAttribute('aria-describedby','pgrNoticeText');
+ const heading=document.createElement('div');heading.id='pgrNoticeTitle';heading.textContent=title;
+ const body=document.createElement('p');body.id='pgrNoticeText';body.textContent=String(message);
+ const ok=document.createElement('button');ok.id='pgrNoticeOk';ok.type='button';ok.textContent='OK';
+ const close=()=>overlay.remove();ok.addEventListener('click',close);overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
+ box.append(heading,body,ok);overlay.appendChild(box);document.body.appendChild(overlay);ok.focus();
+ overlay.addEventListener('keydown',e=>{if(e.key==='Escape'||e.key==='Enter'){e.preventDefault();close()}});
+}
+
 function initLogin(){
  const saved=JSON.parse(localStorage.getItem(F)||'null');if(saved){unlock(saved);return}
  document.querySelectorAll('.auth-tab').forEach(b=>b.addEventListener('click',()=>chooseAuth(b.dataset.auth)));
@@ -172,20 +194,20 @@ function initLogin(){
   const signup=mode==='signin';
   const email=(document.querySelector(signup?'#authEmail':'#loginEmail').value||'').trim().toLowerCase();
   const password=document.querySelector(signup?'#authPassword':'#loginPassword').value||'';
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Please enter a valid email address.');return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showAuthPopup('Please enter a valid email address.','Check your email');return}
   if(signup){
-   if(!document.querySelector('#authName').value.trim()){alert('Please enter your full name.');return}
-   if(!document.querySelector('#authPhone').value.trim()){alert('Please enter your mobile number.');return}
-   if(password.length<8){alert('Password must be at least 8 characters.');return}
-   if(password!==document.querySelector('#authConfirmPassword').value){alert('Password and confirm password do not match.');return}
-  }else if(password.length<8){alert('Enter the password for your registered account (at least 8 characters).');return}
+   if(!document.querySelector('#authName').value.trim()){showAuthPopup('Please enter your full name.','Missing information');return}
+   if(!document.querySelector('#authPhone').value.trim()){showAuthPopup('Please enter your mobile number.','Missing information');return}
+   if(password.length<8){showAuthPopup('Password must be at least 8 characters.','Check your password');return}
+   if(password!==document.querySelector('#authConfirmPassword').value){showAuthPopup('Password and confirm password do not match.','Check your password');return}
+  }else if(password.length<8){showAuthPopup('Enter the password for your registered account (at least 8 characters).','Check your password');return}
   const b=document.querySelector(signup?'#sendEmailOtp':'#sendLoginOtp');b.disabled=true;msg.textContent=signup?'Checking account and sending OTP…':'Checking your account…';
   try{
    const passwordHash=await passwordDigest(password);
    if(!signup){
     const account=await otpServerCall('loginAccount',email,'',{passwordHash});
     if(!account||!account.ok)throw new Error(account?.error||'Email or password is incorrect.');
-    alert('Login successful. Welcome back, '+(account.name||email)+'!');
+    showAuthPopup('Welcome back, '+(account.name||email)+'!','Login successful');
     unlock({email:email,name:account.name||email,sub:'email-password'});
     return;
    }
@@ -196,7 +218,7 @@ function initLogin(){
    document.querySelector('#otpStep').classList.remove('hidden');
    document.querySelector('#otpStepText').textContent='A 6-digit code was sent to '+email+'. Check your inbox and spam folder. The code expires in 5 minutes.';
    document.querySelector('#authEmailOtp').value='';document.querySelector('#authEmailOtp').focus();msg.textContent='OTP sent. Enter the code below to continue.';
-  }catch(e){alert('Login / registration error: '+e.message);msg.textContent='Could not continue: '+e.message}
+  }catch(e){showAuthPopup(e.message,'Login failed');msg.textContent='Could not continue: '+e.message}
   finally{b.disabled=false}
  }
  document.querySelector('#sendEmailOtp').onclick=()=>requestOtp('signin');
@@ -222,7 +244,7 @@ function initLogin(){
     if(!account||!account.ok)throw new Error(account?.error||'Email or password is incorrect.');
     unlock({email:pendingOtpEmail,name:account.name||pendingOtpEmail,sub:'email-otp'});
    }
-  }catch(e){alert('Verification error: '+e.message);msg.textContent='OTP verification failed: '+e.message}
+  }catch(e){showAuthPopup(e.message,'Verification failed');msg.textContent='OTP verification failed: '+e.message}
   finally{b.disabled=false}
  };
  document.querySelector('#guestView').onclick=()=>unlock({email:'Guest View',name:'Guest',sub:'guest-view',guest:true});
