@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><title>Pak GSM Repair 3.7.11</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><title>Pak GSM Repair 3.7.12</title><style>
 :root{--g:#0b6b57;--g2:#0f8a6e;--bg:#f2f7f5;--line:#dce8e3;--ink:#132b27;--muted:#63756f;--danger:#9b2118;--card:#fff}
 *{box-sizing:border-box}body{margin:0;font:15px system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
 /* Native mobile text-entry safeguard: keep browser keyboard/IME events unmodified. */
@@ -32,24 +32,27 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select
 
 /* Welcome splash is the only screen allowed to play the welcome sound. */
 #pgrSplash{position:fixed;inset:0;z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;color:#fff;background:radial-gradient(circle at 50% 35%,#168c70 0%,#07543f 52%,#032e24 100%);}
-#pgrSplash.hidden{display:none!important}.pgr-splash-logo{width:116px;height:116px;filter:drop-shadow(0 12px 22px #001b14aa);animation:pgrLogoPulse 1.7s ease-in-out infinite}.pgr-splash-title{font-size:27px;font-weight:850;letter-spacing:.2px}.pgr-splash-sub{font-size:13px;color:#d5f5e8}.pgr-splash-button{margin-top:10px;background:#fff;color:#07543f;border-radius:999px;padding:11px 24px;min-height:44px}
-@keyframes pgrLogoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+#pgrSplash.hidden{display:none!important}.pgr-splash-card{width:min(420px,100%);padding:34px 24px 28px;border:1px solid #ffffff35;border-radius:28px;background:linear-gradient(145deg,#ffffff12,#ffffff06);box-shadow:0 24px 70px #001b1480;backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;gap:12px}.pgr-splash-logo{width:112px;height:112px;filter:drop-shadow(0 12px 22px #001b14aa);animation:pgrLogoPulse 1.7s ease-in-out infinite}.pgr-splash-title{font-size:clamp(25px,6vw,31px);font-weight:850;letter-spacing:.15px}.pgr-splash-sub{font-size:13px;color:#d5f5e8}.pgr-splash-tag{font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:#b8ead8;margin-top:-4px}.pgr-loading-track{width:min(210px,75%);height:4px;overflow:hidden;border-radius:99px;background:#ffffff35;margin-top:12px}.pgr-loading-bar{height:100%;width:38%;border-radius:99px;background:#fff;animation:pgrLoad 1.25s ease-in-out infinite alternate}.pgr-loading-caption{font-size:11px;color:#d5f5e8;letter-spacing:.3px}
+@keyframes pgrLogoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}@keyframes pgrLoad{from{transform:translateX(-20%)}to{transform:translateX(190%)}}
 #pgrNoticeOverlay{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(4,28,22,.42)}#pgrNoticeOverlay.hidden{display:none!important}#pgrNoticeBox{width:min(340px,100%);background:#fff;border:1px solid #d9eee5;border-radius:16px;padding:20px 18px 16px;box-shadow:0 16px 45px #001c14aa;text-align:center;animation:pgrNoticeIn .16s ease-out}#pgrNoticeTitle{margin:0 0 8px;color:#0b6b57;font-size:18px;font-weight:800}#pgrNoticeText{margin:0 0 16px;color:#253b35;font-size:14px;line-height:1.5;overflow-wrap:anywhere}#pgrNoticeOk{min-width:90px;padding:9px 22px;border-radius:9px;background:#0b6b57;color:#fff;font-size:14px;font-weight:700}
 #authEmailStatus{font-size:12px;line-height:1.35;margin:5px 1px 0;min-height:16px;color:var(--muted)}#authEmailStatus.email-error{color:#b42318;font-weight:700}#authEmailStatus.email-good{color:#087443;font-weight:700}#authEmailStatus.email-wait{color:#8a5b00}
 @keyframes pgrNoticeIn{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.pgr-splash-logo{animation:none}#pgrNoticeBox{animation:none}}
 </style></head><body>
-<div id="pgrSplash" role="button" tabindex="0" aria-label="Pak GSM Repair welcome screen">
- <svg class="pgr-splash-logo" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#08764f" stroke="#d7f5e8" stroke-width="3"/><circle cx="50" cy="50" r="37" fill="#fff"/><rect x="31" y="17" width="38" height="65" rx="7" fill="#064e3b"/><rect x="36" y="24" width="28" height="49" rx="3" fill="#eafff4"/><path d="M43 57l7-20 8 7-8 20z" fill="#0b9863"/><circle cx="50" cy="77" r="2" fill="#fff"/></svg>
- <div class="pgr-splash-title">Pak GSM Repair</div><div class="pgr-splash-sub">Mobile Repair &amp; Service Solution</div>
- <button id="pgrSplashContinue" class="pgr-splash-button" type="button">Continue to Login</button>
- <div class="pgr-splash-sub">Welcome music plays on this logo screen only</div>
+<div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
+ <div class="pgr-splash-card">
+  <svg class="pgr-splash-logo" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#08764f" stroke="#d7f5e8" stroke-width="3"/><circle cx="50" cy="50" r="37" fill="#fff"/><rect x="31" y="17" width="38" height="65" rx="7" fill="#064e3b"/><rect x="36" y="24" width="28" height="49" rx="3" fill="#eafff4"/><path d="M43 57l7-20 8 7-8 20z" fill="#0b9863"/><circle cx="50" cy="77" r="2" fill="#fff"/></svg>
+  <div class="pgr-splash-title">Pak GSM Repair</div><div class="pgr-splash-tag">REPAIR · RESTORE · RELIABILITY</div>
+  <div class="pgr-splash-sub">Mobile Repair &amp; Service Solution</div>
+  <div class="pgr-loading-track" aria-hidden="true"><div class="pgr-loading-bar"></div></div>
+  <div class="pgr-loading-caption">Preparing your workspace…</div>
+ </div>
 </div>
 <div id="pgrNoticeOverlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="pgrNoticeTitle" aria-describedby="pgrNoticeText"><div id="pgrNoticeBox"><h3 id="pgrNoticeTitle">Notice</h3><p id="pgrNoticeText"></p><button id="pgrNoticeOk" type="button">OK</button></div></div>
 <div id="loginGate" class="hidden">
  <div class="login-card">
   <div class="brand-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#08764f" stroke="#d7f5e8" stroke-width="3"/><circle cx="50" cy="50" r="37" fill="#fff"/><rect x="31" y="17" width="38" height="65" rx="7" fill="#064e3b"/><rect x="36" y="24" width="28" height="49" rx="3" fill="#eafff4"/><path d="M43 57l7-20 8 7-8 20z" fill="#0b9863"/><circle cx="50" cy="77" r="2" fill="#fff"/></svg></div>
-  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Service Solution</p><span class="version-pill">v3.7.11</span>
+  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Service Solution</p><span class="version-pill">v3.7.12</span>
   <h3 id="authHeading">Welcome Back</h3><p id="authSubheading">Create your account to continue</p>
   <div class="auth-tabs"><button type="button" class="auth-tab active" data-auth="signin">Sign Up</button><button type="button" class="auth-tab" data-auth="login">Login</button></div>
   <div id="emailAuthPanel">
@@ -82,9 +85,9 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select
   <p id="loginMsg" role="status">Tap Register to receive an email OTP and create your account, or log in with your registered email and password.</p>
  </div>
 </div>
-<header><div><h1>🔧 Pak GSM Repair</h1><p>Beta · Version 3.7.11 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
+<header><div><h1>🔧 Pak GSM Repair</h1><p>Beta · Version 3.7.12 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
 <main class="wrap">
-<div class="note"><b>Pak GSM Repair 3.7.11:</b> Customer details, repair job status, Setup files, Tools & Parts, sales are organized in one workspace. Backup, update and sound controls are available in Settings.</div>
+<div class="note"><b>Pak GSM Repair 3.7.12:</b> Customer details, repair job status, Setup files, Tools & Parts, sales are organized in one workspace. Backup, update and sound controls are available in Settings.</div>
 <div class="stats"><div class="stat"><span>Customers</span><strong id="nC">0</strong></div><div class="stat"><span>Repair jobs</span><strong id="nJ">0</strong></div><div class="stat"><span>Active jobs</span><strong id="nA">0</strong></div><div class="stat"><span>Unpaid (Rs)</span><strong id="nD">0</strong></div></div>
 <div class="global-search"><input id="globalSearch" type="search" placeholder="Search customers, IMEI, repair jobs, devices or products…"></div>
 <nav class="tabs">
@@ -114,7 +117,7 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select
 <div id="soundPanel" class="panel settings-panel hidden"><h2>Sound</h2><div class="setting-row"><div><b>Welcome sound and voice</b><div class="muted">Plays only on the first logo screen. Login screen remains silent.</div></div><input class="switch" id="soundEnabled" type="checkbox" aria-label="Enable welcome sound"></div><p class="muted">Some mobile browsers block automatic audio. If needed, tap once on the logo screen to enable it.</p></div>
 <div id="backupPanel" class="settings-panel"><div class="grid"><div class="panel"><h2>Local Backup</h2><button id="export">Download JSON Backup</button><label>Import JSON Backup</label><input id="file" type="file" accept=".json,application/json"><button id="import" class="secondary">Import Backup</button><p id="bm" class="muted"></p></div>
 <div class="panel"><h2>Cloud Backup</h2><p class="muted">The public Web App URL and Google Client ID are preconfigured. A Cloud Key is intentionally not embedded in this public package.</p><label>Apps Script Web App URL</label><input id="url" type="url"><label>Cloud Key</label><input id="key" type="password" autocomplete="off"><button id="saveSettings">Save Settings</button> <button id="testConnection" class="secondary">Test Connection</button><div class="row" style="margin-top:10px"><button id="cloudBackup">Back Up to Cloud</button><button id="cloudRestore" class="secondary">Restore from Cloud</button></div><p id="cm" class="muted"></p></div></div></div></section>
-<p class="muted" style="text-align:center;padding:20px">Pak GSM Repair 3.7.11 · Beta</p>
+<p class="muted" style="text-align:center;padding:20px">Pak GSM Repair 3.7.12 · Beta</p>
 </main>
 <div id="modal" class="modal hidden"><div class="box" id="modalBox"></div></div>
 <script src="./cloud-config.js"></script>
@@ -263,7 +266,7 @@ function initLogin(){
    const available=r&&(r.exists===false||r.registered===false||r.accountExists===false||r.available===true);
    if(exists)paintEmailStatus('This email already exists on the server. Please change the email address.','email-error');
    else if(available)paintEmailStatus('Email is available.','email-good');
-   else paintEmailStatus('Could not confirm availability. The server will check again when you register.','email-wait');
+   else paintEmailStatus('Live email check is not enabled on the server yet. Update the OTP server; registration will still reject duplicate emails.','email-wait');
   }catch(e){if(seq===emailCheckSeq)paintEmailStatus('Live check is unavailable right now; the server will still validate it during registration.','email-wait')}
  }
  signupEmail.addEventListener('input',()=>{clearTimeout(emailCheckTimer);emailCheckTimer=setTimeout(checkSignupEmail,550)});
@@ -302,14 +305,14 @@ function initLogin(){
  if(location.protocol==='https:' && window.google?.accounts?.id && window.PGR_GOOGLE_CLIENT_ID){try{window.google.accounts.id.initialize({client_id:window.PGR_GOOGLE_CLIENT_ID,callback:cred=>{try{const p=parseJwt(cred.credential);unlock({email:p.email,name:p.name,sub:p.sub})}catch(e){msg.textContent='Google sign-in response could not be read.'}},auto_select:false,context:'signin'});window.google.accounts.id.renderButton(document.querySelector('#googleButton'),{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'rectangular',width:300,logo_alignment:'left'});document.querySelector('#googleFallback').classList.add('hidden')}catch(e){msg.textContent='Google sign-in could not initialize. Check OAuth settings.'}}
  else if(location.protocol!=='https:'){msg.textContent='Preview mode: Google sign-in only works after this app is published on its authorized HTTPS website.'}
 }
-let loginAudioCtx=null,loginMusicTimer=null,loginMusicStep=0,loginVoiceStarted=false,splashTimer=null,splashStarted=false;
+let loginAudioCtx=null,loginMusicTimer=null,loginMusicStep=0,loginVoiceStarted=false,loginVoiceQueued=false,splashTimer=null,splashStarted=false;
 function soundEnabled(){return settings().soundOn!==false}
 function startLoginMusic(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!soundEnabled()||!AC||loginMusicTimer)return;loginAudioCtx=loginAudioCtx||new AC();if(loginAudioCtx.state==='suspended')loginAudioCtx.resume().catch(()=>{});const notes=[523.25,659.25,783.99,659.25,587.33,698.46,880,698.46];const play=()=>{if(!loginAudioCtx||loginAudioCtx.state!=='running'||!soundEnabled()||document.querySelector('#pgrSplash')?.classList.contains('hidden'))return;const t=loginAudioCtx.currentTime,osc=loginAudioCtx.createOscillator(),gain=loginAudioCtx.createGain();osc.type='sine';osc.frequency.value=notes[loginMusicStep++%notes.length];gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.018,t+.08);gain.gain.exponentialRampToValueAtTime(.0001,t+.48);osc.connect(gain);gain.connect(loginAudioCtx.destination);osc.start(t);osc.stop(t+.5)};play();loginMusicTimer=setInterval(play,560)}catch(e){}}
-function startLoginVoice(){if(!soundEnabled()||loginVoiceStarted||!('speechSynthesis'in window)||document.querySelector('#pgrSplash')?.classList.contains('hidden'))return;try{const u=new SpeechSynthesisUtterance('Pak GSM Repair');u.rate=.86;u.pitch=1.12;u.volume=.8;const voices=speechSynthesis.getVoices();const female=voices.find(v=>/female|zira|samantha|susan|karen|victoria|aria|jenny|sara|heera/i.test(v.name));if(female)u.voice=female;u.onstart=()=>{loginVoiceStarted=true};u.onend=()=>{loginVoiceStarted=true};speechSynthesis.speak(u)}catch(e){}}
+function startLoginVoice(){if(!soundEnabled()||loginVoiceStarted||loginVoiceQueued||!('speechSynthesis'in window)||document.querySelector('#pgrSplash')?.classList.contains('hidden'))return;try{const u=new SpeechSynthesisUtterance('Pak GSM Repair');u.rate=.91;u.pitch=.84;u.volume=.78;const voices=speechSynthesis.getVoices();const female=voices.find(v=>/zira|samantha|susan|karen|victoria|aria|jenny|sara|heera|female/i.test(v.name))||voices.find(v=>/^en[-_]/i.test(v.lang)&&/natural|neural|premium|enhanced/i.test(v.name))||voices.find(v=>/^en[-_]/i.test(v.lang));if(female)u.voice=female;loginVoiceQueued=true;u.onstart=()=>{loginVoiceStarted=true};u.onend=()=>{loginVoiceStarted=true};u.onerror=()=>{loginVoiceQueued=false};speechSynthesis.speak(u)}catch(e){}}
 function startLoginAudio(){if(document.querySelector('#pgrSplash')?.classList.contains('hidden')||!soundEnabled())return;startLoginMusic();startLoginVoice()}
 function stopLoginAudio(){if(loginMusicTimer){clearInterval(loginMusicTimer);loginMusicTimer=null}try{if(loginAudioCtx&&loginAudioCtx.state!=='closed')loginAudioCtx.close()}catch(e){}loginAudioCtx=null;try{if('speechSynthesis'in window)speechSynthesis.cancel()}catch(e){}}
 function showLoginScreen(){if(splashTimer){clearTimeout(splashTimer);splashTimer=null}stopLoginAudio();document.querySelector('#pgrSplash').classList.add('hidden');document.querySelector('#loginGate').classList.remove('hidden');if(!splashStarted){splashStarted=true;initLogin()}}
-window.addEventListener('load',()=>{if('speechSynthesis'in window)speechSynthesis.getVoices();startLoginAudio();const continueButton=document.querySelector('#pgrSplashContinue');continueButton.addEventListener('click',showLoginScreen);document.querySelector('#pgrSplash').addEventListener('click',e=>{if(e.target.id!=='pgrSplashContinue'){startLoginAudio()}});document.querySelector('#pgrSplash').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();startLoginAudio()}});const retry=()=>startLoginAudio();['pointerdown','touchstart'].forEach(ev=>document.querySelector('#pgrSplash').addEventListener(ev,retry,{once:true,passive:true}));splashTimer=setTimeout(showLoginScreen,3200);});
+window.addEventListener('load',()=>{if('speechSynthesis'in window)speechSynthesis.getVoices();startLoginAudio();const splash=document.querySelector('#pgrSplash');splash.addEventListener('click',()=>{startLoginAudio()});const retry=()=>startLoginAudio();['pointerdown','touchstart'].forEach(ev=>splash.addEventListener(ev,retry,{once:true,passive:true}));splashTimer=setTimeout(showLoginScreen,3200);});
  function parseJwt(t){let p=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(decodeURIComponent(atob(p).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')))}
 // Login starts directly; all form fields use native browser input and IME handling.
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
