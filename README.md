@@ -26,3 +26,13 @@ Login flow correction: Sign In restores Full name, Email, Create password, Confi
 - The configured OTP server URL is in `cloud-config.js`.
 - For testing from a phone, serve this folder from an HTTPS static host rather than opening the HTML as a local file.
 - This ZIP's login flow was syntax-checked; a live end-to-end email test still must be performed in the hosted page.
+
+
+## Login, registration and icon update
+
+The updated login requires name, email, mobile number, password and confirm password for registration. The email OTP is verified before the account record is saved to Google Drive. Later logins require the registered email, password and a fresh email OTP. Passwords are not stored in plaintext. Mobile number is saved as contact information; SMS OTP is not implemented. After replacing `Code.gs`, deploy a new version of the same Apps Script web app used in `cloud-config.js`. Open the GitHub Pages HTTPS URL to use secure browser hashing.
+
+
+## Account persistence verification fix
+
+A static review found that registration required a server-side `otp-verified` marker, but successful OTP verification did not set that marker. This would cause verified sign-ups to fail at the registration step. The updated `Code.gs` now sets a short-lived server-side marker after successful OTP verification; `registerAccount` consumes it. Deploy this corrected `Code.gs` as a new version of the same OTP Apps Script web app. Live server behavior still needs to be confirmed on the deployed endpoint.

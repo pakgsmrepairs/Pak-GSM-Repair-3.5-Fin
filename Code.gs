@@ -65,6 +65,10 @@ function doGet(e) {
       result = sendEmailOtp_(params.email);
     } else if (action === 'verifyOtp') {
       result = verifyEmailOtp_(params.email, params.otp);
+    } else if (action === 'registerAccount') {
+      result = registerAccount_(params.email, params.name, params.phone, params.passwordHash);
+    } else if (action === 'loginAccount') {
+      result = loginAccount_(params.email, params.passwordHash);
     } else if (action === 'ping') {
       result = auth_(params.key)
         ? { ok: true, app: APP_NAME, version: APP_VERSION, service: 'cloud-backup' }
@@ -233,9 +237,46 @@ function verifyEmailOtp_(email, otp) {
     return { ok: false, verified: false, error: saved.attempts >= 5 ? 'Too many incorrect attempts. Request a new OTP.' : 'Incorrect OTP. Please check the code and try again.' };
   }
   cache.remove('otp-code-' + key);
+  // Allow the immediately following account-registration request only after OTP verification.
+  // The registration endpoint consumes this short-lived server-side proof.
+  cache.put('otp-verified-' + key, '1', 300);
   return { ok: true, verified: true, email: email };
 }
 
+
+// Account registration: store account records in Drive, never plaintext passwords.
+function accountFileKey_(email) {
+  const bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(email || '').trim().toLowerCase(), Utilities.Charset.UTF_8);
+  return bytes.map(b => ('0' + ((b + 256) % 256).toString(16)).slice(-2)).join('');
+}
+function accountPasswordHash_(clientHash, salt) {
+  const bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(clientHash || '') + ':' + String(salt || '') + ':' + ScriptApp.getScriptId(), Utilities.Charset.UTF_8);
+  return bytes.map(b => ('0' + ((b + 256) % 256).toString(16)).slice(-2)).join('');
+}
+function accountRecord_(email) { return readJsonFile_('account_' + accountFileKey_(email) + '.json', null); }
+function registerAccount_(email, name, phone, passwordHash) {
+  email=String(email||'').trim().toLowerCase(); name=String(name||'').trim().slice(0,100); phone=String(phone||'').trim().slice(0,25); passwordHash=String(passwordHash||'').trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return {ok:false,error:'Enter a valid email address.'};
+  if(!name||!phone)return {ok:false,error:'Full name and mobile number are required.'};
+  if(!/^[a-f0-9]{64}$/i.test(passwordHash))return {ok:false,error:'Invalid password format. Please try again.'};
+  const verifiedKey='otp-verified-'+otpEmailKey_(email);
+  const cache=CacheService.getScriptCache();
+  if(cache.get(verifiedKey)!=='1')return {ok:false,error:'Verify the email OTP before registering this account.'};
+  cache.remove(verifiedKey);
+  const lock=LockService.getScriptLock();lock.waitLock(10000);
+  try { if(accountRecord_(email))return {ok:false,error:'An account already exists for this email. Please use Login.'};
+    const salt=Utilities.getUuid()+Utilities.getUuid();
+    const rec={email:email,name:name,phone:phone,salt:salt,passwordHash:accountPasswordHash_(passwordHash,salt),createdAt:new Date().toISOString(),verified:true};
+    writeJsonFile_('account_'+accountFileKey_(email)+'.json',rec);return {ok:true,email:email,name:name,message:'Account registered.'};
+  } finally {lock.releaseLock();}
+}
+function loginAccount_(email, passwordHash) {
+  email=String(email||'').trim().toLowerCase();passwordHash=String(passwordHash||'').trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[a-f0-9]{64}$/i.test(passwordHash))return {ok:false,error:'Email or password is incorrect.'};
+  const rec=accountRecord_(email);if(!rec||!rec.salt||!rec.passwordHash)return {ok:false,error:'No registered account found for this email. Please Sign In first.'};
+  if(accountPasswordHash_(passwordHash,rec.salt)!==rec.passwordHash)return {ok:false,error:'Email or password is incorrect.'};
+  return {ok:true,email:rec.email,name:rec.name,phone:rec.phone};
+}
 
 /**
  * Manual email delivery test. Run from the Apps Script editor.
