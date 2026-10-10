@@ -65,6 +65,8 @@ function doGet(e) {
       result = sendEmailOtp_(params.email);
     } else if (action === 'verifyOtp') {
       result = verifyEmailOtp_(params.email, params.otp);
+    } else if (action === 'checkEmail') {
+      result = checkEmailAvailability_(params.email);
     } else if (action === 'registerAccount') {
       result = registerAccount_(params.email, params.name, params.phone, params.passwordHash);
     } else if (action === 'loginAccount') {
@@ -254,6 +256,17 @@ function accountPasswordHash_(clientHash, salt) {
   return bytes.map(b => ('0' + ((b + 256) % 256).toString(16)).slice(-2)).join('');
 }
 function accountRecord_(email) { return readJsonFile_('account_' + accountFileKey_(email) + '.json', null); }
+
+// Email availability check used by the registration screen.
+function checkEmailAvailability_(email) {
+  email = String(email || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: 'Enter a valid email address.' };
+  }
+  const exists = !!accountRecord_(email);
+  return { ok: true, email: email, exists: exists, registered: exists, available: !exists };
+}
+
 function registerAccount_(email, name, phone, passwordHash) {
   email=String(email||'').trim().toLowerCase(); name=String(name||'').trim().slice(0,100); phone=String(phone||'').trim().slice(0,25); passwordHash=String(passwordHash||'').trim();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return {ok:false,error:'Enter a valid email address.'};
