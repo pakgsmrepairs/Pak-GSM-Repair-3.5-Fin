@@ -1,5 +1,5 @@
 {
-  "version": "3.7.4",
-  "versionCode": 374,
-  "changelog": "Password-only login; Settings separated into App Update, Backup & Restore, and Sound; welcome logo audio plays only on splash screen."
+  "version": "3.7.5",
+  "versionCode": 375,
+  "changelog": "Fixed mobile login field text entry; Settings gear in header with Sign out inside Settings; signup password minimum 4 characters requiring uppercase, lowercase, digit and special character."
 }
