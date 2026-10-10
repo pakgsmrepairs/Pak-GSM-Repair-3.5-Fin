@@ -1,4 +1,4 @@
-const CACHE = 'pgr-3-7-shell-v3-otp-email-only';
+const CACHE = 'pgr-3-7.1-shell-v3-otp-email-only';
 const FILES = ['./', './index.html', './manifest.json', './cloud-config.js'];
 
 self.addEventListener('install', event => {
