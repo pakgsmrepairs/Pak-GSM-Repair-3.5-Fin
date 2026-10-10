@@ -42,7 +42,7 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}input,select
    <div id="loginFields" class="hidden">
     <div class="auth-field"><label for="loginEmail">Email Address *</label><input id="loginEmail" type="email" autocomplete="username" placeholder="Enter your registered email" inputmode="email"></div>
     <div class="auth-field"><label for="loginPassword">Password *</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password"></div>
-    <button type="button" id="sendLoginOtp" style="width:100%;margin-top:12px">Login &amp; Get Email OTP</button>
+    <button type="button" id="sendLoginOtp" style="width:100%;margin-top:12px">Login</button>
    </div>
    <div id="otpStep" class="otp-step hidden">
     <h3 style="margin:8px 0">Verify your email</h3>
@@ -155,7 +155,7 @@ function chooseAuth(mode){
  document.querySelector('#loginFields').classList.toggle('hidden',mode!=='login');
  document.querySelector('#otpStep').classList.add('hidden');
  document.querySelector('#authPassword').autocomplete=mode==='login'?'current-password':'new-password';
- document.querySelector('#loginMsg').textContent=mode==='login'?'Enter your registered email and password, then verify the email OTP.':'Create your account with your name, email, mobile number and password.';document.querySelector('#authHeading').textContent=mode==='login'?'Welcome Back':'Create Account';document.querySelector('#authSubheading').textContent=mode==='login'?'Sign in to continue':'Register once to get started';
+ document.querySelector('#loginMsg').textContent=mode==='login'?'Enter your registered email and password to log in.':'Create your account with your name, email, mobile number and password.';document.querySelector('#authHeading').textContent=mode==='login'?'Welcome Back':'Create Account';document.querySelector('#authSubheading').textContent=mode==='login'?'Sign in to continue':'Register once to get started';
 }
 function otpServerCall(action,email,otp,extra={}){return new Promise((resolve,reject)=>{const base=window.PGR_OTP_SERVER_URL;if(!base){reject(new Error('OTP server URL is missing from cloud-config.js.'));return}let url;try{url=new URL(base)}catch(e){reject(new Error('OTP server URL is invalid.'));return}const callback='pgrOtp_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),script=document.createElement('script');let finished=false;const timer=setTimeout(()=>finish(new Error('OTP server timed out.')),15000);function finish(err,data){if(finished)return;finished=true;clearTimeout(timer);try{delete window[callback]}catch(e){}script.remove();err?reject(err):resolve(data)}window[callback]=data=>finish(null,data);script.onerror=()=>finish(new Error('Could not reach OTP server. Check its deployment and internet connection.'));url.searchParams.set('action',action);url.searchParams.set('email',email);if(otp)url.searchParams.set('otp',otp);Object.entries(extra||{}).forEach(([k,v])=>url.searchParams.set(k,String(v??'')));url.searchParams.set('callback',callback);url.searchParams.set('_',String(Date.now()));script.src=url.toString();document.body.appendChild(script)})}
 function initLogin(){
@@ -172,17 +172,23 @@ function initLogin(){
   const signup=mode==='signin';
   const email=(document.querySelector(signup?'#authEmail':'#loginEmail').value||'').trim().toLowerCase();
   const password=document.querySelector(signup?'#authPassword':'#loginPassword').value||'';
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.textContent='Please enter a valid email address.';return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Please enter a valid email address.');return}
   if(signup){
-   if(!document.querySelector('#authName').value.trim()){msg.textContent='Please enter your full name.';return}
-   if(!document.querySelector('#authPhone').value.trim()){msg.textContent='Please enter your mobile number.';return}
-   if(password.length<8){msg.textContent='Password must be at least 8 characters.';return}
-   if(password!==document.querySelector('#authConfirmPassword').value){msg.textContent='Password and confirm password do not match.';return}
-  }else if(password.length<8){msg.textContent='Enter the password for your registered account.';return}
+   if(!document.querySelector('#authName').value.trim()){alert('Please enter your full name.');return}
+   if(!document.querySelector('#authPhone').value.trim()){alert('Please enter your mobile number.');return}
+   if(password.length<8){alert('Password must be at least 8 characters.');return}
+   if(password!==document.querySelector('#authConfirmPassword').value){alert('Password and confirm password do not match.');return}
+  }else if(password.length<8){alert('Enter the password for your registered account (at least 8 characters).');return}
   const b=document.querySelector(signup?'#sendEmailOtp':'#sendLoginOtp');b.disabled=true;msg.textContent=signup?'Checking account and sending OTP…':'Checking your account…';
   try{
    const passwordHash=await passwordDigest(password);
-   if(!signup){const a=await otpServerCall('loginAccount',email,'',{passwordHash});if(!a||!a.ok)throw new Error(a?.error||'Email or password is incorrect.');}
+   if(!signup){
+    const account=await otpServerCall('loginAccount',email,'',{passwordHash});
+    if(!account||!account.ok)throw new Error(account?.error||'Email or password is incorrect.');
+    alert('Login successful. Welcome back, '+(account.name||email)+'!');
+    unlock({email:email,name:account.name||email,sub:'email-password'});
+    return;
+   }
    const r=await otpServerCall('sendOtp',email);
    if(!r||!r.ok)throw new Error(r?.error||'OTP request was not accepted.');
    pendingOtpEmail=email;
@@ -190,7 +196,7 @@ function initLogin(){
    document.querySelector('#otpStep').classList.remove('hidden');
    document.querySelector('#otpStepText').textContent='A 6-digit code was sent to '+email+'. Check your inbox and spam folder. The code expires in 5 minutes.';
    document.querySelector('#authEmailOtp').value='';document.querySelector('#authEmailOtp').focus();msg.textContent='OTP sent. Enter the code below to continue.';
-  }catch(e){msg.textContent='Could not continue: '+e.message}
+  }catch(e){alert('Login / registration error: '+e.message);msg.textContent='Could not continue: '+e.message}
   finally{b.disabled=false}
  }
  document.querySelector('#sendEmailOtp').onclick=()=>requestOtp('signin');
@@ -216,7 +222,7 @@ function initLogin(){
     if(!account||!account.ok)throw new Error(account?.error||'Email or password is incorrect.');
     unlock({email:pendingOtpEmail,name:account.name||pendingOtpEmail,sub:'email-otp'});
    }
-  }catch(e){msg.textContent='OTP verification failed: '+e.message}
+  }catch(e){alert('Verification error: '+e.message);msg.textContent='OTP verification failed: '+e.message}
   finally{b.disabled=false}
  };
  document.querySelector('#guestView').onclick=()=>unlock({email:'Guest View',name:'Guest',sub:'guest-view',guest:true});
