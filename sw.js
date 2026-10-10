@@ -1,36 +1,50 @@
-const CACHE = 'pgr-3-7.1-shell-v3-otp-email-only';
-const FILES = ['./', './index.html', './manifest.json', './cloud-config.js'];
-
+/* Pak GSM Repair 3.7.4 service worker. Network-first for HTML/update metadata so stale app versions do not stick. */
+const CACHE_NAME = 'pgr-3-7-4-shell-v1';
+const APP_SHELL = ['./', './index.html', './manifest.json', './update.json'];
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll(FILES))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(APP_SHELL.map(path => new Request(path, {cache:'reload'}))).catch(() => {});
+    await self.skipWaiting();
+  })());
 });
-
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => name.startsWith('pgr-') && name !== CACHE_NAME).map(name => caches.delete(name)));
+    await self.clients.claim();
+  })());
 });
-
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
-  event.respondWith((async () => {
-    const cached = await caches.match(event.request);
-    if (cached) return cached;
-    try {
-      const response = await fetch(event.request);
-      if (response.ok) {
-        const cache = await caches.open(CACHE);
-        await cache.put(event.request, response.clone());
+  const req = event.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+  const isHtml = req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname === new URL('./', self.location.href).pathname;
+  const isUpdate = url.pathname.endsWith('/update.json');
+  if (isHtml || isUpdate) {
+    event.respondWith((async () => {
+      try {
+        const fresh = await fetch(new Request(req, {cache:'no-store'}));
+        if (fresh && fresh.ok && isHtml) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(req, fresh.clone()).catch(() => {});
+        }
+        return fresh;
+      } catch (err) {
+        const cached = await caches.match(req) || await caches.match('./index.html') || await caches.match('./');
+        if (cached) return cached;
+        throw err;
       }
+    })());
+    return;
+  }
+  event.respondWith((async () => {
+    const cached = await caches.match(req);
+    const network = fetch(req).then(response => {
+      if (response && response.ok) caches.open(CACHE_NAME).then(cache => cache.put(req, response.clone())).catch(() => {});
       return response;
-    } catch (error) {
-      return (await caches.match('./index.html')) || Response.error();
-    }
+    }).catch(() => cached);
+    return cached || network;
   })());
 });

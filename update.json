@@ -1,0 +1,5 @@
+{
+  "version": "3.7.4",
+  "versionCode": 374,
+  "changelog": "Password-only login; Settings separated into App Update, Backup & Restore, and Sound; welcome logo audio plays only on splash screen."
+}
