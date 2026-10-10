@@ -1,38 +1,52 @@
-# Pak GSM Repair 3.7 Beta — Login Fix
+# Pak GSM Repair 3.7.4 --- Settings, Update & Restore
 
-A new standalone starter project, separate from the old repository.
+This README documents the intended frontend package version **3.7.4**.
 
-## Files
-- `index.html`: responsive dashboard, customer records, repair jobs, inventory, local JSON export/import
-- `cloud-config.js`: backend URL placeholder
-- `manifest.json` and `sw.js`: basic PWA metadata/offline shell
-- `Code.gs`: Apps Script API for health/ping, owner-token verification, and customer/job/inventory backup/restore in Drive
-- `SETUP_GITHUB.md`: GitHub Pages instructions
-- `SETUP_GOOGLE.md`: Apps Script instructions
+## Important: README does not publish or change the website
 
-## Important limitations
-This is a fresh starter, not a verified migration of every feature in the previous app. Local browser storage remains the app’s primary save location. Cloud backup/restore is optional and must be configured and tested after deployment. Google sign-in requires a published HTTPS site whose origin is listed in Google OAuth Authorized JavaScript origins. Opening index.html directly from Android File Manager (content:// or file://) will not complete Google sign-in. Email/password buttons are UI-only until a secure account service is connected. Shared-key cloud backup is not production-grade. Use dummy records until Google sign-in and server-side authorization are fully wired into all data endpoints. Do not upload secrets to a public repository.
+Changing `README.md` only changes the project documentation. It does
+**not** change the version served by GitHub Pages. The live website is
+built from the published site's source files, especially `index.html`,
+and may also be affected by browser/PWA caching.
 
+## Verify the live website
 
-This revision keeps the existing login card and adds email OTP login, Guest View, and a login-page welcome voice/music attempt. See SETUP_GOOGLE.md for OTP server deployment requirements.
+1.  Open the GitHub repository that contains the deployed app.
+2.  Open `index.html` and confirm that its title/footer/version text
+    says `3.7.4` where appropriate.
+3.  Confirm that the latest changes have been committed to the branch
+    and folder selected in **Settings → Pages**.
+4.  Open the GitHub Pages URL shown in **Settings → Pages**. Do not
+    assume the repository name or URL path.
+5.  On Android Chrome, open the URL in an Incognito tab to check whether
+    an old cached copy is being shown. If Incognito shows the new
+    version, clear the site's cached data or refresh the installed PWA.
+6.  If the page still shows `3.7.1`, inspect the deployed `index.html`
+    and the Pages source/branch. Updating this README will not fix that
+    by itself.
 
+## Files to check
 
-Login flow correction: Sign In restores Full name, Email, Create password, Confirm password and Get Email OTP. After the OTP request succeeds, a separate 6-digit verification step appears. Login has Email, Password and Get Email OTP. Email OTP must be supported by the deployed Apps Script endpoint. This beta still does not store or validate passwords against a server-side account database; email OTP is the actual verification gate.
+-   `index.html` --- app interface and visible version text.
+-   `sw.js` --- service worker cache; an old cache can keep older app
+    files available.
+-   `manifest.json` --- PWA metadata.
+-   `update.json` --- update-check metadata, if the app uses it.
+-   `cloud-config.js` and `Code.gs` --- backend configuration and
+    server-side behavior; updating the frontend does not automatically
+    update the backend.
 
+## Release note
 
-## OTP login fix (v2)
-- The OTP request now requires only a valid email address. Name and password fields are optional because this beta does not authenticate passwords against an account database.
-- After the OTP server returns `ok: true`, the 6-digit OTP panel is shown.
-- The configured OTP server URL is in `cloud-config.js`.
-- For testing from a phone, serve this folder from an HTTPS static host rather than opening the HTML as a local file.
-- This ZIP's login flow was syntax-checked; a live end-to-end email test still must be performed in the hosted page.
+Target frontend package: **Pak GSM Repair 3.7.4 --- Settings Update
+Restore**.
 
+**Release status:** The version is not verified as live just because
+this README says 3.7.4. Verify the published website and its actual
+`index.html` before treating the release as deployed.
 
-## Login, registration and icon update
+## Safety
 
-The updated login requires name, email, mobile number, password and confirm password for registration. The email OTP is verified before the account record is saved to Google Drive. Later logins require the registered email, password and a fresh email OTP. Passwords are not stored in plaintext. Mobile number is saved as contact information; SMS OTP is not implemented. After replacing `Code.gs`, deploy a new version of the same Apps Script web app used in `cloud-config.js`. Open the GitHub Pages HTTPS URL to use secure browser hashing.
-
-
-## Account persistence verification fix
-
-A static review found that registration required a server-side `otp-verified` marker, but successful OTP verification did not set that marker. This would cause verified sign-ups to fail at the registration step. The updated `Code.gs` now sets a short-lived server-side marker after successful OTP verification; `registerAccount` consumes it. Deploy this corrected `Code.gs` as a new version of the same OTP Apps Script web app. Live server behavior still needs to be confirmed on the deployed endpoint.
+Test login, backup, restore, and updates with dummy data first. Do not
+put passwords, cloud keys, customer records, or other secrets in this
+public repository.
