@@ -1,5 +1,5 @@
 {
-  "version": "3.7.7",
-  "versionCode": 377,
-  "changelog": "Targeted Android keyboard typing fix for authentication fields; preserves app data and existing features. Register button and Sign Up labels retained."
+  "version": "4.0",
+  "versionCode": 400,
+  "changelog": "Version 4.0: Settings opens in a side drawer; update checker version aligned; backup/restore and sound controls grouped; added appearance theme and text-size preferences. Existing local data format preserved."
 }
