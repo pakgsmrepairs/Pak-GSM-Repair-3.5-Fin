@@ -197,7 +197,7 @@ document.querySelector('#textSizeSelect').addEventListener('change',()=>{const s
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if((settings().theme||'light')==='system')applyAppearance()})}
 const APP_VERSION='4.4';
 let pendingUpdate=null;function versionParts(v){return String(v||'0').replace(/^v/i,'').split('.').map(x=>parseInt(x,10)||0)}function compareVersions(a,b){let x=versionParts(a),y=versionParts(b);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)?1:-1}return 0}
-document.querySelector('#checkUpdate').addEventListener('click',async()=>{const out=document.querySelector('#updateStatus'),btn=document.querySelector('#checkUpdate');btn.disabled=true;out.textContent='Checking update.json…';try{const res=await fetch('./update.json?check='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('update.json not found (HTTP '+res.status+'). Upload update.json to the same root folder as index.html.');const data=await res.json();if(!data.version)throw new Error('update.json must contain a version field.');const cmp=compareVersions(data.version,APP_VERSION);if(cmp>0){pendingUpdate=data;document.querySelector('#downloadUpdate').disabled=false;out.textContent='A newer version ('+data.version+') is available. Tap Download Update.';out.style.background='#fff4d6'}else{pendingUpdate=null;document.querySelector('#downloadUpdate').disabled=true;document.querySelector('#applyUpdate').disabled=true;out.textContent='You are using version '+APP_VERSION+'. Published version: '+data.version+'. '+(cmp===0?'The app is up to date.':'The update file is older than this app.');out.style.background='#edf5f1'}if(data.changelog)out.textContent+=' Release notes: '+data.changelog;}catch(e){out.textContent='Update check failed: '+e.message;out.style.background='#fff0ee'}finally{btn.disabled=false}});
+document.querySelector('#checkUpdate').addEventListener('click',async()=>{const out=document.querySelector('#updateStatus'),btn=document.querySelector('#checkUpdate');btn.disabled=true;out.textContent='Checking update.json…';try{const res=await fetch('./update.json?check='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('update.json not found (HTTP '+res.status+'). Upload update.json to the same root folder as index.html.');const data=await res.json();if(!data.version)throw new Error('update.json must contain a version field.');const cmp=compareVersions(data.version,APP_VERSION);if(cmp>0){out.textContent='A newer version ('+data.version+') is available. Tap Refresh App after GitHub Pages finishes publishing it.';out.style.background='#fff4d6'}else{out.textContent='You are using version '+APP_VERSION+'. Published version: '+data.version+'. '+(cmp===0?'The app is up to date.':'The update file is older than this app.');out.style.background='#edf5f1'}if(data.changelog)out.textContent+=' Release notes: '+data.changelog;}catch(e){out.textContent='Update check failed: '+e.message;out.style.background='#fff0ee'}finally{btn.disabled=false}});
 document.querySelector('#downloadUpdate').addEventListener('click',async()=>{if(!pendingUpdate)return;const out=document.querySelector('#updateStatus'),btn=document.querySelector('#downloadUpdate');btn.disabled=true;out.textContent='Downloading update package…';try{const files=['./index.html','./manifest.json','./sw.js','./cloud-config.js','./update.json'];const cache=await caches.open('pgr-4-4-update');for(const f of files){try{const r=await fetch(f+'?download='+Date.now(),{cache:'no-store'});if(r.ok)await cache.put(f,r.clone())}catch(e){}}localStorage.setItem('pgr44_update_ready','1');document.querySelector('#applyUpdate').disabled=false;out.textContent='Update package downloaded. Tap Apply Update to restart the app.'}catch(e){out.textContent='Download failed: '+e.message}finally{btn.disabled=false}});
 document.querySelector('#applyUpdate').addEventListener('click',async()=>{const out=document.querySelector('#updateStatus');out.textContent='Applying update and restarting…';try{const reg=await navigator.serviceWorker?.getRegistration('./');if(reg)await reg.update();if(reg?.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});await new Promise(r=>setTimeout(r,300));}catch(e){}location.href='./?apply='+Date.now()});
 document.querySelector('#refreshApp').addEventListener('click',async()=>{try{const reg=await navigator.serviceWorker?.getRegistration('./');if(reg)await reg.update()}catch(e){}location.href='./?refresh='+Date.now()});
@@ -346,7 +346,29 @@ function startLoginVoice(){if(!soundEnabled()||loginVoiceStarted||loginVoiceQueu
 function startLoginAudio(){if(document.querySelector('#pgrSplash')?.classList.contains('hidden')||!soundEnabled())return;startLoginMusic();startLoginVoice()}
 function stopLoginAudio(){if(loginMusicTimer){clearInterval(loginMusicTimer);loginMusicTimer=null}try{if(loginAudioCtx&&loginAudioCtx.state!=='closed')loginAudioCtx.close()}catch(e){}loginAudioCtx=null;try{if('speechSynthesis'in window)speechSynthesis.cancel()}catch(e){}}
 function showLoginScreen(){if(splashTimer){clearTimeout(splashTimer);splashTimer=null}stopLoginAudio();document.querySelector('#pgrSplash').classList.add('hidden');document.querySelector('#loginGate').classList.remove('hidden');if(!splashStarted){splashStarted=true;initLogin()}}
-window.addEventListener('load',()=>{if('speechSynthesis'in window)speechSynthesis.getVoices();startLoginAudio();const splash=document.querySelector('#pgrSplash');splash.addEventListener('click',()=>{startLoginAudio()});const retry=()=>startLoginAudio();['pointerdown','touchstart'].forEach(ev=>splash.addEventListener(ev,retry,{once:true,passive:true}));splashTimer=setTimeout(showLoginScreen,3200);});
+window.addEventListener('load',()=>{
+ try{if('speechSynthesis'in window)speechSynthesis.getVoices();}catch(e){}
+ const splash=document.querySelector('#pgrSplash');
+ if(!splash){
+  try{document.querySelector('#loginGate')?.classList.remove('hidden')}catch(e){}
+  return;
+ }
+ const safeAudio=()=>{try{startLoginAudio()}catch(e){}};
+ safeAudio();
+ splash.addEventListener('click',safeAudio,{passive:true});
+ ['pointerdown','touchstart'].forEach(ev=>splash.addEventListener(ev,safeAudio,{once:true,passive:true}));
+ splashTimer=setTimeout(showLoginScreen,2200);
+ setTimeout(()=>{
+  try{
+   if(!document.querySelector('#pgrSplash')?.classList.contains('hidden'))showLoginScreen();
+  }catch(e){
+   try{
+    document.querySelector('#pgrSplash')?.classList.add('hidden');
+    document.querySelector('#loginGate')?.classList.remove('hidden');
+   }catch(x){}
+  }
+ },5000);
+});
  function parseJwt(t){let p=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(decodeURIComponent(atob(p).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')))}
 // Login starts directly; all form fields use native browser input and IME handling.
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));

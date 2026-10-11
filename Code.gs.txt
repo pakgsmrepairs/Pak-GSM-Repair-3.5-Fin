@@ -1,5 +1,5 @@
 /**
- * Pak GSM Repair 4.4 - Google Apps Script backend
+ * Pak GSM Repair 3.7 - Google Apps Script backend
  * IMPORTANT: shared-key auth is suitable for testing only, not production customer data.
  * Script Properties required: CLOUD_KEY
  */
