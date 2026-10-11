@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 4.4.6</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 4.4</title><style>
 :root{--g:#0b6b57;--g2:#0f8a6e;--bg:#f2f7f5;--line:#dce8e3;--ink:#132b27;--muted:#63756f;--danger:#9b2118;--card:#fff}
 *{box-sizing:border-box}body{margin:0;font:15px system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
 /* Native mobile text-entry safeguard: keep browser keyboard/IME events unmodified. */
@@ -64,7 +64,7 @@ body.large-text{font-size:17px}
 <div id="loginGate" class="hidden">
  <div class="login-card">
   <div class="brand-mark"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#07543f" stroke="#e5fff4" stroke-width="3"/><circle cx="50" cy="50" r="39" fill="#08764f" stroke="#20c77b" stroke-width="2"/><rect x="28" y="12" width="43" height="76" rx="8" fill="#f5fff9" stroke="#064e3b" stroke-width="3"/><rect x="33" y="19" width="33" height="59" rx="3" fill="#092f29"/><path d="M36 24h27v47H36z" fill="#12a66a"/><path d="M40 48l18-15 4 7-18 17z" fill="#dffff0"/><path d="M19 67l27-29 8 7-27 29-10 3z" fill="#fff" stroke="#064e3b" stroke-width="2" stroke-linejoin="round"/><path d="M42 35l8-9 8 1-4 8-7 5z" fill="#fff" stroke="#064e3b" stroke-width="2"/><path d="M61 56l4-7 5 4 7-1 2 7-5 4 1 7-7 2-4-5-7 1-2-7z" fill="#fff" stroke="#064e3b" stroke-width="2"/><circle cx="67" cy="62" r="4" fill="#08764f"/><circle cx="50" cy="82" r="2" fill="#064e3b"/></svg></div>
-  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Service Solution</p><span class="version-pill">v4.4.4</span>
+  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Service Solution</p><span class="version-pill">v4.4</span>
   <h3 id="authHeading">Welcome Back</h3><p id="authSubheading">Register or login to continue</p>
   <div class="auth-tabs"><button type="button" class="auth-tab active" data-auth="signin">Sign Up</button><button type="button" class="auth-tab" data-auth="login">Login</button></div>
   <div id="emailAuthPanel">
@@ -97,9 +97,9 @@ body.large-text{font-size:17px}
   <p id="loginMsg" role="status">Register to create an account, or choose Login to access your registered account.</p>
  </div>
 </div>
-<header><div><h1>🔧 Pak GSM Repair</h1><p>Beta · Version 4.4.4 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
+<header><div><h1>🔧 Pak GSM Repair</h1><p>Beta · Version 4.4 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
 <main class="wrap">
-<div class="note"><b>Pak GSM Repair 4.4.4:</b> Customer details, repair job status, Setup files, Tools & Parts, sales are organized in one workspace. Backup, update and sound controls are available in Settings.</div>
+<div class="note"><b>Pak GSM Repair 4.4:</b> Customer details, repair job status, Setup files, Tools & Parts, sales are organized in one workspace. Backup, update and sound controls are available in Settings.</div>
 <div class="stats"><div class="stat"><span>Customers</span><strong id="nC">0</strong></div><div class="stat"><span>Repair jobs</span><strong id="nJ">0</strong></div><div class="stat"><span>Active jobs</span><strong id="nA">0</strong></div><div class="stat"><span>Unpaid (Rs)</span><strong id="nD">0</strong></div></div>
 <div class="global-search"><input id="globalSearch" type="search" placeholder="Search customers, IMEI, repair jobs, devices or products…"></div>
 <nav class="tabs">
@@ -125,7 +125,7 @@ body.large-text{font-size:17px}
 
 <section id="backup" class="page hidden">
 <div class="panel"><div class="row"><div style="flex:1"><h2 style="margin:0">Settings</h2><p class="muted">Manage updates, backup, appearance and sound in one place.</p></div><button id="closeSettings" class="secondary" type="button" aria-label="Close settings" style="flex:0 0 auto">✕</button></div><div class="row" style="margin-top:8px"><button id="signOut" class="secondary" type="button">Sign out</button></div><div class="settings-subnav"><button type="button" class="settings-option active" data-settings="updatePanel">App Update</button><button type="button" class="settings-option" data-settings="backupPanel">Backup &amp; Restore</button><button type="button" class="settings-option" data-settings="appearancePanel">Appearance</button><button type="button" class="settings-option" data-settings="soundPanel">Sound</button></div></div>
-<div id="updatePanel" class="panel settings-panel"><h2>App Update</h2><p class="muted">Current version: <b>4.4.4</b>. Check update.json on the published website.</p><div id="updateStatus" class="update-status">Check the published version first, then download and apply a newer release.</div><div class="row"><button type="button" id="checkUpdate">Check for Updates</button><button type="button" id="downloadUpdate" class="secondary" disabled>Download Update</button><button type="button" id="applyUpdate" class="secondary" disabled>Apply Update</button></div></div>
+<div id="updatePanel" class="panel settings-panel"><h2>App Update</h2><p class="muted">Current version: <b>4.4</b>. Check update.json on the published website.</p><div id="updateStatus" class="update-status">Check the published version first, then download and apply a newer release.</div><div class="row"><button type="button" id="checkUpdate">Check for Updates</button><button type="button" id="downloadUpdate" class="secondary" disabled>Download Update</button><button type="button" id="applyUpdate" class="secondary" disabled>Apply Update</button></div></div>
 <div id="appearancePanel" class="panel settings-panel hidden"><h2>Presentation / Appearance</h2><label for="themeSelect">App Theme</label><select id="themeSelect"><option value="light">Light</option><option value="dark">Dark</option><option value="system">Use device setting</option></select><label for="textSizeSelect">Text Size</label><select id="textSizeSelect"><option value="normal">Normal</option><option value="large">Large</option></select><p class="muted">These preferences are saved on this device.</p></div>
 <div id="soundPanel" class="panel settings-panel hidden"><h2>Sound</h2><div class="setting-row"><div><b>Welcome sound and voice</b><div class="muted">Welcome voice/music is used during the login experience. Some browsers require the first tap to start audio.</div></div><input class="switch" id="soundEnabled" type="checkbox" aria-label="Enable welcome sound"></div><p class="muted">Some mobile browsers block automatic audio. If needed, tap once on the logo screen to enable it.</p></div>
 <div id="backupPanel" class="settings-panel"><div class="grid"><div class="panel"><h2>Local Backup</h2><button id="export">Download JSON Backup</button><label>Import JSON Backup</label><input id="file" type="file" accept=".json,application/json"><button id="import" class="secondary">Import Backup</button><p id="bm" class="muted"></p></div>
@@ -135,6 +135,36 @@ body.large-text{font-size:17px}
 <div id="settingsBackdrop" aria-hidden="true"></div>
 <div id="restoreConfirm" class="modal hidden"><div class="box" style="max-width:430px;text-align:center"><h2 style="margin-top:0">Restore Backup</h2><p class="muted">Google Drive backup will replace your current local records. This action changes the data currently stored on this device.</p><div class="row"><button type="button" id="restoreCancel" class="secondary">✕ Cancel</button><button type="button" id="restoreOk">✓ OK</button></div></div></div>
 <div id="modal" class="modal hidden"><div class="box" id="modalBox"></div></div>
+<script>
+/* Independent splash watchdog: deliberately separate from the main app script.
+   The logo screen must never depend on window.load or Google SDK availability. */
+(function () {
+  var opened = false;
+  function revealLogin() {
+    if (opened) return;
+    var splash = document.getElementById('pgrSplash');
+    var gate = document.getElementById('loginGate');
+    if (!splash || !gate) return;
+    if (splash.classList.contains('hidden') && !gate.classList.contains('hidden')) { opened = true; return; }
+    try { if (typeof splashTimer !== 'undefined' && splashTimer) clearTimeout(splashTimer); } catch (e) {}
+    try { if (typeof stopLoginAudio === 'function') stopLoginAudio(); } catch (e) {}
+    try { if (typeof splashStarted !== 'undefined') splashStarted = true; } catch (e) {}
+    splash.classList.add('hidden');
+    gate.classList.remove('hidden');
+    opened = true;
+    try {
+      if (typeof initLogin === 'function') initLogin();
+    } catch (e) {
+      var msg = document.getElementById('loginMsg');
+      if (msg) msg.textContent = 'Login screen is open, but setup reported an error. Please reload the page.';
+    }
+  }
+  window.addEventListener('error', function () { setTimeout(revealLogin, 0); });
+  window.addEventListener('unhandledrejection', function () { setTimeout(revealLogin, 0); });
+  setTimeout(revealLogin, 2200);
+  setTimeout(revealLogin, 5000);
+})();
+</script>
 <script src="./cloud-config.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
@@ -195,7 +225,7 @@ applyAppearance();
 document.querySelector('#themeSelect').addEventListener('change',()=>{const s=settings();s.theme=document.querySelector('#themeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 document.querySelector('#textSizeSelect').addEventListener('change',()=>{const s=settings();s.textSize=document.querySelector('#textSizeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if((settings().theme||'light')==='system')applyAppearance()})}
-const APP_VERSION='4.4.4';
+const APP_VERSION='4.4';
 let pendingUpdate=null;function versionParts(v){return String(v||'0').replace(/^v/i,'').split('.').map(x=>parseInt(x,10)||0)}function compareVersions(a,b){let x=versionParts(a),y=versionParts(b);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)?1:-1}return 0}
 document.querySelector('#checkUpdate').addEventListener('click',async()=>{const out=document.querySelector('#updateStatus'),btn=document.querySelector('#checkUpdate');btn.disabled=true;out.textContent='Checking update.json…';try{const res=await fetch('./update.json?check='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('update.json not found (HTTP '+res.status+'). Upload update.json to the same root folder as index.html.');const data=await res.json();if(!data.version)throw new Error('update.json must contain a version field.');const cmp=compareVersions(data.version,APP_VERSION);if(cmp>0){out.textContent='A newer version ('+data.version+') is available. Tap Refresh App after GitHub Pages finishes publishing it.';out.style.background='#fff4d6'}else{out.textContent='You are using version '+APP_VERSION+'. Published version: '+data.version+'. '+(cmp===0?'The app is up to date.':'The update file is older than this app.');out.style.background='#edf5f1'}if(data.changelog)out.textContent+=' Release notes: '+data.changelog;}catch(e){out.textContent='Update check failed: '+e.message;out.style.background='#fff0ee'}finally{btn.disabled=false}});
 document.querySelector('#downloadUpdate').addEventListener('click',async()=>{if(!pendingUpdate)return;const out=document.querySelector('#updateStatus'),btn=document.querySelector('#downloadUpdate');btn.disabled=true;out.textContent='Downloading update package…';try{const files=['./index.html','./manifest.json','./sw.js','./cloud-config.js','./update.json'];const cache=await caches.open('pgr-4-4-update');for(const f of files){try{const r=await fetch(f+'?download='+Date.now(),{cache:'no-store'});if(r.ok)await cache.put(f,r.clone())}catch(e){}}localStorage.setItem('pgr44_update_ready','1');document.querySelector('#applyUpdate').disabled=false;out.textContent='Update package downloaded. Tap Apply Update to restart the app.'}catch(e){out.textContent='Download failed: '+e.message}finally{btn.disabled=false}});
@@ -213,14 +243,11 @@ document.querySelector('#restoreCancel').onclick=()=>{restorePending=false;docum
 document.querySelector('#restoreOk').onclick=()=>{if(restorePending)performCloudRestore()};
 document.querySelector('#signOut').onclick=()=>{localStorage.removeItem(F);location.reload()};
 document.querySelector('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
-function unlock(profile){const session={email:profile.email||'Guest View',name:profile.name||profile.email||'Guest',sub:profile.sub||'',guest:!!profile.guest};stopLoginAudio();/* Always unlock the visible workspace even if browser storage is blocked (e.g. local XHTML/file preview). */try{localStorage.setItem(F,JSON.stringify(session))}catch(e){}const splash=document.querySelector('#pgrSplash'),gate=document.querySelector('#loginGate');if(splash)splash.classList.add('hidden');if(gate)gate.classList.add('hidden');document.querySelectorAll('.page').forEach(x=>x.classList.toggle('hidden',x.id!=='dashboard'));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab==='dashboard'));const who=document.querySelector('#who');if(who)who.textContent=session.guest?' · Guest View':' · '+session.email;currentTab='dashboard';return true}
+function unlock(profile){try{stopLoginAudio()}catch(e){}const session={email:profile.email||'Guest View',name:profile.name||profile.email||'Guest',sub:profile.sub||'',guest:!!profile.guest};try{localStorage.setItem(F,JSON.stringify(session))}catch(e){}const gate=document.querySelector('#loginGate');if(gate)gate.classList.add('hidden');document.querySelectorAll('.page').forEach(x=>x.classList.toggle('hidden',x.id!=='dashboard'));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab==='dashboard'));const who=document.querySelector('#who');if(who)who.textContent=session.guest?' · Guest View':' · '+session.email}
 let activeAuthMode='signin';
 let pendingOtpEmail='';
-// Bind Guest View immediately so it remains usable even if splash timing is delayed.
-const guestViewButton=document.querySelector('#guestView');
-if(guestViewButton)guestViewButton.addEventListener('click',()=>unlock({email:'Guest View',name:'Guest',sub:'guest-view',guest:true}),{once:false});
 function chooseAuth(mode){
- activeAuthMode=mode;pendingOtpEmail='';
+ activeAuthMode=mode;
  document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.auth===mode));
  document.querySelector('#emailAuthPanel').classList.remove('hidden');
  document.querySelector('#signupFields').classList.toggle('hidden',mode!=='signin');
@@ -241,8 +268,7 @@ function closeAuthPopup(){const o=document.querySelector('#pgrNoticeOverlay');if
 
 
 function initLogin(){
- let saved=null;try{saved=JSON.parse(localStorage.getItem(F)||'null')}catch(e){saved=null;try{localStorage.removeItem(F)}catch(ignore){}}
- if(saved&&typeof saved==='object'){unlock(saved);return}
+ let saved=null;try{saved=JSON.parse(localStorage.getItem(F)||'null')}catch(e){}if(saved){unlock(saved);return}
  document.querySelectorAll('.auth-tab').forEach(b=>b.addEventListener('click',()=>chooseAuth(b.dataset.auth)));
  chooseAuth('signin'); // Show the Sign In fields immediately; do not require tapping the already-active tab.
  const msg=document.querySelector('#loginMsg');
@@ -266,19 +292,19 @@ function initLogin(){
    if(!/[A-Z]/.test(password)||!/[a-z]/.test(password)||!/[0-9]/.test(password)||! /[^A-Za-z0-9]/.test(password)){showAuthPopup('Password must include at least one uppercase letter (A-Z), one lowercase letter (a-z), one digit (0-9), and one special character (such as ! or @).','Password requirements');return}
    if(password!==document.querySelector('#authConfirmPassword').value){showAuthPopup('Password and confirm password do not match.','Check your password');return}
   }else if(password.length<4){showAuthPopup('Enter your registered password (at least 4 characters).','Check your password');return}
-  if(signup&&emailAlreadyExists){showAuthPopup('This email is already registered on the server. Please use Login or enter a different email address.','Email already exists');return}
+  if(signup&&emailAlreadyExists){showAuthPopup('This email is already registered on the server. Please use a different email address.','Email already exists');return}
   const b=document.querySelector(signup?'#sendEmailOtp':'#sendLoginOtp');b.disabled=true;msg.textContent=signup?'Checking account and sending OTP…':'Checking your account…';
   try{
    const passwordHash=await passwordDigest(password);
    if(!signup){
     const account=await otpServerCall('loginAccount',email,'',{passwordHash});
-    if(!account||!account.ok)throw new Error(account?.error||'Login failed. Confirm that the deployed Apps Script supports loginAccount and that this email is registered.');
+    if(!account||!account.ok)throw new Error('Wrong email or password. Please check your details and try again.');
     showAuthPopup('Welcome back, '+(account.name||email)+'!','Login successful');
     unlock({email:email,name:account.name||email,sub:'email-password'});
     return;
    }
    const r=await otpServerCall('sendOtp',email);
-   if(!r||!r.ok)throw new Error(r?.error||'The OTP server did not accept the request. Confirm that the deployed Apps Script supports sendOtp.');
+   if(!r||!r.ok)throw new Error(r?.error||'OTP request was not accepted.');
    pendingOtpEmail=email;
    document.querySelector('#signupFields').classList.add('hidden');document.querySelector('#loginFields').classList.add('hidden');
    document.querySelector('#otpStep').classList.remove('hidden');
@@ -307,7 +333,7 @@ function initLogin(){
    else paintEmailStatus('Live email check is not enabled on the server yet. Update the OTP server; registration will still reject duplicate emails.','email-wait');
   }catch(e){if(seq===emailCheckSeq)paintEmailStatus('Live check is unavailable right now; the server will still validate it during registration.','email-wait')}
  }
- signupEmail.addEventListener('input',()=>{clearTimeout(emailCheckTimer);emailAlreadyExists=false;const v=(signupEmail.value||'').trim();if(!v)paintEmailStatus('');else paintEmailStatus('Email will be checked with the server…','email-wait');emailCheckTimer=setTimeout(checkSignupEmail,550)});
+ signupEmail.addEventListener('input',()=>{clearTimeout(emailCheckTimer);emailCheckTimer=setTimeout(checkSignupEmail,550)});
  signupEmail.addEventListener('change',()=>{clearTimeout(emailCheckTimer);checkSignupEmail()});
  document.querySelector('#sendEmailOtp').onclick=()=>requestOtp('signin');
  document.querySelector('#sendLoginOtp').onclick=()=>requestOtp('login');
@@ -324,7 +350,7 @@ function initLogin(){
    if(signup){
     const passwordHash=await passwordDigest(document.querySelector('#authPassword').value);
     const saved=await otpServerCall('registerAccount',pendingOtpEmail,'',{name:document.querySelector('#authName').value.trim(),phone:document.querySelector('#authPhone').value.trim(),passwordHash});
-    if(!saved||!saved.ok)throw new Error(saved?.error||'Account could not be saved. Confirm that the deployed Apps Script supports registerAccount.');
+    if(!saved||!saved.ok)throw new Error(saved?.error||'Account could not be saved.');
     showAuthPopup('Your account has been created successfully. Welcome to Pak GSM Repair!','Registration successful');
     unlock({email:pendingOtpEmail,name:saved.name||document.querySelector('#authName').value.trim(),sub:'email-otp'});
    }else{
@@ -337,6 +363,7 @@ function initLogin(){
   }catch(e){showAuthPopup(e.message,'Verification failed');msg.textContent='OTP verification failed: '+e.message}
   finally{b.disabled=false}
  };
+ document.querySelector('#guestView').onclick=()=>unlock({email:'Guest View',name:'Guest',sub:'guest-view',guest:true});
  const googleHandler=()=>{if(location.protocol!=='https:'){msg.textContent='Google sign-in will not work from a local file or Android File Manager preview. Upload the app to its authorized HTTPS website and open that web address.';return}if(!window.google?.accounts?.id){msg.textContent='Google sign-in is still loading. Wait a few seconds and tap again.';return}if(!window.PGR_GOOGLE_CLIENT_ID){msg.textContent='Google Client ID is missing from cloud-config.js.';return}try{window.google.accounts.id.initialize({client_id:window.PGR_GOOGLE_CLIENT_ID,callback:cred=>{try{const p=parseJwt(cred.credential);if(!p.email)throw new Error('No email in Google response');unlock({email:p.email,name:p.name,sub:p.sub})}catch(e){msg.textContent='Google response could not be read. Check OAuth client settings and authorized HTTPS origin.'}},auto_select:false,context:'signin'});const wrap=document.querySelector('#googleButton');wrap.innerHTML='';window.google.accounts.id.renderButton(wrap,{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'rectangular',width:300,logo_alignment:'left'});msg.textContent='Tap the Google button below. Google sign-in requires the authorized HTTPS website.'}catch(e){msg.textContent='Could not start Google sign-in. Confirm the OAuth Client ID and authorized HTTPS domain.'}};
  document.querySelector('#googleFallback').onclick=googleHandler;
  if(location.protocol==='https:' && window.google?.accounts?.id && window.PGR_GOOGLE_CLIENT_ID){try{window.google.accounts.id.initialize({client_id:window.PGR_GOOGLE_CLIENT_ID,callback:cred=>{try{const p=parseJwt(cred.credential);unlock({email:p.email,name:p.name,sub:p.sub})}catch(e){msg.textContent='Google sign-in response could not be read.'}},auto_select:false,context:'signin'});window.google.accounts.id.renderButton(document.querySelector('#googleButton'),{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'rectangular',width:300,logo_alignment:'left'});document.querySelector('#googleFallback').classList.add('hidden')}catch(e){msg.textContent='Google sign-in could not initialize. Check OAuth settings.'}}
@@ -348,11 +375,10 @@ function startLoginMusic(){try{const AC=window.AudioContext||window.webkitAudioC
 function startLoginVoice(){if(!soundEnabled()||loginVoiceStarted||loginVoiceQueued||!('speechSynthesis'in window)||document.querySelector('#pgrSplash')?.classList.contains('hidden'))return;try{const u=new SpeechSynthesisUtterance('Pak GSM Repair');u.rate=.91;u.pitch=.84;u.volume=.78;const voices=speechSynthesis.getVoices();const female=voices.find(v=>/zira|samantha|susan|karen|victoria|aria|jenny|sara|heera|female/i.test(v.name))||voices.find(v=>/^en[-_]/i.test(v.lang)&&/natural|neural|premium|enhanced/i.test(v.name))||voices.find(v=>/^en[-_]/i.test(v.lang));if(female)u.voice=female;loginVoiceQueued=true;u.onstart=()=>{loginVoiceStarted=true};u.onend=()=>{loginVoiceStarted=true};u.onerror=()=>{loginVoiceQueued=false};speechSynthesis.speak(u)}catch(e){}}
 function startLoginAudio(){if(document.querySelector('#pgrSplash')?.classList.contains('hidden')||!soundEnabled())return;startLoginMusic();startLoginVoice()}
 function stopLoginAudio(){if(loginMusicTimer){clearInterval(loginMusicTimer);loginMusicTimer=null}try{if(loginAudioCtx&&loginAudioCtx.state!=='closed')loginAudioCtx.close()}catch(e){}loginAudioCtx=null;try{if('speechSynthesis'in window)speechSynthesis.cancel()}catch(e){}}
-function showLoginScreen(){if(splashTimer){clearTimeout(splashTimer);splashTimer=null}try{stopLoginAudio()}catch(e){}const splash=document.querySelector('#pgrSplash'),gate=document.querySelector('#loginGate');if(splash)splash.classList.add('hidden');if(gate)gate.classList.remove('hidden');if(!splashStarted){splashStarted=true;try{initLogin()}catch(e){const m=document.querySelector('#loginMsg');if(m)m.textContent='Login screen opened, but setup had an error: '+(e&&e.message?e.message:'Please reload the page.');}}}
-function bootSplash(){/* Schedule navigation FIRST: audio/browser APIs must never block the splash timer. */if(splashTimer)clearTimeout(splashTimer);splashTimer=setTimeout(showLoginScreen,1200);setTimeout(()=>{const splash=document.querySelector('#pgrSplash');if(splash&&!splash.classList.contains('hidden'))showLoginScreen()},3500);const splash=document.querySelector('#pgrSplash');try{if('speechSynthesis'in window)speechSynthesis.getVoices()}catch(e){}try{startLoginAudio()}catch(e){}if(splash){splash.addEventListener('click',()=>{try{startLoginAudio()}catch(e){}});const retry=()=>{try{startLoginAudio()}catch(e){}};['pointerdown','touchstart'].forEach(ev=>splash.addEventListener(ev,retry,{once:true,passive:true}));}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootSplash,{once:true});else bootSplash();/* Independent final failsafe in case startup or audio APIs fail. */setTimeout(()=>{const splash=document.querySelector('#pgrSplash');if(splash&&!splash.classList.contains('hidden'))showLoginScreen()},5000);
+function showLoginScreen(){if(splashTimer){clearTimeout(splashTimer);splashTimer=null}try{stopLoginAudio()}catch(e){}const splash=document.querySelector('#pgrSplash'),gate=document.querySelector('#loginGate');if(splash)splash.classList.add('hidden');if(gate)gate.classList.remove('hidden');if(!splashStarted){splashStarted=true;try{initLogin()}catch(e){const m=document.querySelector('#loginMsg');if(m)m.textContent='Login screen opened, but setup reported an error. Please reload the page.'}}}
+function bootSplash(){const startAudio=()=>{try{if('speechSynthesis'in window)speechSynthesis.getVoices()}catch(e){}try{startLoginAudio()}catch(e){}};const splash=document.querySelector('#pgrSplash');if(splash){splash.addEventListener('click',startAudio);['pointerdown','touchstart'].forEach(ev=>splash.addEventListener(ev,startAudio,{once:true,passive:true}))}/* Fallback is also installed by the independent watchdog above. */splashTimer=setTimeout(showLoginScreen,1800)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootSplash,{once:true});else bootSplash();
  function parseJwt(t){let p=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(decodeURIComponent(atob(p).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')))}
-// Surface runtime errors on the login screen instead of leaving buttons appearing dead.
-window.addEventListener('error',e=>{const m=document.querySelector('#loginMsg');if(m&&!document.querySelector('#loginGate')?.classList.contains('hidden'))m.textContent='A script error occurred: '+(e.message||'Please reload the app.');});
 // Login starts directly; all form fields use native browser input and IME handling.
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();

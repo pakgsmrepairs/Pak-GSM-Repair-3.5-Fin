@@ -1,13 +1,11 @@
-# Pak GSM Repair 4.4 — Splash and Update Fix
+# Pak GSM Repair 4.4
 
-This package aligns the frontend/PWA metadata to version 4.4 and adds a splash-screen fail-safe so the login page appears even if later application code fails.
+Green 4.4 frontend package for GitHub Pages. Includes File Vault on the first page, IMEI 1/2, Parcel repair status with TCS/Leopards/GPO, settings update controls, backup/restore UI, and login OTP/Google flows.
 
-## Publish on GitHub Pages
-1. Extract the ZIP.
-2. Upload the files inside the extracted folder to the same repository branch/folder used by GitHub Pages; `index.html` must be at the repository root.
-3. Include `update.json`, `manifest.json`, `sw.js`, and `cloud-config.js`.
-4. Commit the changes and wait for Pages to finish publishing.
-5. Open the live URL in Chrome Incognito first.
+`Code.gs.txt` is a Google Apps Script backend source file and is not executed by GitHub Pages. Install it separately in Apps Script.
 
-## Scope
-The Apps Script backend file (`Code.gs.txt`) is included unchanged. The cloud backup and OTP endpoint URLs and Google client ID in `cloud-config.js` are retained. This package does not prove that the live GitHub Pages deployment has changed; test the actual published URL after commit.
+Before using real customer data, test login, backup, restore, and update behavior with dummy data. The current backend retains the existing shared-key cloud backup API; it is not a production-grade per-user authorization system.
+
+
+## Splash/Login fix package
+This build includes an independent splash watchdog and a bumped service-worker cache version. Extract the ZIP and upload/replace its contents in the GitHub Pages repository root (keep `index.html`, `sw.js`, `manifest.json`, `update.json`, `cloud-config.js`, and the `icons/` folder together). Uploading the ZIP file itself as a single repository file will not publish the app.

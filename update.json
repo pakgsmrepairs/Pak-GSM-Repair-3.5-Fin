@@ -1,5 +1,5 @@
 {
   "version": "4.4",
   "minVersion": "4.4",
-  "changelog": "Pak GSM Repair 4.4: splash fail-safe, aligned PWA versions/cache, and fixed Check \u2192 Download \u2192 Apply update flow."
+  "changelog": "Pak GSM Repair 4.4: green UI refresh, File Vault on first page, IMEI 1/2, Parcel courier options, staged update controls, custom restore confirmation and login audio."
 }

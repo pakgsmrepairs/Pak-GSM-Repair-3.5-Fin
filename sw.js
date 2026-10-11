@@ -1,6 +1,6 @@
 /* Pak GSM Repair 4.4 PWA service worker.
    Network-first for HTML and update metadata; cache-first for same-origin static assets. */
-const CACHE_NAME = 'pgr-4-4-shell-v1';
+const CACHE_NAME = 'pgr-4-4-shell-v2-splash-login-fix';
 const APP_SHELL = [
   './', './index.html', './manifest.json', './update.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-512-maskable.png'
