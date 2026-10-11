@@ -1,10 +1,9 @@
-# Pak GSM Repair 4.4 — GitHub Pages
-
-1. Extract the ZIP.
-2. Upload the files inside the extracted folder so `index.html` is at the repository root.
-3. Commit the files.
-4. Open **Settings → Pages** and choose branch `main`, folder `/(root)`.
-5. Open the published HTTPS URL shown by GitHub Pages.
-6. Test with dummy data first.
-
-Do not upload only the ZIP or an enclosing folder. `Code.gs.txt` is installed separately in Google Apps Script.
+# GitHub Pages — Pak GSM Repair 4.4
+1. Extract this ZIP.
+2. Open your existing GitHub repository and choose Add file → Upload files.
+3. Upload the files inside the extracted folder, not the ZIP itself. Make sure `index.html` is in the repository root.
+4. Commit the changes to the branch used by Pages.
+5. Open Settings → Pages and confirm the correct branch and folder (usually `main` and `/(root)`).
+6. Wait for deployment, then open the exact URL shown in Settings → Pages.
+7. Test in Chrome Incognito. If the splash screen still sticks, send the live Pages URL.
+8. `Code.gs.txt` is the separate Apps Script backend; GitHub Pages does not execute it.
