@@ -1,5 +1,5 @@
 {
-  "version": "4.1",
-  "versionCode": 401,
-  "changelog": "TEST UPDATE 4.1: This is a temporary update-check test. If the app detects this version, the update checker is reading the published update.json file. This file alone does not contain a new app build."
+  "version": "4.3",
+  "versionCode": 403,
+  "changelog": "Pak GSM Repair 4.3: personal Google Drive backup and restore. Each signed-in account can authorize its own verified Gmail; backups are stored in that account's Drive. The app checks that the Drive email matches the signed-in account before backup or restore. Drive OAuth/API setup and live testing are required before production use."
 }

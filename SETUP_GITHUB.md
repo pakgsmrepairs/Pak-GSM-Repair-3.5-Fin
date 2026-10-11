@@ -1,12 +1,16 @@
-# GitHub Pages setup
-1. Create a new repository named `pak-gsm-repair-3-5` (Public is simplest for GitHub Pages).
-2. Extract this ZIP.
-3. In the repository choose **Add file → Upload files**.
-4. Upload the files inside the extracted folder so `index.html` is at the repository root; do not upload only the ZIP or an enclosing folder.
-5. Commit the files.
-6. Open **Settings → Pages**.
-7. Choose **Deploy from a branch**, branch `main`, folder `/(root)`, then Save.
-8. Wait for GitHub Pages to publish and open the URL shown there.
-9. Test only with dummy data: create a customer/job/item, export a backup, then test importing it.
-10. `Code.gs` is not executed by GitHub Pages; install it separately in Google Apps Script.
-On a phone, if Upload files is hidden, open browser menu and enable Desktop site.
+# GitHub Pages deployment — Pak GSM Repair 4.3
+
+1. Open the repository used by your live Pak GSM Repair website.
+2. Upload the complete contents of this release folder into the same root folder as `index.html`.
+3. Confirm `index.html`, `sw.js`, `manifest.json`, `cloud-config.js`, `update.json`, and the `icons` folder are all present together.
+4. Commit all files in one commit so the app and its update metadata are published as one release.
+5. Open the repository's Settings → Pages and confirm the correct branch and root folder are selected.
+6. Wait for GitHub Pages to finish publishing, then open the HTTPS Pages URL.
+7. Test sign-in, account separation, local backup/restore, and update checks using dummy data before using real customer data.
+
+## Important
+
+- `update.json` only announces a version; it does not contain the app build.
+- Future versions must update `index.html`, `sw.js` (including its cache name), `manifest.json`, `cloud-config.js`, and `update.json` together.
+- Do not upload only `update.json` to test a release. The update button requires a newer service-worker build to be published.
+- Use the published HTTPS URL, not a local `file://` preview, to test Google sign-in, service workers, and manual updates.

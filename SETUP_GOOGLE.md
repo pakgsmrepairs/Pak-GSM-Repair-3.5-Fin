@@ -1,47 +1,32 @@
-# Pak GSM Repair 3.7 — Google Apps Script setup
+# Pak GSM Repair 4.3 — Google Apps Script and account notes
 
-1. Visit https://script.google.com/ and create a project named `Pak GSM Repair 3.7 Backend`.
-2. Replace the editor's default code with this ZIP's `Code.gs` and save.
-3. Open **Project Settings → Script properties** and add:
-   - `CLOUD_KEY` = a long random key used by the current app's cloud backup UI.
-   - `OWNER_EMAIL` = `pakgsmrepairs@gmail.com` (or your authorized owner email).
-   - `GOOGLE_CLIENT_ID` = your Google Identity Services OAuth client ID if you plan to use the `verifyOwner` endpoint.
-4. Run `setupBackupFolder` once in the Apps Script editor and approve the requested Drive permission.
-5. Choose **Deploy → New deployment → Web app**. Execute as **Me**. For this basic external web app, set access to **Anyone** only if you understand the risks and need the public endpoint; then deploy and copy the URL ending in `/exec`.
-6. In the app, open **Backup & settings**, enter the `/exec` URL and `CLOUD_KEY`, save settings, and test the connection. Try cloud backup and restore using dummy data first.
+This package includes `Code.gs.txt` as the supplied Apps Script source. It contains OTP/account actions and shared-key cloud backup actions. It is a text copy for review/pasting; GitHub Pages does not deploy Apps Script code automatically.
 
-## API actions
-- `GET ?action=health` — public health check.
-- `GET ?action=ping&key=...&callback=...` — key-authenticated connection test; JSONP callback is used by the static web app.
-- `POST` with `{ action: "backup", key, deviceId, payload: { customers: [], jobs: [], inventory: [] } }` — save a device-scoped backup in Google Drive.
-- `GET ?action=restore&key=...&deviceId=...&callback=...` — restore the saved backup using JSONP.
-- `POST` with `{ action: "verifyOwner", idToken: "..." }` — validates a Google ID token against `GOOGLE_CLIENT_ID` and the configured owner email.
+## Before changing any live script
 
-## Important security notes
-The current app UI uses `CLOUD_KEY` for backup and restore. A key entered into a public web app can be copied, so this is a testing scaffold—not production-grade authorization. The `verifyOwner` endpoint is separate and is not yet wired to a Google sign-in button in the UI. Before storing real customer details, integrate Google Identity Services, require a verified ID token for all data endpoints, and enforce authorization server-side. Do not publish keys or use real customer records during initial testing.
+1. Open the Apps Script project currently used by the OTP URL in `cloud-config.js`.
+2. Make a copy of the live script/project before replacing code.
+3. Compare its current code with `Code.gs.txt`; do not overwrite the live project until the existing OTP and backup actions are confirmed.
+4. If you deploy a new Apps Script version, copy the deployed `/exec` URL into the appropriate `PGR_OTP_SERVER_URL` or `PGR_CLOUD_BACKUP_URL` setting in `cloud-config.js`. These two settings currently point to different deployments in the supplied configuration; keep them separate unless you deliberately consolidate and test both services.
+5. Test health, email OTP, account registration/login, backup and restore with dummy data.
+
+## Important security limitation
+
+The 4.3 frontend uses per-user Google Drive authorization for cloud backup. See the personal Google Drive setup instructions below. Do not put secrets or real customer records in a public GitHub repository.
+
+## Google sign-in
+
+Google sign-in requires the published HTTPS site and an authorized JavaScript origin in Google Cloud. A local `file://` preview will not support the full Google sign-in flow. The current frontend reads the Google credential in the browser; the backend should validate ID tokens before using them to authorize protected data actions.
 
 
-## Sign-in troubleshooting
-- Do not test Google sign-in by opening index.html directly from File Manager. Publish the files to an HTTPS host first.
-- In Google Cloud OAuth Client, add the exact published origin under Authorized JavaScript origins (for example, https://YOURNAME.github.io). Do not use content://, file://, or the Apps Script URL as the site origin.
-- This beta shows Sign In and Login tabs, but email/password accounts are not connected to a secure authentication service; only the Google button is intended for HTTPS testing.
+## 4.3: personal Google Drive backup
 
+The 4.3 frontend no longer uses the shared Apps Script backup endpoint for the Backup & Restore buttons. It asks each signed-in user to authorize their own Google Drive with the Google Identity Services token flow, then stores one JSON backup file in that user's Drive. The account email returned by Google must match the app's signed-in email.
 
-## Email OTP login (3.7 Beta)
-- The login page calls `PGR_OTP_SERVER_URL` in `cloud-config.js` using JSONP actions `sendOtp` and `verifyOtp`.
-- The bundled `Code.gs` implements email OTP delivery through `MailApp`; the first send may require Google authorization. OTP expires in 5 minutes and is rate-limited per email.
-- The existing health response only proves the web app is online; it does not prove that OTP actions exist. If tapping **Get OTP** returns “Unknown action” or a similar error, open the Apps Script project behind the OTP URL, replace its code with this ZIP's `Code.gs`, authorize mail sending, then deploy a new version of the web app. Keep the new `/exec` URL in `PGR_OTP_SERVER_URL`.
-- SMS OTP is not implemented in this build; the OTP delivered by this version is email only.
-- Audio is attempted automatically on the login page. Some Android browsers block audio until the first tap; in that case, the first interaction starts the voice/music without a separate Play button.
+Required before testing:
+- Enable Google Drive API in the Google Cloud project for the Client ID.
+- Ensure the OAuth client has the published HTTPS origin authorized.
+- Configure OAuth consent screen and add testing users if applicable.
+- Test on the published HTTPS URL, not a local HTML file.
 
-
-## Email OTP login flow
-The Sign In tab validates the name and matching password/confirm-password fields, requests an email OTP, then reveals a dedicated 6-digit verification step. Login requests OTP after email/password fields are filled. The deployed Apps Script URL must implement `sendOtp` and `verifyOtp`, and MailApp must be authorized. OTP is the real email verification gate in this beta; passwords are not yet stored/validated by a server-side user-account database.
-
-
-## Version 3.7 email OTP deployment checklist
-
-- The bundled `Code.gs` includes the cloud-backup API and email OTP actions (`sendOtp` and `verifyOtp`). It also includes `testSendEmail()` for a manual delivery test and a read-only `?action=diagnostics` endpoint.
-- To test delivery, open Apps Script, select `testSendEmail`, and click **Run**. Confirm the message arrives in `pakgsmrepairs@gmail.com` (check Spam/Junk too). This test message is not an OTP.
-- To activate changed server code, save it, then choose **Deploy → Manage deployments → Edit → New version → Deploy**. If updating the existing OTP script project, keep its `/exec` URL in `PGR_OTP_SERVER_URL`. The cloud-backup URL in `PGR_CLOUD_BACKUP_URL` remains a separate setting unless you intentionally reconfigure it.
-- After deployment, test the OTP flow from the published HTTPS app: request an OTP, check email, enter the 6-digit code before it expires, and verify that login proceeds.
+The OTP server verifies email registration/login, but OTP verification itself does not grant Drive access. The user must approve Drive permission in Google's consent screen. The access token is held only in page memory; reconnect after refreshing the app.
