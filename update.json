@@ -1,5 +1,5 @@
 {
   "version": "4.0",
   "versionCode": 400,
-  "changelog": "Version 4.0: Settings opens in a side drawer; update checker version aligned; backup/restore and sound controls grouped; added appearance theme and text-size preferences. Existing local data format preserved."
+  "changelog": "Version 4.0: Settings opens in a side drawer; update checker version aligned; backup/restore and sound controls grouped; added appearance theme and text-size preferences. Existing local data format preserved. PWA install assets and update test guidance added."
 }
