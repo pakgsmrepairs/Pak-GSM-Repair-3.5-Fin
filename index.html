@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 4.4.2</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 4.4.3</title><style>
 :root{--g:#0b6b57;--g2:#0f8a6e;--bg:#f2f7f5;--line:#dce8e3;--ink:#132b27;--muted:#63756f;--danger:#9b2118;--card:#fff}
 *{box-sizing:border-box}body{margin:0;font:15px system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
 /* Native mobile text-entry safeguard: keep browser keyboard/IME events unmodified. */
@@ -97,7 +97,7 @@ body.large-text{font-size:17px}
   <p id="loginMsg" role="status">Register to create an account, or choose Login to access your registered account.</p>
  </div>
 </div>
-<header><div><h1>🔧 Pak GSM Repair</h1><p>Beta · Version 4.4.2 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
+<header><div><h1>🔧 Pak GSM Repair</h1><p>Beta · Version 4.4.3 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
 <main class="wrap">
 <div class="note"><b>Pak GSM Repair 4.4.2:</b> Customer details, repair job status, Setup files, Tools & Parts, sales are organized in one workspace. Backup, update and sound controls are available in Settings.</div>
 <div class="stats"><div class="stat"><span>Customers</span><strong id="nC">0</strong></div><div class="stat"><span>Repair jobs</span><strong id="nJ">0</strong></div><div class="stat"><span>Active jobs</span><strong id="nA">0</strong></div><div class="stat"><span>Unpaid (Rs)</span><strong id="nD">0</strong></div></div>
@@ -131,7 +131,7 @@ body.large-text{font-size:17px}
 <div id="soundPanel" class="panel settings-panel hidden"><h2>Sound</h2><div class="setting-row"><div><b>Welcome sound and voice</b><div class="muted">Welcome voice/music is used during the login experience. Some browsers require the first tap to start audio.</div></div><input class="switch" id="soundEnabled" type="checkbox" aria-label="Enable welcome sound"></div><p class="muted">Some mobile browsers block automatic audio. If needed, tap once on the logo screen to enable it.</p></div>
 <div id="backupPanel" class="settings-panel"><div class="grid"><div class="panel"><h2>Local Backup</h2><button id="export">Download JSON Backup</button><label>Import JSON Backup</label><input id="file" type="file" accept=".json,application/json"><button id="import" class="secondary">Import Backup</button><p id="bm" class="muted"></p></div>
 <div class="panel"><h2>Cloud Backup</h2><p class="muted">The public Web App URL and Google Client ID are preconfigured. A Cloud Key is intentionally not embedded in this public package.</p><label>Apps Script Web App URL</label><input id="url" type="url"><label>Cloud Key</label><input id="key" type="password" autocomplete="off"><button id="saveSettings">Save Settings</button> <button id="testConnection" class="secondary">Test Connection</button><div class="row" style="margin-top:10px"><button id="cloudBackup">Back Up to Cloud</button><button id="cloudRestore" class="secondary">Restore from Cloud</button></div><p id="cm" class="muted"></p></div></div></div></section>
-<p class="muted" style="text-align:center;padding:20px">Pak GSM Repair 4.4.2 · Preview</p>
+<p class="muted" style="text-align:center;padding:20px">Pak GSM Repair 4.4.3 · Preview</p>
 </main>
 <div id="settingsBackdrop" aria-hidden="true"></div>
 <div id="restoreConfirm" class="modal hidden"><div class="box" style="max-width:430px;text-align:center"><h2 style="margin-top:0">Restore Backup</h2><p class="muted">Google Drive backup will replace your current local records. This action changes the data currently stored on this device.</p><div class="row"><button type="button" id="restoreCancel" class="secondary">✕ Cancel</button><button type="button" id="restoreOk">✓ OK</button></div></div></div>
@@ -245,7 +245,7 @@ document.querySelector('#restoreCancel').onclick=()=>{restorePending=false;docum
 document.querySelector('#restoreOk').onclick=()=>{if(restorePending)performCloudRestore()};
 document.querySelector('#signOut').onclick=()=>{localStorage.removeItem(F);location.reload()};
 document.querySelector('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
-function unlock(profile){try{stopLoginAudio()}catch(e){}const session={email:profile.email||'Guest View',name:profile.name||profile.email||'Guest',sub:profile.sub||'',guest:!!profile.guest};try{localStorage.setItem(F,JSON.stringify(session))}catch(e){}const gate=document.querySelector('#loginGate');if(gate)gate.classList.add('hidden');document.querySelectorAll('.page').forEach(x=>x.classList.toggle('hidden',x.id!=='dashboard'));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab==='dashboard'));const who=document.querySelector('#who');if(who)who.textContent=session.guest?' · Guest View':' · '+session.email}
+function unlock(profile){try{stopLoginAudio()}catch(e){}try{closeAuthPopup()}catch(e){}const session={email:profile.email||'Guest View',name:profile.name||profile.email||'Guest',sub:profile.sub||'',guest:!!profile.guest};try{localStorage.setItem(F,JSON.stringify(session))}catch(e){}const gate=document.querySelector('#loginGate');if(gate)gate.classList.add('hidden');document.querySelectorAll('.page').forEach(x=>x.classList.toggle('hidden',x.id!=='dashboard'));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab==='dashboard'));const who=document.querySelector('#who');if(who)who.textContent=session.guest?' · Guest View':' · '+session.email}
 let activeAuthMode='signin';
 let pendingOtpEmail='';
 function chooseAuth(mode){
@@ -304,7 +304,6 @@ function initLogin(){
    if(!signup){
     const account=await otpServerCall('loginAccount',email,'',{passwordHash});
     if(!account||!account.ok)throw new Error('Wrong email or password. Please check your details and try again.');
-    showAuthPopup('Welcome back, '+(account.name||email)+'!','Login successful');
     unlock({email:email,name:account.name||email,sub:'email-password'});
     return;
    }
@@ -356,13 +355,11 @@ function initLogin(){
     const passwordHash=await passwordDigest(document.querySelector('#authPassword').value);
     const saved=await otpServerCall('registerAccount',pendingOtpEmail,'',{name:document.querySelector('#authName').value.trim(),phone:document.querySelector('#authPhone').value.trim(),passwordHash});
     if(!saved||!saved.ok)throw new Error(saved?.error||'Account could not be saved.');
-    showAuthPopup('Your account has been created successfully. Welcome to Pak GSM Repair!','Registration successful');
     unlock({email:pendingOtpEmail,name:saved.name||document.querySelector('#authName').value.trim(),sub:'email-otp'});
    }else{
     const passwordHash=await passwordDigest(document.querySelector('#loginPassword').value);
     const account=await otpServerCall('loginAccount',pendingOtpEmail,'',{passwordHash});
     if(!account||!account.ok)throw new Error(account?.error||'Email or password is incorrect.');
-    showAuthPopup('Welcome back, '+(account.name||pendingOtpEmail)+'!','Login successful');
     unlock({email:pendingOtpEmail,name:account.name||pendingOtpEmail,sub:'email-otp'});
    }
   }catch(e){showAuthPopup(e.message,'Verification failed');msg.textContent='OTP verification failed: '+e.message}
