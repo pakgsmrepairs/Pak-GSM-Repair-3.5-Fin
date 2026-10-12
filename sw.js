@@ -1,6 +1,6 @@
-/* Pak GSM Repair 4.4 PWA service worker.
+/* Pak GSM Repair 4.4.5 PWA service worker.
    Network-first for HTML and update metadata; cache-first for same-origin static assets. */
-const CACHE_NAME = 'pak-gsm-repair-v4.4.3';
+const CACHE_NAME = 'pak-gsm-repair-v4.4.5';
 const APP_SHELL = [
   './', './index.html', './manifest.json', './update.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-512-maskable.png'
