@@ -44,6 +44,14 @@ self.addEventListener('fetch', event => {
   const isHtml = req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname === scopePath;
   const isUpdate = url.pathname.endsWith('/update.json');
 
+  // Critical updater fix: update downloads carry release/download query parameters.
+  // Bypass this worker's cache-first app-shell logic for those requests, otherwise
+  // the old worker can return the old cached 4.4.7 files during a 4.4.8 download.
+  if (url.searchParams.has('release') && url.searchParams.has('download')) {
+    event.respondWith(fetch(new Request(req, { cache: 'no-store' })));
+    return;
+  }
+
   // Update metadata is always network checked, but app files stay pinned to the
   // currently approved release until the user taps Update App.
   if (isUpdate) {
