@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Pak GSM Repair 4.4.6",
+  "name": "Pak GSM Repair 4.4.7",
   "short_name": "Pak GSM Repair",
-  "description": "Pak GSM Repair customer, repair, tools and backup workspace.",
+  "description": "Pak GSM Repair customer, repair, Parts Availability and backup workspace.",
   "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",

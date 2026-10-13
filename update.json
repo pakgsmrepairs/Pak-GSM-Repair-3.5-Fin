@@ -1,4 +1,4 @@
 {
-  "version": "4.4.6",
-  "changelog": "Login-first flow, separate registration screen, original app logo, bottom update check."
+  "version": "4.4.7",
+  "changelog": "Manual GitHub update check and one-tap download/restart; compact customer record icons; removed the top details banner."
 }

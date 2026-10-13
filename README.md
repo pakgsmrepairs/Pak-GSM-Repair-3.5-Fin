@@ -1,28 +1,19 @@
-# Pak GSM Repair 4.4.6
+# Pak GSM Repair Pro 4.4.7
 
-Screenshot-aligned 4.4.6 frontend package for GitHub Pages. Includes File Vault on the first page, IMEI 1/2, Parcel repair status with TCS/Leopards/GPO, settings update controls, backup/restore UI, and login OTP/Google flows.
+Mobile repair-shop workspace with customer records, repair jobs, File Vault, Parts Availability, settings, local backup/restore, and a user-triggered GitHub Pages update flow.
 
-`Code.gs.txt` is a Google Apps Script backend source file and is not executed by GitHub Pages. Install it separately in Apps Script.
+## GitHub Pages setup
 
-Before using real customer data, test login, backup, restore, and update behavior with dummy data. The current backend retains the existing shared-key cloud backup API; it is not a production-grade per-user authorization system.
+See `SETUP_GITHUB.md`. Upload the extracted **contents** to the repository root, not a nested folder. `update.json` must be published beside `index.html`.
 
+## Manual update flow
 
-## Splash/Login fix package
-This build includes an independent splash watchdog and a bumped service-worker cache version. Extract the ZIP and upload/replace its contents in the GitHub Pages repository root (keep `index.html`, `sw.js`, `manifest.json`, `update.json`, `cloud-config.js`, and the `icons/` folder together). Uploading the ZIP file itself as a single repository file will not publish the app.
+Open **Settings → App Update → Check for Updates**. If `update.json` advertises a higher version, tap **Update App**. The app downloads and verifies the app shell/assets into a staging cache, then restarts to the approved release. The app shell is cache-first after this updater build is installed, so a normal GitHub commit is not shown as an update until the user approves it.
 
-## Earlier login patch notes
+For each future app release, update the version in `index.html` (`APP_VERSION`) and `update.json` together. Keep `sw.js` unchanged for routine content-only releases; service-worker behavior changes require careful migration testing.
 
-- Makes the login/register initialization idempotent so the splash timer and fallback watchdog cannot initialize the form twice.
-- Routes the watchdog through the same login-screen reveal path when the main script is available.
-- Refreshes the service-worker cache name so browsers fetch the updated login code.
-- Tunes the authentication panel for smaller Android screens.
+## Notes
 
-Note: the ZIP is a static web/PWA source package, not a compiled APK. The email OTP and Google login flows still require the configured backend and authorized HTTPS origin.
-
-
-## Earlier preview fixes
-- Fixed customer IMEI 1/2 being read from the wrong fields before saving.
-- Added camera capture and gallery image attachment to customer/repair records; images are resized/compressed before local storage.
-- Cleaned duplicate Ready status and clarified Leopards Courier.
-- Bumped service-worker cache and release metadata.
-- Browser preview can be opened by serving this folder over HTTP; real email OTP, Google Sign-In, and cloud backup still require valid backend configuration and an authorized HTTPS domain.
+- Run on the HTTPS GitHub Pages URL for service-worker and Google sign-in support.
+- Customer data is local to the browser unless a cloud backup backend is configured.
+- `Code.gs.txt` is a separate Google Apps Script deployment artifact.
