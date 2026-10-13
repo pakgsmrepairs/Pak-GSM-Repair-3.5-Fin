@@ -62,6 +62,15 @@ body.large-text{font-size:17px}
 /* Screenshot-aligned mobile redesign for Pak GSM Repair 4.4.8 */
 .brand-mark{width:64px;height:64px;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.9);border-radius:13px;margin:0 auto 8px}.brand-mark svg{width:100%;height:100%;padding:5px;box-sizing:border-box;color:#fff}.login-card{background:linear-gradient(180deg,#fff 0%,#f6fbf9 100%);border-radius:22px;border:3px solid #064e3b;padding:18px 16px 16px;box-shadow:0 18px 45px #001e1640}.login-card h2{font-size:23px;letter-spacing:-.4px}.version-pill{float:right;margin-top:-104px;margin-right:1px;background:#0b8068}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;background:#e7f1ef;border-radius:11px;margin:12px 0}.auth-tab{border-radius:8px!important;background:transparent!important;color:#174b40!important;border:0!important}.auth-tab.active{background:linear-gradient(135deg,#086c56,#0b8e6e)!important;color:white!important}.auth-field{margin:9px 0}.auth-field input{border:1px solid #d9e7e2!important;border-radius:9px!important;background:#fff!important;min-height:42px}.guest-view-btn{margin-top:10px;width:100%;border:1px solid #d5e7e0!important;background:#fff!important;color:#075c49!important;min-height:43px}.google-btn{width:100%;min-height:43px;background:#fff!important;color:#16483e!important;border:1px solid #d5e7e0!important;border-radius:10px!important;margin-top:10px}.auth-help,#loginMsg{display:none!important}.login-card #emailAuthPanel .auth-help{display:none!important}#googleButtonWrap{margin-top:8px}.dash-heading{background:linear-gradient(135deg,#075744,#087f68);color:white;border-radius:16px;padding:12px 14px;margin-bottom:12px;align-items:center}.dash-heading h2{color:#fff;margin:0}.dash-heading .muted{color:#d4f1e7;margin:2px 0 0}.dash-brand{display:flex;align-items:center;gap:9px}.dash-logo{display:grid;place-items:center;width:39px;height:39px;border:2px solid #d8f5eb;border-radius:10px;font-size:26px;font-weight:800}.dash-heading>button{background:#fff;color:#075744;white-space:nowrap}.stats{gap:7px}.stat{border:1px solid #dcebe5;border-radius:12px;background:#fff;box-shadow:0 2px 8px #063d2e0a;padding:10px 7px}.stat strong{color:#087b60}.dash-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}.dash-shortcuts button{grid-column:span 1;min-height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border:1px solid #d8e9e2;background:linear-gradient(180deg,#fff,#f6fbf9);border-radius:13px;color:#064e3b;font-size:12px}.dash-shortcuts button:nth-child(1),.dash-shortcuts button:nth-child(2){grid-column:span 2;min-height:92px}.dash-shortcuts button span{font-size:24px;line-height:1;color:#078362}.dash-shortcuts button b{font-weight:700}.repair-type-menu{display:grid;grid-template-columns:1fr;gap:7px}.repair-type-menu button{display:flex;align-items:center;text-align:left;gap:12px;min-height:61px;border:1px solid #dcebe5;border-radius:12px;background:#fff;color:#123f35;padding:9px 12px;box-shadow:0 2px 8px #064e3b08}.repair-type-menu button>span:first-child{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;background:#e4f5ee;border-radius:10px;color:#087e5c;font-size:21px}.repair-copy{display:flex;flex-direction:column;gap:3px}.repair-copy b{font-size:13px}.repair-copy small{font-size:11px;color:#789087}.repair-type-menu button:focus,.repair-type-menu button:hover{border-color:#0b8a69;background:#f4fbf8}.panel{border-color:#e0ece7;box-shadow:0 3px 12px #064e3b08}.tabs{gap:5px}.tab{border-radius:9px!important;font-size:12px;padding:9px 10px!important}@media(min-width:620px){.dash-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr))}.repair-type-menu{grid-template-columns:1fr 1fr}}@media(max-width:390px){.dash-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.dash-shortcuts button{font-size:10px;padding:7px 3px}.dash-shortcuts button:nth-child(1),.dash-shortcuts button:nth-child(2){min-height:84px}.login-card{padding:15px 12px}.login-card h2{font-size:21px}.version-pill{margin-top:-100px}.dash-heading{padding:10px}.dash-heading>button{font-size:11px;padding:8px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* 4.4.8 update controls: high contrast status and visible download action */
+.login-update-buttons{display:flex;gap:8px;margin:6px 0}
+.login-update-buttons button{flex:1;min-width:0;background:#075e4b!important;color:#fff!important;border:1px solid #064b3c!important;font-size:13px}
+.login-update-buttons #loginDownloadUpdate{background:#1459a6!important;border-color:#104985!important;color:#fff!important}
+.update-status-login{margin:7px 0 0!important;padding:9px 10px;border-radius:9px;background:#fff4d6!important;border:1px solid #e3bd58;color:#563900!important;font-size:12px!important;line-height:1.45!important;font-weight:700;overflow-wrap:anywhere}
+.update-status-login[data-kind="success"]{background:#e5f6eb!important;border-color:#82c99a;color:#124b27!important}
+.update-status-login[data-kind="error"]{background:#fff0ee!important;border-color:#e6aaa3;color:#842018!important}
+#downloadUpdate:disabled,#loginDownloadUpdate:disabled{opacity:.65;cursor:not-allowed}
 </style></head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
  <div class="pgr-splash-card">
@@ -108,8 +117,8 @@ body.large-text{font-size:17px}
   <p id="loginMsg" class="hidden" role="status">Login first, or tap Register New Account to create an account.</p>
  </div>
  <div class="login-update-tools" id="loginUpdateTools">
-  <button type="button" id="loginCheckUpdate">Check for Update</button>
-  <p id="loginUpdateStatus" role="status">Check for the latest published version.</p>
+  <div class="row login-update-buttons"><button type="button" id="loginCheckUpdate">🔎 Check for Update</button><button type="button" id="loginDownloadUpdate" class="hidden">⬇️ Download &amp; Apply</button></div>
+  <p id="loginUpdateStatus" class="update-status-login" role="status" aria-live="polite">Check for the latest published version.</p>
  </div>
 </div>
 <header><div><h1>🔧 Pak GSM Repair</h1><p>Version 4.4.8 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
@@ -243,58 +252,78 @@ document.querySelector('#themeSelect').addEventListener('change',()=>{const s=se
 document.querySelector('#textSizeSelect').addEventListener('change',()=>{const s=settings();s.textSize=document.querySelector('#textSizeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if((settings().theme||'light')==='system')applyAppearance()})}
 const APP_VERSION='4.4.8';
-// The login gate exposes a lightweight version check before the user signs in.
+// Login-page update check. It now exposes Download & Apply directly on the login page.
 (function initLoginUpdateCheck(){
- const btn=document.getElementById('loginCheckUpdate'),out=document.getElementById('loginUpdateStatus');
- if(!btn||!out)return;
+ const btn=document.getElementById('loginCheckUpdate'),dl=document.getElementById('loginDownloadUpdate'),out=document.getElementById('loginUpdateStatus');
+ if(!btn||!dl||!out)return;
  btn.addEventListener('click',async()=>{
-  btn.disabled=true;out.textContent='Checking published version…';out.style.color='';
+  btn.disabled=true;dl.classList.add('hidden');out.dataset.kind='';out.textContent='Checking the published version…';
   try{
    const url=new URL('./update.json',location.href);url.searchParams.set('check',String(Date.now()));
    const response=await fetch(url.toString(),{cache:'no-store'});
    if(!response.ok)throw new Error('Update file could not be reached (HTTP '+response.status+').');
    const data=await response.json();if(!data.version)throw new Error('Published update file has no version number.');
    const comparison=compareVersions(data.version,APP_VERSION);
-   if(comparison>0){out.textContent='Update available: v'+data.version+'. Sign in, open Settings → App Update, then tap Update App to download it.';out.style.color='#986300';}
-   else if(comparison===0){out.textContent='You are using the latest published version (v'+APP_VERSION+').';out.style.color='#087443';}
-   else{out.textContent='This app is v'+APP_VERSION+', but the website reports v'+data.version+'. GitHub Pages may not have the latest files yet.';out.style.color='#986300';}
-  }catch(error){out.textContent='Update check failed: '+error.message;out.style.color='#b42318';}
+   if(comparison>0){pendingUpdate=data;dl.classList.remove('hidden');dl.textContent='⬇️ Download & Apply v'+data.version;out.dataset.kind='';out.textContent='Update available: v'+data.version+'. Tap “Download & Apply” to install it.';}
+   else if(comparison===0){pendingUpdate=null;out.dataset.kind='success';out.textContent='This app and the published update are both v'+APP_VERSION+'. No update is available.';}
+   else{pendingUpdate=null;out.dataset.kind='error';out.textContent='This app reports v'+APP_VERSION+', but GitHub Pages reports older v'+data.version+'. The website files need to be published together from the repository root.';}
+  }catch(error){out.dataset.kind='error';out.textContent='Update check failed: '+error.message;}
   finally{btn.disabled=false;}
  });
+ dl.addEventListener('click',()=>{if(!pendingUpdate)return;downloadAndApplyUpdate(out,dl,btn);});
 })();
 let pendingUpdate=null;
 function versionParts(v){return String(v||'0').replace(/^v/i,'').split('.').map(x=>parseInt(x,10)||0)}
 function compareVersions(a,b){let x=versionParts(a),y=versionParts(b);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)?1:-1}return 0}
 const updateStatus=document.querySelector('#updateStatus'),checkUpdateButton=document.querySelector('#checkUpdate'),downloadUpdateButton=document.querySelector('#downloadUpdate');
 checkUpdateButton.addEventListener('click',async()=>{
- checkUpdateButton.disabled=true;downloadUpdateButton.disabled=true;pendingUpdate=null;updateStatus.textContent='🔎 Checking GitHub Pages for a newer version…';updateStatus.style.background='#edf5f1';
+ checkUpdateButton.disabled=true;downloadUpdateButton.disabled=true;pendingUpdate=null;updateStatus.textContent='🔎 Checking GitHub Pages for a newer version…';updateStatus.style.background='#e8f1ff';updateStatus.style.color='#17365f';
  try{
   const res=await fetch('./update.json?check='+Date.now(),{cache:'no-store'});
   if(!res.ok)throw new Error('update.json could not be reached (HTTP '+res.status+'). Upload update.json beside index.html in the repository root.');
   const data=await res.json();if(!data.version)throw new Error('update.json has no version field.');
   const cmp=compareVersions(data.version,APP_VERSION);
-  if(cmp>0){pendingUpdate=data;downloadUpdateButton.disabled=false;downloadUpdateButton.textContent='⬆️ Update App to v'+data.version;updateStatus.textContent='🟡 Update available: v'+data.version+'. Tap “Update App” to download the files and restart automatically.';updateStatus.style.background='#fff4d6';}
-  else if(cmp===0){downloadUpdateButton.textContent='⬆️ Update App';updateStatus.textContent='✅ You already have the latest version (v'+APP_VERSION+'). No download is needed.';updateStatus.style.background='#edf5f1';}
-  else{updateStatus.textContent='⚠️ This app is v'+APP_VERSION+', but GitHub reports v'+data.version+'. Check that all release files were uploaded together.';updateStatus.style.background='#fff4d6';}
+  if(cmp>0){pendingUpdate=data;downloadUpdateButton.disabled=false;downloadUpdateButton.textContent='⬆️ Update App to v'+data.version;updateStatus.textContent='🟡 Update available: v'+data.version+'. Tap “Update App” to download the files and restart automatically.';updateStatus.style.background='#fff4d6';updateStatus.style.color='#563900';}
+  else if(cmp===0){downloadUpdateButton.textContent='⬆️ Update App';updateStatus.textContent='✅ You already have the latest version (v'+APP_VERSION+'). No download is needed.';updateStatus.style.background='#e8f1ff';updateStatus.style.color='#17365f';}
+  else{updateStatus.textContent='⚠️ This app is v'+APP_VERSION+', but GitHub reports v'+data.version+'. Check that all release files were uploaded together.';updateStatus.style.background='#fff4d6';updateStatus.style.color='#563900';}
   if(data.changelog)updateStatus.textContent+=' Release notes: '+data.changelog;
- }catch(e){updateStatus.textContent='❌ Update check failed: '+e.message;updateStatus.style.background='#fff0ee';}
+ }catch(e){updateStatus.textContent='❌ Update check failed: '+e.message;updateStatus.style.background='#fff0ee';updateStatus.style.color='#842018';}
  finally{checkUpdateButton.disabled=false;}
 });
-downloadUpdateButton.addEventListener('click',async()=>{
+async function downloadAndApplyUpdate(statusTarget,downloadButton,checkButton){
  if(!pendingUpdate)return;
- downloadUpdateButton.disabled=true;checkUpdateButton.disabled=true;updateStatus.textContent='⬇️ Downloading and verifying update files…';updateStatus.style.background='#edf5f1';
+ downloadButton.disabled=true;if(checkButton)checkButton.disabled=true;
+ const version=pendingUpdate.version;
+ const say=(text,kind='')=>{if(statusTarget){statusTarget.textContent=text;statusTarget.dataset.kind=kind;if(statusTarget.id==='updateStatus'){statusTarget.style.background=kind==='error'?'#fff0ee':kind==='success'?'#e5f6eb':'#fff4d6';statusTarget.style.color=kind==='error'?'#842018':kind==='success'?'#124b27':'#563900';}}};
+ say('Downloading and verifying update files…');
  try{
-  if(!('caches' in window))throw new Error('This browser does not support offline update storage. Open the app in Chrome and use HTTPS.');
+  if(!('caches' in window))throw new Error('This browser does not support offline update storage. Open the HTTPS app in Chrome.');
   const files=['./index.html','./manifest.json','./sw.js','./cloud-config.js','./update.json','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-512-maskable.png','./icons/pgr-logo.svg'];
   await caches.delete('pgr-update-download-temp');const temp=await caches.open('pgr-update-download-temp');
-  for(const file of files){const url=new URL(file,location.href);url.searchParams.set('release',String(pendingUpdate.version));url.searchParams.set('download',String(Date.now()));const response=await fetch(url.toString(),{cache:'no-store'});if(!response.ok)throw new Error('Could not download '+file+' (HTTP '+response.status+').');await temp.put(new Request(new URL(file,location.href).toString()),response);}
+  for(const file of files){
+   const url=new URL(file,location.href);url.searchParams.set('release',String(version));url.searchParams.set('download',String(Date.now())+'-'+Math.random().toString(36).slice(2));
+   // The query parameters plus the updated worker's network-bypass branch prevent cache-first responses.
+   const response=await fetch(url.toString(),{cache:'no-store',credentials:'same-origin'});
+   if(!response.ok)throw new Error('Could not download '+file+' (HTTP '+response.status+').');
+   const finalUrl=new URL(file,location.href).toString();await temp.put(new Request(finalUrl),response.clone());
+  }
   const stagedIndex=await temp.match(new URL('./index.html',location.href).toString());if(!stagedIndex)throw new Error('Downloaded package is incomplete: index.html is missing.');
-  await caches.delete('pgr-update-staging');const stage=await caches.open('pgr-update-staging');for(const request of await temp.keys()){const response=await temp.match(request);if(response)await stage.put(request,response);}
-  await stage.put(new URL('./__update_approved',location.href).toString(),new Response(String(pendingUpdate.version),{headers:{'Content-Type':'text/plain'}}));await caches.delete('pgr-update-download-temp');
-  updateStatus.textContent='✅ Download complete. Restarting into v'+pendingUpdate.version+'…';
-  setTimeout(()=>{location.replace(new URL('./?updated='+encodeURIComponent(pendingUpdate.version)+'&t='+Date.now(),location.href).toString())},250);
- }catch(e){await caches.delete('pgr-update-download-temp');updateStatus.textContent='❌ Update download failed: '+e.message;updateStatus.style.background='#fff0ee';downloadUpdateButton.disabled=false;checkUpdateButton.disabled=false;}
-});
+  const stagedText=await stagedIndex.clone().text();
+  if(!/^\d+(?:\.\d+)*$/.test(String(version)))throw new Error('Published update version has an invalid format.');
+  const versionPattern = new RegExp('const\\s+APP_VERSION\\s*=\\s*[\"\']'+String(version)+'[\"\']');
+  if(!versionPattern.test(stagedText))throw new Error('Downloaded index.html APP_VERSION does not match '+version+'. GitHub Pages may be serving a stale or mixed release.');
+  const stagedMeta=await temp.match(new URL('./update.json',location.href).toString());
+  if(!stagedMeta)throw new Error('Downloaded package is incomplete: update.json is missing.');
+  const metaData=await stagedMeta.clone().json();
+  if(String(metaData.version)!==String(version))throw new Error('Downloaded update.json version does not match '+version+'.');
+  await caches.delete('pgr-update-staging');const stage=await caches.open('pgr-update-staging');
+  for(const request of await temp.keys()){const response=await temp.match(request);if(response)await stage.put(request,response);}
+  await stage.put(new URL('./__update_approved',location.href).toString(),new Response(String(version),{headers:{'Content-Type':'text/plain'}}));
+  await caches.delete('pgr-update-download-temp');say('Download complete. Restarting into v'+version+'…','success');
+  setTimeout(()=>location.replace(new URL('./?updated='+encodeURIComponent(version)+'&t='+Date.now(),location.href).toString()),350);
+ }catch(e){await caches.delete('pgr-update-download-temp');say('Update failed: '+e.message,'error');downloadButton.disabled=false;if(checkButton)checkButton.disabled=false;}
+}
+downloadUpdateButton.addEventListener('click',()=>downloadAndApplyUpdate(updateStatus,downloadUpdateButton,checkUpdateButton));
 const refreshAppButton=document.querySelector('#refreshApp');
 if(refreshAppButton)refreshAppButton.addEventListener('click',async()=>{try{const reg=await navigator.serviceWorker?.getRegistration('./');if(reg)await reg.update()}catch(e){}location.href='./?refresh='+Date.now()});
 document.querySelector('#saveSettings').onclick=saveSettings;

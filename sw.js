@@ -1,7 +1,7 @@
 /* Pak GSM Repair PWA worker.
    App shell is cache-first: a published GitHub change is NOT served until the user
    checks for an update, downloads the release, and approves the restart. */
-const CACHE_NAME = 'pak-gsm-repair-v4.4.8';
+const CACHE_NAME = 'pak-gsm-repair-v4.4.8-bootstrapfix2';
 const STAGING_CACHE = 'pgr-update-staging';
 const APP_SHELL = [
   './', './index.html', './manifest.json', './update.json', './cloud-config.js',
@@ -12,7 +12,8 @@ const absolute = path => new URL(path, self.registration.scope).toString();
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // Initial install only: seed a local shell. Do not force-skip a waiting worker.
+    // Bootstrap/migration fix: install a fresh shell, then take control without waiting
+    // for every stale tab to close. This is required to escape the cached 4.4.7 worker.
     await Promise.all(APP_SHELL.map(async path => {
       try {
         const request = new Request(absolute(path), { cache: 'reload' });
@@ -20,15 +21,19 @@ self.addEventListener('install', event => {
         if (response.ok) await cache.put(request, response.clone());
       } catch (error) { /* Keep installation available even if an optional asset fails. */ }
     }));
+    await self.skipWaiting();
   })());
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
+    // Remove stale app shells AND any half-applied staging cache left by the old updater.
+    // The current release shell was fetched during install, so deleting old staging here
+    // cannot leave this worker without its own app shell.
     await Promise.all(names.filter(name =>
-      name.startsWith('pak-gsm-repair-v') && name !== CACHE_NAME
-    ).map(name => caches.delete(name)));
+      name.startsWith('pak-gsm-repair-v') || name === STAGING_CACHE || name === 'pgr-update-download-temp'
+    ).filter(name => name !== CACHE_NAME).map(name => caches.delete(name)));
     await self.clients.claim();
   })());
 });

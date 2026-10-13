@@ -1,4 +1,4 @@
 {
   "version": "4.4.8",
-  "changelog": "Version 4.4.8 test update: menu icons, dashboard/section icons, repair detail field icons, camera and gallery icons; version labels synchronized across project files."
+  "changelog": "4.4.8 bootstrap fix: force-activate replacement service worker, clear stale/partial staging caches, high-contrast login update status, visible Download & Apply, and strict release verification."
 }
