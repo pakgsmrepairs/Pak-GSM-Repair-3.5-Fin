@@ -1,5 +1,4 @@
 {
   "version": "4.4.5",
-  "minVersion": "4.4",
-  "changelog": "Pak GSM Repair 4.4.5: fixes a fatal JavaScript startup error caused by binding an event listener to a missing #refreshApp element; login, signup, guest, and update-check handlers can now initialize."
+  "changelog": "Login-first flow, separate registration screen, original app logo, bottom update check."
 }
