@@ -1,4 +1,4 @@
-# Pak GSM Repair 4.4.5 — Google Apps Script
+# Pak GSM Repair 4.4.6 — Google Apps Script
 
 Install `Code.gs.txt` as the Apps Script backend. The current backend keeps the existing OTP, account registration/login, and shared-key cloud backup endpoints.
 

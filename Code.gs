@@ -4,8 +4,8 @@
  * Script Properties required: CLOUD_KEY
  */
 const APP_NAME = 'Pak GSM Repair';
-const APP_VERSION = '4.4.5';
-const BACKUP_FOLDER = 'Pak GSM Repair 4.4.5 Backups';
+const APP_VERSION = '4.4.6';
+const BACKUP_FOLDER = 'Pak GSM Repair 4.4.6 Backups';
 const MAX_BODY = 8 * 1024 * 1024;
 const OWNER_EMAIL = 'pakgsmrepairs@gmail.com';
 
@@ -308,7 +308,7 @@ function testSendEmail() {
   }
   MailApp.sendEmail({
     to: recipient,
-    subject: 'Pak GSM Repair 4.4.5 - Email Delivery Test',
+    subject: 'Pak GSM Repair 4.4.6 - Email Delivery Test',
     body: 'Pak GSM Repair Email Test\n\n' +
       'This is a test email from your Google Apps Script server.\n' +
       'If you received this message, the email sending request was accepted.\n\n' +

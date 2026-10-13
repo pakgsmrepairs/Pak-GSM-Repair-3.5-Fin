@@ -1,6 +1,6 @@
-# Pak GSM Repair 4.4.5
+# Pak GSM Repair 4.4.6
 
-Screenshot-aligned 4.4.5 frontend package for GitHub Pages. Includes File Vault on the first page, IMEI 1/2, Parcel repair status with TCS/Leopards/GPO, settings update controls, backup/restore UI, and login OTP/Google flows.
+Screenshot-aligned 4.4.6 frontend package for GitHub Pages. Includes File Vault on the first page, IMEI 1/2, Parcel repair status with TCS/Leopards/GPO, settings update controls, backup/restore UI, and login OTP/Google flows.
 
 `Code.gs.txt` is a Google Apps Script backend source file and is not executed by GitHub Pages. Install it separately in Apps Script.
 
