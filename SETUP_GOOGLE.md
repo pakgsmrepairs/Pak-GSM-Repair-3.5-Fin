@@ -1,7 +1,9 @@
-# Pak GSM Repair 5.3 — Google Apps Script
+# Pak GSM Repair 5.4 — Google Apps Script Backend
 
-Install `Code.gs.txt` as the Apps Script backend. The current backend keeps the existing OTP, account registration/login, and shared-key cloud backup endpoints.
+**This ZIP does not contain `Code.gs`.** It is a public frontend package for GitHub Pages. Do not upload private backend code into the public GitHub repository.
 
-Required script properties for the existing cloud backup flow include `CLOUD_KEY`; `OWNER_EMAIL` and `GOOGLE_CLIENT_ID` are used by the owner verification endpoint. Deploy as a Web App and use the `/exec` URL in `cloud-config.js`.
+If your existing Apps Script web app is already working for email OTP, account registration/login, and cloud backup, keep using that deployed backend; this dashboard update does not by itself require replacing server code.
 
-Important: the existing shared-key cloud backup is a testing scaffold, not production-grade per-user authorization. Test with dummy data before storing real customer records.
+If you need to change or restore the backend, open your private Google Apps Script project and verify the current `Code.gs` there before editing or deploying. Do not replace a working backend with an older 3.7 file without checking endpoint compatibility.
+
+The frontend reads the configured Web App URL from `cloud-config.js`. The deployed script must support the actions the frontend uses. Test with dummy data before using real customer records.

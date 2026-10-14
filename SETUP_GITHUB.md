@@ -1,4 +1,4 @@
-# Pak GSM Repair 5.3 — GitHub Pages
+# Pak GSM Repair 5.4 — GitHub Pages
 
 1. Extract this ZIP on your phone/computer.
 2. Upload the **files inside** the extracted folder to the repository root. `index.html`, `update.json`, `sw.js`, `manifest.json`, `cloud-config.js`, and `icons/` must sit together at the root (do not upload only the ZIP or the enclosing folder).
@@ -7,7 +7,7 @@
 5. For later app releases, increment `APP_VERSION` in `index.html` and `version` in `update.json` together. Keep `sw.js` unchanged for routine app-content releases so it can keep serving the last approved release; only change the service worker when its behavior genuinely needs a new migration.
 6. Test with dummy data first. This app stores records locally unless the cloud backend is configured separately.
 
-`Code.gs.txt` is installed separately in Google Apps Script if you use the cloud-backup feature.
+`Code.gs` is not included in this public package. Keep backend code inside your private Google Apps Script project; do not upload it to public GitHub Pages.
 
 
 ### Dashboard and welcome notification

@@ -1,4 +1,4 @@
-# Pak GSM Repair 5.3
+# Pak GSM Repair 5.4
 
 Mobile repair-shop workspace with customer records, repair jobs, File Vault, Parts Availability, settings, local backup/restore, and a user-triggered GitHub Pages update flow.
 
@@ -20,7 +20,7 @@ For each future app release, update the version in `index.html` (`APP_VERSION`) 
 
 - Run on the HTTPS GitHub Pages URL for service-worker and Google sign-in support.
 - Customer data is local to the browser unless a cloud backup backend is configured.
-- `Code.gs.txt` is a separate Google Apps Script deployment artifact.
+- `Code.gs` is intentionally NOT included in this public GitHub Pages package. The backend is a separate Google Apps Script project and must not be uploaded to a public GitHub repository.
 
 
 ## Login OTP fix (5.3)
