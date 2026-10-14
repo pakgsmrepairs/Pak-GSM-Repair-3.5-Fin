@@ -1,4 +1,4 @@
 {
   "version": "4.4.9",
-  "changelog": "4.4.9 security and release consistency fix: password login now requires email OTP before opening the app; synchronized release versions and service-worker cache."
+  "changelog": "4.4.9 Google registration flow fix: Google sign-in now opens the required registration form; users must provide mobile number, password and confirmation, then verify email OTP before entering the app."
 }

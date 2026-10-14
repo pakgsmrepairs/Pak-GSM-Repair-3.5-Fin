@@ -21,3 +21,9 @@ For each future app release, update the version in `index.html` (`APP_VERSION`) 
 - Run on the HTTPS GitHub Pages URL for service-worker and Google sign-in support.
 - Customer data is local to the browser unless a cloud backup backend is configured.
 - `Code.gs.txt` is a separate Google Apps Script deployment artifact.
+
+
+## Login OTP fix (4.4.9)
+- Existing-account login checks the server with email + password and opens the app directly.
+- Email OTP is requested only during new-account registration/email verification.
+- If updating an existing deployment, upload the updated `index.html`, `sw.js`, and `update.json` from this ZIP. The Apps Script backend does not need a change for this front-end flow, provided `loginAccount` is already supported.

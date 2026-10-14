@@ -372,8 +372,8 @@ function initLogin(){
  window.__pgrLoginInitialized=true;
  chooseAuth('login');
  // Always show Login first. Registration opens as a separate second screen.
- document.querySelector('#openRegisterPage').addEventListener('click',()=>{chooseAuth('signin');document.querySelector('#authName').focus({preventScroll:true});});
- document.querySelector('#backToLoginPage').addEventListener('click',()=>chooseAuth('login'));
+ document.querySelector('#openRegisterPage').addEventListener('click',()=>{document.querySelector('#authEmail').readOnly=false;chooseAuth('signin');document.querySelector('#authName').focus({preventScroll:true});});
+ document.querySelector('#backToLoginPage').addEventListener('click',()=>{document.querySelector('#authEmail').readOnly=false;chooseAuth('login')});
  const msg=document.querySelector('#loginMsg');
  // Check the login email against the server while the user types.
  const loginEmailInput=document.querySelector('#loginEmail');
@@ -439,15 +439,18 @@ function initLogin(){
    if(!signup){
     const account=await otpServerCall('loginAccount',email,'',{passwordHash});
     if(!account||!account.ok)throw new Error(account?.error||'Login failed. Please try again.');
-    // A correct password is not enough to open the app: require a fresh email OTP.
+    // Regular login uses email + password only. Never send an OTP during login.
+    unlock({email:email,name:account.name||email,sub:'email-password'});
+    return;
    }
+   // OTP is only for new-account registration/email verification.
    const r=await otpServerCall('sendOtp',email);
    if(!r||!r.ok)throw new Error(r?.error||'OTP request was not accepted.');
    pendingOtpEmail=email;
    document.querySelector('#signupFields').classList.add('hidden');document.querySelector('#loginFields').classList.add('hidden');
    document.querySelector('#otpStep').classList.remove('hidden');
-   document.querySelector('#otpStepText').textContent=(signup?'A 6-digit code was sent to ':'Password accepted. For security, a 6-digit login code was sent to ')+email+'. Check your inbox and spam folder. The code expires in 5 minutes.';
-   document.querySelector('#authEmailOtp').value='';document.querySelector('#authEmailOtp').focus();msg.textContent=signup?'OTP sent. Enter the code below to complete registration.':'Password accepted. Enter the email OTP to finish signing in.';
+   document.querySelector('#otpStepText').textContent='A 6-digit code was sent to '+email+'. Check your inbox and spam folder. The code expires in 5 minutes.';
+   document.querySelector('#authEmailOtp').value='';document.querySelector('#authEmailOtp').focus();msg.textContent='OTP sent. Enter the code below to complete registration.';
   }catch(e){showAuthPopup(e.message,'Login failed');msg.textContent='Could not continue: '+e.message}
   finally{b.disabled=false}
  }
@@ -499,10 +502,23 @@ function initLogin(){
   }catch(e){showAuthPopup(e.message,'Verification failed');msg.textContent='OTP verification failed: '+e.message}
   finally{b.disabled=false}
  };
- document.querySelector('#guestView').onclick=()=>unlock({email:'Guest View',name:'Guest',sub:'guest-view',guest:true});
- const googleHandler=()=>{if(location.protocol!=='https:'){msg.textContent='Google sign-in will not work from a local file or Android File Manager preview. Upload the app to its authorized HTTPS website and open that web address.';return}if(!window.google?.accounts?.id){msg.textContent='Google sign-in is still loading. Wait a few seconds and tap again.';return}if(!window.PGR_GOOGLE_CLIENT_ID){msg.textContent='Google Client ID is missing from cloud-config.js.';return}try{window.google.accounts.id.initialize({client_id:window.PGR_GOOGLE_CLIENT_ID,callback:cred=>{try{const p=parseJwt(cred.credential);if(!p.email)throw new Error('No email in Google response');unlock({email:p.email,name:p.name,sub:p.sub})}catch(e){msg.textContent='Google response could not be read. Check OAuth client settings and authorized HTTPS origin.'}},auto_select:false,context:'signin'});const wrap=document.querySelector('#googleButton');wrap.innerHTML='';window.google.accounts.id.renderButton(wrap,{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'rectangular',width:300,logo_alignment:'left'});msg.textContent='Tap the Google button below. Google sign-in requires the authorized HTTPS website.'}catch(e){msg.textContent='Could not start Google sign-in. Confirm the OAuth Client ID and authorized HTTPS domain.'}};
+ async function showGoogleRegistration(profile){
+  const email=String(profile.email||'').trim().toLowerCase();
+  const name=String(profile.name||'').trim();
+  if(!email){showAuthPopup('Google did not provide an email address. Please try again.','Google sign-in');return}
+  chooseAuth('signin');
+  const emailField=document.querySelector('#authEmail');
+  emailField.value=email;
+  emailField.readOnly=true;
+  document.querySelector('#authName').value=name;
+  msg.textContent='Google email confirmed. Complete your registration details, then verify the email OTP to open the app.';
+  try{await checkSignupEmail()}catch(e){}
+  document.querySelector('#authPhone').focus({preventScroll:true});
+}
+document.querySelector('#guestView').onclick=()=>unlock({email:'Guest View',name:'Guest',sub:'guest-view',guest:true});
+ const googleHandler=()=>{if(location.protocol!=='https:'){msg.textContent='Google sign-in will not work from a local file or Android File Manager preview. Upload the app to its authorized HTTPS website and open that web address.';return}if(!window.google?.accounts?.id){msg.textContent='Google sign-in is still loading. Wait a few seconds and tap again.';return}if(!window.PGR_GOOGLE_CLIENT_ID){msg.textContent='Google Client ID is missing from cloud-config.js.';return}try{window.google.accounts.id.initialize({client_id:window.PGR_GOOGLE_CLIENT_ID,callback:cred=>{try{const p=parseJwt(cred.credential);if(!p.email)throw new Error('No email in Google response');showGoogleRegistration(p)}catch(e){msg.textContent='Google response could not be read. Check OAuth client settings and authorized HTTPS origin.'}},auto_select:false,context:'signin'});const wrap=document.querySelector('#googleButton');wrap.innerHTML='';window.google.accounts.id.renderButton(wrap,{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'rectangular',width:300,logo_alignment:'left'});msg.textContent='Tap the Google button below. Google sign-in requires the authorized HTTPS website.'}catch(e){msg.textContent='Could not start Google sign-in. Confirm the OAuth Client ID and authorized HTTPS domain.'}};
  document.querySelector('#googleFallback').onclick=googleHandler;
- if(location.protocol==='https:' && window.google?.accounts?.id && window.PGR_GOOGLE_CLIENT_ID){try{window.google.accounts.id.initialize({client_id:window.PGR_GOOGLE_CLIENT_ID,callback:cred=>{try{const p=parseJwt(cred.credential);unlock({email:p.email,name:p.name,sub:p.sub})}catch(e){msg.textContent='Google sign-in response could not be read.'}},auto_select:false,context:'signin'});window.google.accounts.id.renderButton(document.querySelector('#googleButton'),{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'rectangular',width:300,logo_alignment:'left'});document.querySelector('#googleFallback').classList.add('hidden')}catch(e){msg.textContent='Google sign-in could not initialize. Check OAuth settings.'}}
+ if(location.protocol==='https:' && window.google?.accounts?.id && window.PGR_GOOGLE_CLIENT_ID){try{window.google.accounts.id.initialize({client_id:window.PGR_GOOGLE_CLIENT_ID,callback:cred=>{try{const p=parseJwt(cred.credential);if(!p.email)throw new Error('No email in Google response');showGoogleRegistration(p)}catch(e){msg.textContent='Google sign-in response could not be read.'}},auto_select:false,context:'signin'});window.google.accounts.id.renderButton(document.querySelector('#googleButton'),{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'rectangular',width:300,logo_alignment:'left'});document.querySelector('#googleFallback').classList.add('hidden')}catch(e){msg.textContent='Google sign-in could not initialize. Check OAuth settings.'}}
  else if(location.protocol!=='https:'){msg.textContent='Preview mode: Google sign-in only works after this app is published on its authorized HTTPS website.'}
 }
 let loginAudioCtx=null,loginMusicTimer=null,loginMusicStep=0,loginVoiceStarted=false,loginVoiceQueued=false,splashTimer=null,splashStarted=false;
