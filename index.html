@@ -582,36 +582,72 @@ checkUpdateButton.addEventListener('click',async()=>{
 });
 async function downloadAndApplyUpdate(statusTarget,downloadButton,checkButton){
  if(!pendingUpdate)return;
- downloadButton.disabled=true;if(checkButton)checkButton.disabled=true;
- const version=pendingUpdate.version;
- const say=(text,kind='')=>{if(statusTarget){statusTarget.textContent=text;statusTarget.dataset.kind=kind;if(statusTarget.id==='updateStatus'){statusTarget.style.background=kind==='error'?'#fff0ee':kind==='success'?'#e5f6eb':'#fff4d6';statusTarget.style.color=kind==='error'?'#842018':kind==='success'?'#124b27':'#563900';}}};
- say('Downloading and verifying update files…');
+ downloadButton.disabled=true;
+ if(checkButton)checkButton.disabled=true;
+ const version=String(pendingUpdate.version||'');
+ const say=(text,kind='')=>{
+  if(!statusTarget)return;
+  statusTarget.textContent=text;
+  statusTarget.dataset.kind=kind;
+  if(statusTarget.id==='updateStatus'){
+   statusTarget.style.background=kind==='error'?'#fff0ee':kind==='success'?'#e5f6eb':'#fff4d6';
+   statusTarget.style.color=kind==='error'?'#842018':kind==='success'?'#124b27':'#563900';
+  }
+ };
+ const tempName='pgr-update-download-temp';
+ const stageName='pgr-update-staging';
  try{
   if(!('caches' in window))throw new Error('This browser does not support offline update storage. Open the HTTPS app in Chrome.');
-  const files=['./index.html','./manifest.json','./sw.js','./cloud-config.js','./update.json','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-512-maskable.png'];
-  await caches.delete('pgr-update-download-temp');const temp=await caches.open('pgr-update-download-temp');
+  if(!/^\d+(?:\.\d+)*$/.test(version))throw new Error('Published update version has an invalid format.');
+  const root=new URL('./',location.href);
+  const files=['index.html','manifest.json','sw.js','cloud-config.js','update.json','icons/icon-192.png','icons/icon-512.png','icons/icon-512-maskable.png'];
+  await caches.delete(tempName);
+  const temp=await caches.open(tempName);
   for(const file of files){
-   const url=new URL(file,PGR_RELEASE_BASE);url.searchParams.set('release',String(version));url.searchParams.set('download',String(Date.now())+'-'+Math.random().toString(36).slice(2));
-   // The query parameters plus the updated worker's network-bypass branch prevent cache-first responses.
-   const response=await fetch(url.toString(),{cache:'no-store',credentials:'same-origin'});
+   const url=new URL(file,PGR_RELEASE_BASE);
+   url.searchParams.set('release',version);
+   url.searchParams.set('download',Date.now()+'-'+Math.random().toString(36).slice(2));
+   const response=await fetch(url.toString(),{cache:'no-store',credentials:'omit',redirect:'follow'});
    if(!response.ok)throw new Error('Could not download '+file+' (HTTP '+response.status+').');
-   const finalUrl=new URL(file,location.href).toString();await temp.put(new Request(finalUrl),response.clone());
+   const localUrl=new URL(file,root).toString();
+   const saved=await temp.put(new Request(localUrl),response.clone()).then(()=>true).catch(()=>false);
+   if(!saved)throw new Error('Browser could not save downloaded file: '+file+'. Check available storage and reopen the app in Chrome.');
+   if(!(await temp.match(new Request(localUrl))))throw new Error('Downloaded file was not found in temporary storage: '+file+'.');
   }
-  const stagedIndex=await temp.match(new URL('./index.html',location.href).toString());if(!stagedIndex)throw new Error('Downloaded package is incomplete: index.html is missing.');
+  const indexUrl=new URL('index.html',root).toString();
+  const stagedIndex=await temp.match(new Request(indexUrl));
+  if(!stagedIndex)throw new Error('Downloaded package is incomplete: index.html is missing from temporary storage.');
   const stagedText=await stagedIndex.clone().text();
-  if(!/^\d+(?:\.\d+)*$/.test(String(version)))throw new Error('Published update version has an invalid format.');
-  const versionPattern = new RegExp('const\\s+APP_VERSION\\s*=\\s*[\"\']'+String(version)+'[\"\']');
+  const escapedVersion=version.replace(/\./g,'\\.');
+  const versionPattern=new RegExp("const\\s+APP_VERSION\\s*=\\s*['\"]"+escapedVersion+"['\"]");
   if(!versionPattern.test(stagedText))throw new Error('Downloaded index.html APP_VERSION does not match '+version+'. GitHub Pages may be serving a stale or mixed release.');
-  const stagedMeta=await temp.match(new URL('./update.json',location.href).toString());
-  if(!stagedMeta)throw new Error('Downloaded package is incomplete: update.json is missing.');
-  const metaData=await stagedMeta.clone().json();
-  if(String(metaData.version)!==String(version))throw new Error('Downloaded update.json version does not match '+version+'.');
-  await caches.delete('pgr-update-staging');const stage=await caches.open('pgr-update-staging');
-  for(const request of await temp.keys()){const response=await temp.match(request);if(response)await stage.put(request,response);}
-  await stage.put(new URL('./__update_approved',location.href).toString(),new Response(String(version),{headers:{'Content-Type':'text/plain'}}));
-  await caches.delete('pgr-update-download-temp');say('Download complete. Restarting into v'+version+'…','success');
+  const metaUrl=new URL('update.json',root).toString();
+  const stagedMeta=await temp.match(new Request(metaUrl));
+  if(!stagedMeta)throw new Error('Downloaded package is incomplete: update.json was not stored in temporary storage.');
+  let metaData;
+  try{metaData=await stagedMeta.clone().json();}
+  catch(e){throw new Error('Downloaded update.json is not valid JSON.');}
+  if(String(metaData.version)!==version)throw new Error('Downloaded update.json version does not match '+version+'.');
+  await caches.delete(stageName);
+  const stage=await caches.open(stageName);
+  for(const request of await temp.keys()){
+   const response=await temp.match(request);
+   if(!response)throw new Error('A downloaded file disappeared before staging.');
+   await stage.put(request,response);
+  }
+  const approvedUrl=new URL('__update_approved',root).toString();
+  await stage.put(new Request(approvedUrl),new Response(version,{headers:{'Content-Type':'text/plain'}}));
+  const approved=await stage.match(new Request(approvedUrl));
+  if(!approved||String(await approved.text())!==version)throw new Error('Could not verify the staged update package.');
+  await caches.delete(tempName);
+  say('Download complete. Restarting into v'+version+'…','success');
   setTimeout(()=>location.replace(new URL('./?updated='+encodeURIComponent(version)+'&t='+Date.now(),location.href).toString()),350);
- }catch(e){await caches.delete('pgr-update-download-temp');say('Update failed: '+e.message,'error');downloadButton.disabled=false;if(checkButton)checkButton.disabled=false;}
+ }catch(e){
+  await caches.delete(tempName);
+  say('Update failed: '+(e&&e.message?e.message:String(e)),'error');
+  downloadButton.disabled=false;
+  if(checkButton)checkButton.disabled=false;
+ }
 }
 downloadUpdateButton.addEventListener('click',()=>downloadAndApplyUpdate(updateStatus,downloadUpdateButton,checkUpdateButton));
 const refreshAppButton=document.querySelector('#refreshApp');
