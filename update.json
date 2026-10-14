@@ -1,4 +1,4 @@
 {
-  "version": "5.6",
-  "changelog": "5.6: fixed logo path and GitHub Pages update source; selectable native Bluetooth device cards; added registration username/shop name and shop cover photo. Account fields are sent to the configured Apps Script endpoint; server-side persistence and Bluetooth behavior must be verified on-device."
+  "version": "5.7.2",
+  "changelog": "5.7.2: compact shop-first header; Pak GSM Repair app name moved to a small secondary line; registered shop name is prominent with shop logo beside it; shop cover photo remains available; migrated saved shop identity; version metadata aligned across release files."
 }

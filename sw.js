@@ -1,7 +1,7 @@
 /* Pak GSM Repair PWA worker.
    App shell is cache-first: a published GitHub change is NOT served until the user
    checks for an update, downloads the release, and approves the restart. */
-const CACHE_NAME = 'pak-gsm-repair-v5.4-dashboard-option-b';
+const CACHE_NAME = 'pak-gsm-repair-v5.7.2-dashboard';
 const STAGING_CACHE = 'pgr-update-staging';
 const APP_SHELL = [
   './', './index.html', './manifest.json', './update.json', './cloud-config.js',

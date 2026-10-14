@@ -213,6 +213,39 @@ body.large-text{font-size:17px}
 .dashboard-bt-card .bt-small-note{font-size:8px!important;line-height:1.2!important;margin:4px 1px 0!important}
 @media(max-width:420px){.pgr-modern-header{padding:4px 6px!important}.pgr-modern-header .header-actions button,.pgr-modern-header .shop-logo-button{min-width:25px!important;min-height:25px!important;height:25px!important;padding:1px 3px!important}.pgr-shop-identity .shop-name-display{font-size:14px!important}.dashboard-bt-card{padding:6px!important}.dashboard-bt-top{grid-template-columns:27px minmax(0,1fr) auto!important;gap:5px!important}.dashboard-bt-icon{width:27px!important;height:27px!important;font-size:15px!important}.dashboard-bt-connect{font-size:8px!important;padding:4px 5px!important}#bluetoothStatusStrip.in-dashboard-bt{grid-template-columns:minmax(0,auto) minmax(0,1fr) auto!important;gap:4px!important}}
 </style>
+
+<style>
+/* 5.7.2 final requested header polish: no camera badge, true notification bell, colorful rainbow gradient */
+.pgr-reference-header,.pgr-modern-header{
+ background:linear-gradient(108deg,#07583f 0%,#008f75 20%,#087fb0 42%,#5447b8 60%,#a52d9a 74%,#e85b58 86%,#ed9b36 100%)!important;
+ background-size:180% 100%!important;
+ border-radius:0 0 13px 13px!important;
+ box-shadow:0 3px 14px rgba(11,58,65,.22)!important;
+}
+.pgr-reference-header .pgr-shop-photo .pgr-camera-badge,
+.pgr-modern-header .pgr-shop-photo .pgr-camera-badge{display:none!important}
+.pgr-reference-header .pgr-shop-photo,.pgr-modern-header .pgr-shop-photo{
+ border:2px solid rgba(255,255,255,.92)!important;
+ box-shadow:0 2px 9px rgba(0,0,0,.18)!important;
+}
+.pgr-reference-header .pgr-bell-button,.pgr-modern-header .pgr-bell-button{
+ font-size:0!important;position:relative!important;
+}
+.pgr-reference-header .pgr-bell-button:before,.pgr-modern-header .pgr-bell-button:before{
+ content:"";display:block;width:21px;height:23px;
+ background:currentColor;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9'/%3E%3Cpath d='M10 21h4'/%3E%3C/svg%3E") center/contain no-repeat;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9'/%3E%3Cpath d='M10 21h4'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.pgr-reference-header .pgr-bell-dot,.pgr-modern-header .pgr-bell-dot{
+ width:9px!important;height:9px!important;right:4px!important;top:4px!important;background:#ff334f!important;border:1px solid rgba(255,255,255,.8)!important;z-index:2
+}
+@media(max-width:600px){
+ .pgr-reference-header,.pgr-modern-header{padding:6px 9px!important}
+ .pgr-reference-header .pgr-shop-photo,.pgr-modern-header .pgr-shop-photo{width:54px!important;height:54px!important;flex-basis:54px!important}
+}
+</style>
+
 </head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
  <div class="pgr-splash-card">
@@ -266,7 +299,7 @@ body.large-text{font-size:17px}
   <p id="loginUpdateStatus" class="update-status-login" role="status" aria-live="polite">Check for the latest published version.</p>
  </div>
 </div>
-<header class="pgr-modern-header pgr-reference-header"><div class="pgr-brand-wrap"><label for="shopLogoFile" class="pgr-shop-photo" title="Change shop photo" aria-label="Change shop photo"><img id="shopLogoPreview" alt="Shop logo" class="shop-logo-preview hidden"><span id="shopLogoFallback" aria-hidden="true">🏪</span><span class="pgr-camera-badge" aria-hidden="true">📷</span></label><input id="shopLogoFile" type="file" accept="image/*" class="hidden"><div class="pgr-brand-text" id="shopBrandPanel"><div class="pgr-app-name">Pak GSM Repair <span class="pgr-version-chip">5.7.2</span></div><h1 id="shopNameDisplay" class="shop-name-display">Your Shop Name</h1><p class="pgr-shop-subtitle"><span id="shopLocationDisplay" class="shop-location-display hidden"></span><span id="who" class="signed"></span></p></div></div><div class="row header-actions pgr-header-actions" style="flex:0"><button id="openRepairStatus" class="secondary pgr-bell-button" type="button" title="Notifications / repair status" aria-label="Notifications">♧<span class="pgr-bell-dot"></span></button><button id="openSettings" class="secondary pgr-settings-button" type="button" aria-label="Open settings" title="Settings">⚙</button><input id="shopCoverFile" type="file" accept="image/*" class="hidden"></div></header>
+<header class="pgr-modern-header pgr-reference-header"><div class="pgr-brand-wrap"><label for="shopLogoFile" class="pgr-shop-photo" title="Change shop photo" aria-label="Change shop photo"><img id="shopLogoPreview" alt="Shop logo" class="shop-logo-preview hidden"><span id="shopLogoFallback" aria-hidden="true">🏪</span></label><input id="shopLogoFile" type="file" accept="image/*" class="hidden"><div class="pgr-brand-text" id="shopBrandPanel"><div class="pgr-app-name">Pak GSM Repair <span class="pgr-version-chip">5.7.2</span></div><h1 id="shopNameDisplay" class="shop-name-display">Your Shop Name</h1><p class="pgr-shop-subtitle"><span id="shopLocationDisplay" class="shop-location-display hidden"></span><span id="who" class="signed"></span></p></div></div><div class="row header-actions pgr-header-actions" style="flex:0"><button id="openRepairStatus" class="secondary pgr-bell-button" type="button" title="Notifications / repair status" aria-label="Notifications">♧<span class="pgr-bell-dot"></span></button><button id="openSettings" class="secondary pgr-settings-button" type="button" aria-label="Open settings" title="Settings">⚙</button><input id="shopCoverFile" type="file" accept="image/*" class="hidden"></div></header>
 
 <main class="wrap">
 
