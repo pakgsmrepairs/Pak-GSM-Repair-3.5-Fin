@@ -1,4 +1,4 @@
 {
-  "version": "5.2",
-  "changelog": "5.2: final dashboard/header and profile icon design; login session restore; login loading and welcome notification; release version synchronized across app files."
+  "version": "5.3",
+  "changelog": "5.3: profile photo upload and persistent avatar; customer/device photo saved with customer record; Bluetooth device selection with supported battery/device-information fields when exposed by the headset."
 }

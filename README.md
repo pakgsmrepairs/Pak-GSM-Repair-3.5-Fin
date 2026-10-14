@@ -1,4 +1,4 @@
-# Pak GSM Repair 5.2
+# Pak GSM Repair 5.3
 
 Mobile repair-shop workspace with customer records, repair jobs, File Vault, Parts Availability, settings, local backup/restore, and a user-triggered GitHub Pages update flow.
 
@@ -23,13 +23,13 @@ For each future app release, update the version in `index.html` (`APP_VERSION`) 
 - `Code.gs.txt` is a separate Google Apps Script deployment artifact.
 
 
-## Login OTP fix (5.2)
+## Login OTP fix (5.3)
 - Existing-account login checks the server with email + password and opens the app directly.
 - Email OTP is requested only during new-account registration/email verification.
 - If updating an existing deployment, upload the updated `index.html`, `sw.js`, and `update.json` from this ZIP. The Apps Script backend does not need a change for this front-end flow, provided `loginAccount` is already supported.
 
 
-## Version 5.2 release checks
+## Version 5.3 release checks
 - Existing account login validates email + password and opens the app without sending email OTP.
 - Email OTP remains only in the new-account registration flow.
 - Dashboard header includes Shop Logo and Repair Status shortcuts.
@@ -37,7 +37,12 @@ For each future app release, update the version in `index.html` (`APP_VERSION`) 
 - Test the live deployment after uploading these files; this ZIP has not been tested against the live Apps Script server.
 
 
-## Version 5.2 dashboard and login improvements
+## Version 5.3 dashboard and login improvements
 - Modern dashboard is now the first screen after sign-in, with responsive statistic cards and quick actions.
 - Successful sign-in displays a compact welcome notification.
 - The welcome notification can be dismissed with OK or by tapping outside it.
+
+## Version 5.3 profile photo and Bluetooth panel
+- Tap the round profile icon in the header to open Profile, then choose Change Photo. The photo is stored on this device and shown in the header icon.
+- Customer/device photos can be attached while creating a repair record and are displayed with the customer record. Photos are stored locally; export backups before clearing browser data.
+- The Bluetooth panel can request a device through Web Bluetooth where the browser/device supports it. It can display battery, model, hardware, or firmware information only when the headset exposes those standard GATT services. Most Bluetooth hands-free devices do not expose all these fields to web apps; use Android Bluetooth settings for full headset details.

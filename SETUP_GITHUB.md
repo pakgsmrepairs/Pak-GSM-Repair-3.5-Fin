@@ -1,4 +1,4 @@
-# Pak GSM Repair 5.2 — GitHub Pages
+# Pak GSM Repair 5.3 — GitHub Pages
 
 1. Extract this ZIP on your phone/computer.
 2. Upload the **files inside** the extracted folder to the repository root. `index.html`, `update.json`, `sw.js`, `manifest.json`, `cloud-config.js`, and `icons/` must sit together at the root (do not upload only the ZIP or the enclosing folder).
@@ -11,4 +11,4 @@
 
 
 ### Dashboard and welcome notification
-Replace the existing `index.html` with the supplied 5.2 file. The Dashboard tab is now the first screen after login, and successful login displays a welcome notification. Upload `update.json` and `sw.js` too so Pages serves the matching version and cache updates.
+Replace the existing `index.html` with the supplied 5.3 file. The Dashboard tab is now the first screen after login, and successful login displays a welcome notification. Upload `update.json` and `sw.js` too so Pages serves the matching version and cache updates.
