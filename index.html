@@ -31,7 +31,7 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}label span[a
 .settings-subnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.settings-subnav button.active{background:var(--g);color:white}.settings-panel{margin-bottom:12px}.setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.switch{width:48px;height:27px;accent-color:var(--g);flex:0 0 auto}#downloadUpdate:disabled,#applyUpdate:disabled{opacity:.55;cursor:not-allowed}.update-status{padding:10px;border-radius:10px;background:#edf5f1;margin:10px 0;font-size:13px;overflow-wrap:anywhere}
 
 
-/* Version 5.0 settings side drawer */
+/* Version 5.1 settings side drawer */
 #settingsBackdrop{position:fixed;inset:0;background:rgba(3,24,19,.48);z-index:1990;display:none}
 #settingsBackdrop.open{display:block}
 #backup.drawer-open{display:block!important;position:fixed;z-index:2000;top:0;right:0;bottom:0;width:min(560px,100vw);max-width:100vw;overflow:auto;background:var(--bg);padding:14px;margin:0;border-left:1px solid var(--line);box-shadow:-16px 0 45px #001b1433;border-radius:0;overscroll-behavior:contain}
@@ -73,7 +73,7 @@ body.large-text{font-size:17px}
 .update-status-login[data-kind="error"]{background:#fff0ee!important;border-color:#e6aaa3;color:#842018!important}
 #downloadUpdate:disabled,#loginDownloadUpdate:disabled{opacity:.65;cursor:not-allowed}
 
-/* v5.0 shop identity and top repair-status action */
+/* v5.1 shop identity and top repair-status action */
 .header-actions{align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .header-actions button,.header-actions label{font-size:12px!important;padding:8px 10px!important;min-height:36px!important;cursor:pointer}
 .shop-logo-preview{width:30px;height:30px;object-fit:contain;border-radius:7px;vertical-align:middle;background:#fff}
@@ -91,7 +91,7 @@ body.large-text{font-size:17px}
 <div id="loginGate" class="hidden">
  <div class="login-card">
   <div class="brand-mark" aria-label="Pak GSM Repair logo"><img src="./icons/pgr-logo.svg" alt="Pak GSM Repair logo"></div>
-  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v5.0</span>
+  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v5.1</span>
   <h3 id="authHeading">Welcome Back</h3><p id="authSubheading">Login to continue to your repair shop</p>
   <div id="emailAuthPanel">
    <div id="signupFields" class="hidden">
@@ -127,7 +127,7 @@ body.large-text{font-size:17px}
   <p id="loginUpdateStatus" class="update-status-login" role="status" aria-live="polite">Check for the latest published version.</p>
  </div>
 </div>
-<header><div><h1><img id="shopLogoPreview" alt="Shop logo" class="shop-logo-preview hidden"> 🔧 Pak GSM Repair</h1><p>Version 5.0 <span id="who" class="signed"></span></p></div><div class="row header-actions" style="flex:0"><button id="openRepairStatus" class="secondary" type="button" title="Repair Status" aria-label="Repair Status">📱 Status</button><label for="shopLogoFile" class="secondary shop-logo-button" title="Set shop logo" aria-label="Set shop logo">🏪 Logo</label><input id="shopLogoFile" type="file" accept="image/*" class="hidden"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
+<header><div><h1><img id="shopLogoPreview" alt="Shop logo" class="shop-logo-preview hidden"> 🔧 Pak GSM Repair</h1><p>Version 5.1 <span id="who" class="signed"></span></p></div><div class="row header-actions" style="flex:0"><button id="openRepairStatus" class="secondary" type="button" title="Repair Status" aria-label="Repair Status">📱 Status</button><label for="shopLogoFile" class="secondary shop-logo-button" title="Set shop logo" aria-label="Set shop logo">🏪 Logo</label><input id="shopLogoFile" type="file" accept="image/*" class="hidden"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
 <main class="wrap">
 
 <div class="stats"><div class="stat"><span>Customers</span><strong id="nC">0</strong></div><div class="stat"><span>Repair jobs</span><strong id="nJ">0</strong></div><div class="stat"><span>Active jobs</span><strong id="nA">0</strong></div><div class="stat"><span>Unpaid (Rs)</span><strong id="nD">0</strong></div></div>
@@ -294,7 +294,7 @@ applyAppearance();
 document.querySelector('#themeSelect').addEventListener('change',()=>{const s=settings();s.theme=document.querySelector('#themeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 document.querySelector('#textSizeSelect').addEventListener('change',()=>{const s=settings();s.textSize=document.querySelector('#textSizeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if((settings().theme||'light')==='system')applyAppearance()})}
-const APP_VERSION='5.0';
+const APP_VERSION='5.1';
 // Login-page update check. It now exposes Download & Apply directly on the login page.
 (function initLoginUpdateCheck(){
  const btn=document.getElementById('loginCheckUpdate'),dl=document.getElementById('loginDownloadUpdate'),out=document.getElementById('loginUpdateStatus');
@@ -462,7 +462,7 @@ function initLogin(){
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(password));
   return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
  }
- async function requestOtp(mode){
+ async async function requestOtp(mode){
   const signup=mode==='signin';
   const email=(document.querySelector(signup?'#authEmail':'#loginEmail').value||'').trim().toLowerCase();
   const password=document.querySelector(signup?'#authPassword':'#loginPassword').value||'';
@@ -482,7 +482,12 @@ function initLogin(){
     const account=await otpServerCall('loginAccount',email,'',{passwordHash});
     if(!account||!account.ok)throw new Error(account?.error||'Login failed. Please try again.');
     // Regular login uses email + password only. Never send an OTP during login.
+    if(msg)msg.textContent='Welcome to Pak GSM Repair! Opening your dashboard…';
+    const loginButton=document.querySelector('#sendLoginOtp');
+    if(loginButton){loginButton.disabled=true;loginButton.textContent='Please wait…';}
+    await new Promise(resolve=>setTimeout(resolve,900));
     unlock({email:email,name:account.name||email,sub:'email-password'});
+    if(loginButton){loginButton.disabled=false;loginButton.textContent='Login';}
     return;
    }
    // OTP is only for new-account registration/email verification.
@@ -518,8 +523,29 @@ function initLogin(){
  }
  signupEmail.addEventListener('input',()=>{clearTimeout(emailCheckTimer);emailCheckTimer=setTimeout(checkSignupEmail,550)});
  signupEmail.addEventListener('change',()=>{clearTimeout(emailCheckTimer);checkSignupEmail()});
- document.querySelector('#sendEmailOtp').onclick=()=>requestOtp('signin');
- document.querySelector('#sendLoginOtp').onclick=()=>requestOtp('login');
+ const signupButton=document.querySelector('#sendEmailOtp');
+ const loginButton=document.querySelector('#sendLoginOtp');
+ if(signupButton){
+  signupButton.addEventListener('click',async()=>{
+   try{await requestOtp('signin')}catch(err){console.error('Registration click failed:',err);showAuthPopup(err?.message||'Registration could not continue.','Registration error')}
+  });
+ }
+ if(loginButton){
+  loginButton.addEventListener('click',async()=>{
+   const loginMsg=document.querySelector('#loginMsg');
+   try{
+    if(loginMsg)loginMsg.textContent='Checking your email and password…';
+    loginButton.disabled=true;
+    await requestOtp('login');
+   }catch(err){
+    console.error('Login click failed:',err);
+    if(loginMsg)loginMsg.textContent='Login error: '+(err?.message||'Please try again.');
+    try{showAuthPopup(err?.message||'Login could not continue. Please try again.','Login error')}catch(_){}
+   }finally{
+    loginButton.disabled=false;
+   }
+  });
+ }
  document.querySelector('#changeAuthEmail').onclick=()=>{document.querySelector('#otpStep').classList.add('hidden');document.querySelector(activeAuthMode==='login'?'#loginFields':'#signupFields').classList.remove('hidden');msg.textContent='Update your details if needed, then request a new OTP.'};
  document.querySelector('#emailAuthSubmit').onclick=async()=>{
   const otp=document.querySelector('#authEmailOtp').value.trim();
@@ -569,6 +595,25 @@ function startLoginMusic(){try{const AC=window.AudioContext||window.webkitAudioC
 function startLoginVoice(){if(!soundEnabled()||loginVoiceStarted||loginVoiceQueued||!('speechSynthesis'in window)||document.querySelector('#pgrSplash')?.classList.contains('hidden'))return;try{const u=new SpeechSynthesisUtterance('Pak GSM Repair');u.rate=.91;u.pitch=.84;u.volume=.78;const voices=speechSynthesis.getVoices();const female=voices.find(v=>/zira|samantha|susan|karen|victoria|aria|jenny|sara|heera|female/i.test(v.name))||voices.find(v=>/^en[-_]/i.test(v.lang)&&/natural|neural|premium|enhanced/i.test(v.name))||voices.find(v=>/^en[-_]/i.test(v.lang));if(female)u.voice=female;loginVoiceQueued=true;u.onstart=()=>{loginVoiceStarted=true};u.onend=()=>{loginVoiceStarted=true};u.onerror=()=>{loginVoiceQueued=false};speechSynthesis.speak(u)}catch(e){}}
 function startLoginAudio(){if(document.querySelector('#pgrSplash')?.classList.contains('hidden')||!soundEnabled())return;startLoginMusic();startLoginVoice()}
 function stopLoginAudio(){if(loginMusicTimer){clearInterval(loginMusicTimer);loginMusicTimer=null}try{if(loginAudioCtx&&loginAudioCtx.state!=='closed')loginAudioCtx.close()}catch(e){}loginAudioCtx=null;try{if('speechSynthesis'in window)speechSynthesis.cancel()}catch(e){}}
+window.addEventListener('error',function(event){
+ try{
+  const gate=document.querySelector('#loginGate');
+  const msg=document.querySelector('#loginMsg');
+  if(gate&&!gate.classList.contains('hidden')&&msg&&event.message){
+   msg.textContent='App error: '+event.message;
+  }
+ }catch(_){}
+});
+window.addEventListener('unhandledrejection',function(event){
+ try{
+  const gate=document.querySelector('#loginGate');
+  const msg=document.querySelector('#loginMsg');
+  if(gate&&!gate.classList.contains('hidden')&&msg){
+   const reason=event.reason;
+   msg.textContent='Login error: '+(reason&&reason.message?reason.message:String(reason||'Please try again.'));
+  }
+ }catch(_){}
+});
 function showLoginScreen(){if(splashTimer){clearTimeout(splashTimer);splashTimer=null}try{stopLoginAudio()}catch(e){}const splash=document.querySelector('#pgrSplash'),gate=document.querySelector('#loginGate');if(splash)splash.classList.add('hidden');if(gate)gate.classList.remove('hidden');splashStarted=true;try{initLogin()}catch(e){const m=document.querySelector('#loginMsg');if(m)m.textContent='Login screen opened, but setup reported an error. Please reload the page.'}}
 function bootSplash(){const startAudio=()=>{try{if('speechSynthesis'in window)speechSynthesis.getVoices()}catch(e){}try{startLoginAudio()}catch(e){}};const splash=document.querySelector('#pgrSplash');if(splash){splash.addEventListener('click',startAudio);['pointerdown','touchstart'].forEach(ev=>splash.addEventListener(ev,startAudio,{once:true,passive:true}))}/* Fallback is also installed by the independent watchdog above. */splashTimer=setTimeout(showLoginScreen,1800)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootSplash,{once:true});else bootSplash();
