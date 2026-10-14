@@ -1,4 +1,4 @@
-# Pak GSM Repair Pro 5.0
+# Pak GSM Repair 5.2
 
 Mobile repair-shop workspace with customer records, repair jobs, File Vault, Parts Availability, settings, local backup/restore, and a user-triggered GitHub Pages update flow.
 
@@ -23,15 +23,21 @@ For each future app release, update the version in `index.html` (`APP_VERSION`) 
 - `Code.gs.txt` is a separate Google Apps Script deployment artifact.
 
 
-## Login OTP fix (5.0)
+## Login OTP fix (5.2)
 - Existing-account login checks the server with email + password and opens the app directly.
 - Email OTP is requested only during new-account registration/email verification.
 - If updating an existing deployment, upload the updated `index.html`, `sw.js`, and `update.json` from this ZIP. The Apps Script backend does not need a change for this front-end flow, provided `loginAccount` is already supported.
 
 
-## Version 5.1 release checks
+## Version 5.2 release checks
 - Existing account login validates email + password and opens the app without sending email OTP.
 - Email OTP remains only in the new-account registration flow.
 - Dashboard header includes Shop Logo and Repair Status shortcuts.
 - Shop logo is stored locally on the current device; repair status searches this device's saved repair records.
 - Test the live deployment after uploading these files; this ZIP has not been tested against the live Apps Script server.
+
+
+## Version 5.2 dashboard and login improvements
+- Modern dashboard is now the first screen after sign-in, with responsive statistic cards and quick actions.
+- Successful sign-in displays a compact welcome notification.
+- The welcome notification can be dismissed with OK or by tapping outside it.

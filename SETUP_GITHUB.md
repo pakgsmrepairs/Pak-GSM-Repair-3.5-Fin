@@ -1,4 +1,4 @@
-# Pak GSM Repair 5.1 — GitHub Pages
+# Pak GSM Repair 5.2 — GitHub Pages
 
 1. Extract this ZIP on your phone/computer.
 2. Upload the **files inside** the extracted folder to the repository root. `index.html`, `update.json`, `sw.js`, `manifest.json`, `cloud-config.js`, and `icons/` must sit together at the root (do not upload only the ZIP or the enclosing folder).
@@ -8,3 +8,7 @@
 6. Test with dummy data first. This app stores records locally unless the cloud backend is configured separately.
 
 `Code.gs.txt` is installed separately in Google Apps Script if you use the cloud-backup feature.
+
+
+### Dashboard and welcome notification
+Replace the existing `index.html` with the supplied 5.2 file. The Dashboard tab is now the first screen after login, and successful login displays a welcome notification. Upload `update.json` and `sw.js` too so Pages serves the matching version and cache updates.
