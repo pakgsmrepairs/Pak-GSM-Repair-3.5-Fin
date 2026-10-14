@@ -165,6 +165,16 @@ body.large-text{font-size:17px}
 <div id="settingsBackdrop" aria-hidden="true"></div>
 <div id="restoreConfirm" class="modal hidden"><div class="box" style="max-width:430px;text-align:center"><h2 style="margin-top:0">Restore Backup</h2><p class="muted">Google Drive backup will replace your current local records. This action changes the data currently stored on this device.</p><div class="row"><button type="button" id="restoreCancel" class="secondary">✕ Cancel</button><button type="button" id="restoreOk">✓ OK</button></div></div></div>
 <div id="modal" class="modal hidden"><div class="box" id="modalBox"></div></div>
+<div id="repairStatusModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="repairStatusTitle">
+ <div class="panel">
+  <div class="row" style="justify-content:space-between;align-items:center"><h2 id="repairStatusTitle">📱 Repair Status</h2><button type="button" id="closeRepairStatus" class="secondary">✕</button></div>
+  <p class="muted">Enter the repair job ID, customer mobile number, or IMEI to check the current status.</p>
+  <label for="repairStatusQuery">Job ID / Mobile / IMEI</label><input id="repairStatusQuery" type="search" placeholder="Enter job ID, mobile number, or IMEI">
+  <button type="button" id="findRepairStatus">Check Status</button>
+  <div id="repairStatusResult" aria-live="polite" class="panel hidden"></div>
+ </div>
+</div>
+
 <script>
 /* Independent splash watchdog: deliberately separate from the main app script.
    The logo screen must never depend on window.load or Google SDK availability. */
@@ -235,7 +245,7 @@ document.querySelector('#findRepairStatus').addEventListener('click',()=>{
  if(!found.length){box.textContent='No matching repair job found in this device’s saved records.';return}
  box.innerHTML=found.slice(0,5).map(j=>{
   const customer=db.customers.find(c=>String(c.id)===String(j.customerId))||{};
-  return '<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>Job '+escapeHtml(String(j.id||''))+'</b><br>Customer: '+escapeHtml(String(customer.name||'—'))+'<br>Device: '+escapeHtml(String(j.device||'—'))+'<br>Status: <b>'+escapeHtml(String(j.status||'Not set'))+'</b></div>';
+  return '<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>Job '+esc(String(j.id||''))+'</b><br>Customer: '+esc(String(customer.name||'—'))+'<br>Device: '+esc(String(j.device||'—'))+'<br>Status: <b>'+esc(String(j.status||'Not set'))+'</b></div>';
  }).join('');
 });
 document.querySelector('#openSettings').addEventListener('click',openSettingsDrawer);
@@ -244,15 +254,6 @@ document.querySelector('#settingsBackdrop').addEventListener('click',closeSettin
 function table(h,rows){return '<div class="tablewrap"><table><thead><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'}
 const cn=id=>db.customers.find(c=>c.id===id)?.name||'Unknown';
 
-<div id="repairStatusModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="repairStatusTitle">
- <div class="panel">
-  <div class="row" style="justify-content:space-between;align-items:center"><h2 id="repairStatusTitle">📱 Repair Status</h2><button type="button" id="closeRepairStatus" class="secondary">✕</button></div>
-  <p class="muted">Enter the repair job ID, customer mobile number, or IMEI to check the current status.</p>
-  <label for="repairStatusQuery">Job ID / Mobile / IMEI</label><input id="repairStatusQuery" type="search" placeholder="Enter job ID, mobile number, or IMEI">
-  <button type="button" id="findRepairStatus">Check Status</button>
-  <div id="repairStatusResult" aria-live="polite" class="panel hidden"></div>
- </div>
-</div>
 function render(){
  nC.textContent=db.customers.length;nJ.textContent=db.jobs.length;nA.textContent=db.jobs.filter(j=>!['Delivered','Cancelled'].includes(j.status)).length;nD.textContent=money(db.jobs.reduce((a,j)=>a+Math.max(0,j.cost-j.paid),0));
  const q=(document.querySelector('#globalSearch').value||'').toLowerCase().trim();
