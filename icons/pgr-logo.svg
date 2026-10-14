@@ -1,1 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4dff72"/><stop offset="1" stop-color="#00c9c2"/></linearGradient><linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00c982"/><stop offset="1" stop-color="#003f4c"/></linearGradient></defs><circle cx="50" cy="50" r="47" fill="#022d2c" stroke="url(#ring)" stroke-width="3.5"/><rect x="29" y="13" width="42" height="68" rx="7" fill="#f8fffd"/><rect x="33" y="19" width="34" height="54" rx="3" fill="url(#screen)"/><rect x="43" y="15.5" width="14" height="2" rx="1" fill="#022d2c"/><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"><path d="M39 57 L59 37 M54 32 Q61 25 67 31 L60 38 L66 44 L73 37 Q76 47 66 51 L60 48 L43 65" stroke="#ffffff"/><path d="M39 35 L61 58" stroke="#7cff43"/></g><path d="M15 61 Q28 78 49 70 T84 52" fill="none" stroke="#00e4c5" stroke-width="3.5"/><path d="M17 55 Q30 72 48 65" fill="none" stroke="#a8ff32" stroke-width="2.5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Pak GSM Repair">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#073f35"/><stop offset="1" stop-color="#0c8068"/></linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25f0ad"/><stop offset="1" stop-color="#b6f542"/></linearGradient>
+  </defs>
+  <rect x="8" y="8" width="176" height="176" rx="32" fill="url(#bg)"/>
+  <path d="M28 75 C42 28, 117 14, 160 51 C178 68, 175 108, 150 130" fill="none" stroke="url(#ring)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M32 122 C18 83, 45 54, 74 48" fill="none" stroke="#b6f542" stroke-width="7" stroke-linecap="round"/>
+  <rect x="51" y="44" width="88" height="108" rx="14" fill="#102e2b" stroke="#f2fff9" stroke-width="5" transform="rotate(-7 95 98)"/>
+  <rect x="61" y="55" width="68" height="84" rx="6" fill="#f7fffb" transform="rotate(-7 95 98)"/>
+  <path d="M80 112 L103 76 L116 84 L93 120 Z" fill="#0b6b57" transform="rotate(-7 98 98)"/>
+  <path d="M106 77 L120 71 L129 80 L123 94 L115 90 Z" fill="#20d99b"/>
+  <path d="M76 124 L88 120 L95 127 L90 139 L78 138 Z" fill="#0b6b57"/>
+  <circle cx="96" cy="160" r="4" fill="#e9fff6"/>
+</svg>
