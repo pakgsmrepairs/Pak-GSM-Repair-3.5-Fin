@@ -192,6 +192,88 @@ body.large-text{font-size:17px}
 .dashboard-bt-card .bt-small-note{font-size:8px!important;line-height:1.2!important;margin:4px 1px 0!important}
 @media(max-width:420px){.pgr-modern-header{padding:4px 6px!important}.pgr-modern-header .header-actions button,.pgr-modern-header .shop-logo-button{min-width:25px!important;min-height:25px!important;height:25px!important;padding:1px 3px!important}.pgr-shop-identity .shop-name-display{font-size:14px!important}.dashboard-bt-card{padding:6px!important}.dashboard-bt-top{grid-template-columns:27px minmax(0,1fr) auto!important;gap:5px!important}.dashboard-bt-icon{width:27px!important;height:27px!important;font-size:15px!important}.dashboard-bt-connect{font-size:8px!important;padding:4px 5px!important}#bluetoothStatusStrip.in-dashboard-bt{grid-template-columns:minmax(0,auto) minmax(0,1fr) auto!important;gap:4px!important}}
 </style>
+<style id="pgr-compact-bluetooth-final-review">
+/* Focused compact Bluetooth layout: keep controls functional, remove excess vertical stacking */
+.dashboard-bt-card{padding:6px!important;margin:5px 0 7px!important;border-radius:11px!important;display:block!important}
+.dashboard-bt-card .dashboard-bt-top{display:grid!important;grid-template-columns:25px minmax(0,1fr) auto!important;gap:5px!important;margin:0 0 4px!important;align-items:center!important}
+.dashboard-bt-card .dashboard-bt-icon{width:25px!important;height:25px!important;flex-basis:25px!important;border-radius:7px!important;font-size:14px!important}
+.dashboard-bt-card .dashboard-bt-copy{min-width:0!important;gap:1px!important}
+.dashboard-bt-card .dashboard-bt-copy strong{font-size:10px!important;line-height:1.05!important}
+.dashboard-bt-card .dashboard-bt-copy span{font-size:8px!important;line-height:1.05!important}
+.dashboard-bt-card .dashboard-bt-connect{width:auto!important;min-height:23px!important;padding:3px 6px!important;font-size:8px!important;line-height:1!important;border-radius:7px!important}
+#bluetoothStatusStrip.in-dashboard-bt{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;gap:5px!important;margin:0 0 4px!important;padding:3px 5px!important;border-radius:7px!important;min-height:0!important}
+#bluetoothStatusStrip.in-dashboard-bt .bt-pill{font-size:7px!important;padding:3px 4px!important;line-height:1!important;white-space:nowrap!important}
+#bluetoothStatusStrip.in-dashboard-bt .bt-meta strong{font-size:8px!important;line-height:1!important}
+#bluetoothStatusStrip.in-dashboard-bt #btDetails{display:none!important}
+#bluetoothStatusStrip.in-dashboard-bt button{display:none!important}
+.dashboard-bt-card .earbud-battery-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px!important;margin:0 0 4px!important}
+.dashboard-bt-card .earbud-battery{padding:3px 5px!important;gap:4px!important;border-radius:7px!important;min-height:0!important}
+.dashboard-bt-card .earbud-glyph{width:18px!important;height:18px!important;flex:0 0 18px!important;font-size:12px!important}
+.dashboard-bt-card .earbud-battery b{font-size:8px!important;line-height:1!important}
+.dashboard-bt-card .earbud-battery small{font-size:7px!important;line-height:1!important;margin-top:1px!important}
+.dashboard-bt-card .dashboard-audio-options{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:0!important}
+.dashboard-bt-card .audio-option{display:grid!important;grid-template-columns:auto 1fr;grid-template-rows:auto;align-items:center!important;justify-items:center!important;column-gap:3px!important;min-height:25px!important;padding:3px 2px!important;border-radius:7px!important}
+.dashboard-bt-card .audio-option>span{font-size:11px!important;line-height:1!important;grid-row:1!important}
+.dashboard-bt-card .audio-option b{font-size:8px!important;line-height:1!important;grid-row:1!important}
+.dashboard-bt-card .audio-option small{display:none!important}
+.dashboard-bt-card .bt-small-note{display:none!important}
+@media(max-width:420px){.dashboard-bt-card{padding:5px!important;margin:4px 0 6px!important}.dashboard-bt-card .dashboard-bt-top{grid-template-columns:22px minmax(0,1fr) auto!important;gap:4px!important}.dashboard-bt-card .dashboard-bt-icon{width:22px!important;height:22px!important;font-size:12px!important}.dashboard-bt-card .dashboard-bt-copy strong{font-size:9px!important}.dashboard-bt-card .dashboard-bt-copy span{font-size:7px!important}.dashboard-bt-card .dashboard-bt-connect{font-size:7px!important;padding:3px 5px!important}.dashboard-bt-card .earbud-battery b{font-size:7px!important}.dashboard-bt-card .audio-option b{font-size:7px!important}}
+
+/* 5.7.2 reference-style Bluetooth: one slim horizontal strip, not stacked legacy cards */
+#dashboardBluetoothCard.bt-inline-reference{
+ display:grid!important;grid-template-columns:minmax(150px,1.05fr) minmax(110px,.8fr) minmax(105px,.72fr) minmax(180px,1.45fr) auto!important;
+ align-items:center!important;gap:7px!important;padding:7px 9px!important;margin:10px 0 12px!important;
+ border:1px solid #9ee5d5!important;border-radius:15px!important;
+ background:linear-gradient(110deg,#f3fffb 0%,#e7faf5 55%,#fbfffe 100%)!important;
+ box-shadow:0 3px 12px rgba(0,100,80,.07)!important;min-height:0!important;height:auto!important;
+}
+#dashboardBluetoothCard .bt-inline-brand{display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important}
+#dashboardBluetoothCard .dashboard-bt-icon{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 34px!important;width:34px!important;height:34px!important;border-radius:50%!important;background:#087e69!important;color:white!important;font-size:21px!important;line-height:1!important}
+#dashboardBluetoothCard .dashboard-bt-copy{min-width:0!important;display:flex!important;flex-direction:column!important;gap:2px!important}
+#dashboardBluetoothCard .dashboard-bt-copy strong{font-size:12px!important;line-height:1.1!important;color:#0b433a!important;white-space:nowrap!important}
+#dashboardBluetoothCard .dashboard-bt-copy strong small{font-size:9px!important;font-weight:500!important}
+#dashboardBluetoothCard .dashboard-bt-copy span{font-size:9px!important;line-height:1.1!important;color:#16846f!important}
+#dashboardBluetoothCard .bt-inline-status{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:3px!important;min-width:0!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+#dashboardBluetoothCard .bt-inline-status .bt-pill{font-size:8px!important;line-height:1.1!important;padding:3px 6px!important;max-width:100%!important;white-space:nowrap!important}
+#dashboardBluetoothCard .bt-inline-status .bt-meta{display:none!important}
+#dashboardBluetoothCard .bt-inline-status #btConnectButton{font-size:8px!important;line-height:1!important;padding:3px 7px!important;min-height:20px!important;border-radius:8px!important}
+#dashboardBluetoothCard .bt-inline-battery{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;min-width:0!important;padding:3px 5px!important;border-left:1px solid #c7eee5!important;border-right:1px solid #c7eee5!important}
+#dashboardBluetoothCard .bt-earbuds-icon{font-size:23px!important;line-height:1!important}
+#dashboardBluetoothCard .bt-inline-levels{display:grid!important;grid-template-columns:auto auto!important;align-items:center!important;column-gap:4px!important;row-gap:3px!important;font-size:9px!important;line-height:1!important;color:#184f45!important}
+#dashboardBluetoothCard .bt-inline-levels span:nth-child(2){display:none!important}
+#dashboardBluetoothCard .bt-inline-levels b{font-size:9px!important;font-weight:700!important}
+#dashboardBluetoothCard .bt-inline-audio{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:0!important;min-width:0!important}
+#dashboardBluetoothCard .bt-inline-audio .audio-option{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;min-width:0!important;min-height:38px!important;padding:4px 3px!important;border:1px solid #c8eee5!important;border-radius:10px!important;background:rgba(255,255,255,.78)!important;color:#087560!important;box-shadow:none!important}
+#dashboardBluetoothCard .bt-inline-audio .audio-option>span{font-size:14px!important;line-height:1!important}
+#dashboardBluetoothCard .bt-inline-audio .audio-option b{font-size:8px!important;line-height:1!important}
+#dashboardBluetoothCard .bt-inline-audio .audio-option small{display:none!important}
+#dashboardBluetoothCard .bt-inline-connect{font-size:8px!important;line-height:1!important;padding:5px 7px!important;min-height:25px!important;white-space:nowrap!important;border-radius:8px!important}
+#dashboardBluetoothCard .bt-small-note,.bt-inline-reference>.earbud-battery-row{display:none!important}
+@media(max-width:600px){
+ #dashboardBluetoothCard.bt-inline-reference{grid-template-columns:minmax(0,1.05fr) minmax(82px,.75fr) minmax(72px,.7fr) minmax(120px,1.25fr)!important;gap:4px!important;padding:6px!important;border-radius:13px!important}
+ #dashboardBluetoothCard .bt-inline-connect{display:none!important}
+ #dashboardBluetoothCard .dashboard-bt-icon{flex-basis:29px!important;width:29px!important;height:29px!important;font-size:18px!important}
+ #dashboardBluetoothCard .dashboard-bt-copy strong{font-size:10px!important}
+ #dashboardBluetoothCard .dashboard-bt-copy strong small{font-size:8px!important}
+ #dashboardBluetoothCard .dashboard-bt-copy span{font-size:8px!important}
+ #dashboardBluetoothCard .bt-inline-battery{gap:3px!important;padding:2px 3px!important}
+ #dashboardBluetoothCard .bt-earbuds-icon{font-size:19px!important}
+ #dashboardBluetoothCard .bt-inline-levels{font-size:8px!important;column-gap:3px!important}
+ #dashboardBluetoothCard .bt-inline-levels b{font-size:8px!important}
+ #dashboardBluetoothCard .bt-inline-audio{gap:3px!important}
+ #dashboardBluetoothCard .bt-inline-audio .audio-option{min-height:32px!important;padding:3px 1px!important;border-radius:8px!important}
+ #dashboardBluetoothCard .bt-inline-audio .audio-option>span{font-size:12px!important}
+ #dashboardBluetoothCard .bt-inline-audio .audio-option b{font-size:7px!important}
+ #dashboardBluetoothCard .bt-inline-status .bt-pill{font-size:7px!important;padding:2px 4px!important}
+ #dashboardBluetoothCard .bt-inline-status #btConnectButton{font-size:7px!important;padding:3px 5px!important;min-height:17px!important}
+}
+@media(max-width:390px){
+ #dashboardBluetoothCard.bt-inline-reference{grid-template-columns:minmax(95px,1fr) minmax(65px,.65fr) minmax(104px,1fr)!important}
+ #dashboardBluetoothCard .bt-inline-status{display:none!important}
+ #dashboardBluetoothCard .bt-inline-battery{border-left:1px solid #c7eee5!important;border-right:0!important}
+ #dashboardBluetoothCard .bt-inline-audio{grid-column:1/-1!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+</style>
 </head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
  <div class="pgr-splash-card">
@@ -951,85 +1033,4 @@ document.addEventListener('DOMContentLoaded',()=>{
  }));
 });
 </script>
-</body></html><style id="pgr-compact-bluetooth-final-review">
-/* Focused compact Bluetooth layout: keep controls functional, remove excess vertical stacking */
-.dashboard-bt-card{padding:6px!important;margin:5px 0 7px!important;border-radius:11px!important;display:block!important}
-.dashboard-bt-card .dashboard-bt-top{display:grid!important;grid-template-columns:25px minmax(0,1fr) auto!important;gap:5px!important;margin:0 0 4px!important;align-items:center!important}
-.dashboard-bt-card .dashboard-bt-icon{width:25px!important;height:25px!important;flex-basis:25px!important;border-radius:7px!important;font-size:14px!important}
-.dashboard-bt-card .dashboard-bt-copy{min-width:0!important;gap:1px!important}
-.dashboard-bt-card .dashboard-bt-copy strong{font-size:10px!important;line-height:1.05!important}
-.dashboard-bt-card .dashboard-bt-copy span{font-size:8px!important;line-height:1.05!important}
-.dashboard-bt-card .dashboard-bt-connect{width:auto!important;min-height:23px!important;padding:3px 6px!important;font-size:8px!important;line-height:1!important;border-radius:7px!important}
-#bluetoothStatusStrip.in-dashboard-bt{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;gap:5px!important;margin:0 0 4px!important;padding:3px 5px!important;border-radius:7px!important;min-height:0!important}
-#bluetoothStatusStrip.in-dashboard-bt .bt-pill{font-size:7px!important;padding:3px 4px!important;line-height:1!important;white-space:nowrap!important}
-#bluetoothStatusStrip.in-dashboard-bt .bt-meta strong{font-size:8px!important;line-height:1!important}
-#bluetoothStatusStrip.in-dashboard-bt #btDetails{display:none!important}
-#bluetoothStatusStrip.in-dashboard-bt button{display:none!important}
-.dashboard-bt-card .earbud-battery-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px!important;margin:0 0 4px!important}
-.dashboard-bt-card .earbud-battery{padding:3px 5px!important;gap:4px!important;border-radius:7px!important;min-height:0!important}
-.dashboard-bt-card .earbud-glyph{width:18px!important;height:18px!important;flex:0 0 18px!important;font-size:12px!important}
-.dashboard-bt-card .earbud-battery b{font-size:8px!important;line-height:1!important}
-.dashboard-bt-card .earbud-battery small{font-size:7px!important;line-height:1!important;margin-top:1px!important}
-.dashboard-bt-card .dashboard-audio-options{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:0!important}
-.dashboard-bt-card .audio-option{display:grid!important;grid-template-columns:auto 1fr;grid-template-rows:auto;align-items:center!important;justify-items:center!important;column-gap:3px!important;min-height:25px!important;padding:3px 2px!important;border-radius:7px!important}
-.dashboard-bt-card .audio-option>span{font-size:11px!important;line-height:1!important;grid-row:1!important}
-.dashboard-bt-card .audio-option b{font-size:8px!important;line-height:1!important;grid-row:1!important}
-.dashboard-bt-card .audio-option small{display:none!important}
-.dashboard-bt-card .bt-small-note{display:none!important}
-@media(max-width:420px){.dashboard-bt-card{padding:5px!important;margin:4px 0 6px!important}.dashboard-bt-card .dashboard-bt-top{grid-template-columns:22px minmax(0,1fr) auto!important;gap:4px!important}.dashboard-bt-card .dashboard-bt-icon{width:22px!important;height:22px!important;font-size:12px!important}.dashboard-bt-card .dashboard-bt-copy strong{font-size:9px!important}.dashboard-bt-card .dashboard-bt-copy span{font-size:7px!important}.dashboard-bt-card .dashboard-bt-connect{font-size:7px!important;padding:3px 5px!important}.dashboard-bt-card .earbud-battery b{font-size:7px!important}.dashboard-bt-card .audio-option b{font-size:7px!important}}
-
-/* 5.7.2 reference-style Bluetooth: one slim horizontal strip, not stacked legacy cards */
-#dashboardBluetoothCard.bt-inline-reference{
- display:grid!important;grid-template-columns:minmax(150px,1.05fr) minmax(110px,.8fr) minmax(105px,.72fr) minmax(180px,1.45fr) auto!important;
- align-items:center!important;gap:7px!important;padding:7px 9px!important;margin:10px 0 12px!important;
- border:1px solid #9ee5d5!important;border-radius:15px!important;
- background:linear-gradient(110deg,#f3fffb 0%,#e7faf5 55%,#fbfffe 100%)!important;
- box-shadow:0 3px 12px rgba(0,100,80,.07)!important;min-height:0!important;height:auto!important;
-}
-#dashboardBluetoothCard .bt-inline-brand{display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important}
-#dashboardBluetoothCard .dashboard-bt-icon{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 34px!important;width:34px!important;height:34px!important;border-radius:50%!important;background:#087e69!important;color:white!important;font-size:21px!important;line-height:1!important}
-#dashboardBluetoothCard .dashboard-bt-copy{min-width:0!important;display:flex!important;flex-direction:column!important;gap:2px!important}
-#dashboardBluetoothCard .dashboard-bt-copy strong{font-size:12px!important;line-height:1.1!important;color:#0b433a!important;white-space:nowrap!important}
-#dashboardBluetoothCard .dashboard-bt-copy strong small{font-size:9px!important;font-weight:500!important}
-#dashboardBluetoothCard .dashboard-bt-copy span{font-size:9px!important;line-height:1.1!important;color:#16846f!important}
-#dashboardBluetoothCard .bt-inline-status{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:3px!important;min-width:0!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
-#dashboardBluetoothCard .bt-inline-status .bt-pill{font-size:8px!important;line-height:1.1!important;padding:3px 6px!important;max-width:100%!important;white-space:nowrap!important}
-#dashboardBluetoothCard .bt-inline-status .bt-meta{display:none!important}
-#dashboardBluetoothCard .bt-inline-status #btConnectButton{font-size:8px!important;line-height:1!important;padding:3px 7px!important;min-height:20px!important;border-radius:8px!important}
-#dashboardBluetoothCard .bt-inline-battery{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;min-width:0!important;padding:3px 5px!important;border-left:1px solid #c7eee5!important;border-right:1px solid #c7eee5!important}
-#dashboardBluetoothCard .bt-earbuds-icon{font-size:23px!important;line-height:1!important}
-#dashboardBluetoothCard .bt-inline-levels{display:grid!important;grid-template-columns:auto auto!important;align-items:center!important;column-gap:4px!important;row-gap:3px!important;font-size:9px!important;line-height:1!important;color:#184f45!important}
-#dashboardBluetoothCard .bt-inline-levels span:nth-child(2){display:none!important}
-#dashboardBluetoothCard .bt-inline-levels b{font-size:9px!important;font-weight:700!important}
-#dashboardBluetoothCard .bt-inline-audio{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:0!important;min-width:0!important}
-#dashboardBluetoothCard .bt-inline-audio .audio-option{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;min-width:0!important;min-height:38px!important;padding:4px 3px!important;border:1px solid #c8eee5!important;border-radius:10px!important;background:rgba(255,255,255,.78)!important;color:#087560!important;box-shadow:none!important}
-#dashboardBluetoothCard .bt-inline-audio .audio-option>span{font-size:14px!important;line-height:1!important}
-#dashboardBluetoothCard .bt-inline-audio .audio-option b{font-size:8px!important;line-height:1!important}
-#dashboardBluetoothCard .bt-inline-audio .audio-option small{display:none!important}
-#dashboardBluetoothCard .bt-inline-connect{font-size:8px!important;line-height:1!important;padding:5px 7px!important;min-height:25px!important;white-space:nowrap!important;border-radius:8px!important}
-#dashboardBluetoothCard .bt-small-note,.bt-inline-reference>.earbud-battery-row{display:none!important}
-@media(max-width:600px){
- #dashboardBluetoothCard.bt-inline-reference{grid-template-columns:minmax(0,1.05fr) minmax(82px,.75fr) minmax(72px,.7fr) minmax(120px,1.25fr)!important;gap:4px!important;padding:6px!important;border-radius:13px!important}
- #dashboardBluetoothCard .bt-inline-connect{display:none!important}
- #dashboardBluetoothCard .dashboard-bt-icon{flex-basis:29px!important;width:29px!important;height:29px!important;font-size:18px!important}
- #dashboardBluetoothCard .dashboard-bt-copy strong{font-size:10px!important}
- #dashboardBluetoothCard .dashboard-bt-copy strong small{font-size:8px!important}
- #dashboardBluetoothCard .dashboard-bt-copy span{font-size:8px!important}
- #dashboardBluetoothCard .bt-inline-battery{gap:3px!important;padding:2px 3px!important}
- #dashboardBluetoothCard .bt-earbuds-icon{font-size:19px!important}
- #dashboardBluetoothCard .bt-inline-levels{font-size:8px!important;column-gap:3px!important}
- #dashboardBluetoothCard .bt-inline-levels b{font-size:8px!important}
- #dashboardBluetoothCard .bt-inline-audio{gap:3px!important}
- #dashboardBluetoothCard .bt-inline-audio .audio-option{min-height:32px!important;padding:3px 1px!important;border-radius:8px!important}
- #dashboardBluetoothCard .bt-inline-audio .audio-option>span{font-size:12px!important}
- #dashboardBluetoothCard .bt-inline-audio .audio-option b{font-size:7px!important}
- #dashboardBluetoothCard .bt-inline-status .bt-pill{font-size:7px!important;padding:2px 4px!important}
- #dashboardBluetoothCard .bt-inline-status #btConnectButton{font-size:7px!important;padding:3px 5px!important;min-height:17px!important}
-}
-@media(max-width:390px){
- #dashboardBluetoothCard.bt-inline-reference{grid-template-columns:minmax(95px,1fr) minmax(65px,.65fr) minmax(104px,1fr)!important}
- #dashboardBluetoothCard .bt-inline-status{display:none!important}
- #dashboardBluetoothCard .bt-inline-battery{border-left:1px solid #c7eee5!important;border-right:0!important}
- #dashboardBluetoothCard .bt-inline-audio{grid-column:1/-1!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
-}
-</style>
+</body></html>
