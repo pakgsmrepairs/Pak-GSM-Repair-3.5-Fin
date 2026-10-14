@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'Pak_GSM_Repair_5.7.2_Android_Source_Fixed.zip'
+      - 'Pak_GSM_Repair_5.7.2_Android_Source_Gradle_Fix.zip'
       - '.github/workflows/build-android.yml'
 
 permissions:
@@ -13,7 +13,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -27,53 +26,38 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Set up Gradle
+      - name: Set up Gradle (no wrapper required)
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
 
       - name: Unpack Android project ZIP
         shell: bash
         run: |
-          set -e
-
-          ZIP="Pak_GSM_Repair_5.7.2_Android_Source_Fixed.zip"
+          set -euo pipefail
+          ZIP='Pak_GSM_Repair_5.7.2_Android_Source_Gradle_Fix.zip'
           test -f "$ZIP"
-
           mkdir -p extracted android-project
           unzip -q "$ZIP" -d extracted
-
           PROJECT_DIR="$(find extracted -type f \
             \( -name settings.gradle.kts -o -name settings.gradle \) \
             -print -quit | xargs -r dirname)"
-
           test -n "$PROJECT_DIR"
-          test -f "$PROJECT_DIR/app/build.gradle.kts" || \
-            test -f "$PROJECT_DIR/app/build.gradle"
-
+          test -f "$PROJECT_DIR/app/build.gradle.kts" -o -f "$PROJECT_DIR/app/build.gradle"
           cp -a "$PROJECT_DIR"/. android-project/
 
       - name: Build debug APK
         working-directory: android-project
-        shell: bash
-        run: |
-          set -e
-
-          if [ -f gradlew ]; then
-            chmod +x gradlew
-            ./gradlew --no-daemon assembleDebug
-          else
-            echo "ERROR: Gradle wrapper (gradlew) is missing."
-            exit 1
-          fi
+        run: gradle --no-daemon assembleDebug
 
       - name: Rename APK
         shell: bash
         run: |
-          set -e
-          APK="android-project/app/build/outputs/apk/debug/app-debug.apk"
+          set -euo pipefail
+          APK='android-project/app/build/outputs/apk/debug/app-debug.apk'
           test -f "$APK"
-
           mkdir -p release
-          cp "$APK" "release/Pak-GSM-Repair-5.7.2.apk"
+          cp "$APK" 'release/Pak-GSM-Repair-5.7.2.apk'
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
