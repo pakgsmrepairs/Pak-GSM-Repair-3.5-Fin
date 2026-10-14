@@ -33,7 +33,7 @@ jobs:
 
       - name: Unpack Android project ZIP
         run: |
-          mkdir android-project
+          mkdir -p android-project
           unzip -q Pak_GSM_Repair_5.5_Native_Bluetooth_Android_Source.zip -d android-project
           test -f android-project/settings.gradle.kts
           test -f android-project/app/build.gradle.kts
