@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 4.4.8</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 4.4.9</title><style>
 :root{--g:#0b6b57;--g2:#0f8a6e;--bg:#f2f7f5;--line:#dce8e3;--ink:#132b27;--muted:#63756f;--danger:#9b2118;--card:#fff}
 *{box-sizing:border-box}body{margin:0;font:15px system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
 /* Native mobile text-entry safeguard: keep browser keyboard/IME events unmodified. */
@@ -31,7 +31,7 @@ label{display:block;font-size:12px;font-weight:700;margin:9px 0 4px}label span[a
 .settings-subnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.settings-subnav button.active{background:var(--g);color:white}.settings-panel{margin-bottom:12px}.setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.switch{width:48px;height:27px;accent-color:var(--g);flex:0 0 auto}#downloadUpdate:disabled,#applyUpdate:disabled{opacity:.55;cursor:not-allowed}.update-status{padding:10px;border-radius:10px;background:#edf5f1;margin:10px 0;font-size:13px;overflow-wrap:anywhere}
 
 
-/* Version 4.4.8 settings side drawer */
+/* Version 4.4.9 settings side drawer */
 #settingsBackdrop{position:fixed;inset:0;background:rgba(3,24,19,.48);z-index:1990;display:none}
 #settingsBackdrop.open{display:block}
 #backup.drawer-open{display:block!important;position:fixed;z-index:2000;top:0;right:0;bottom:0;width:min(560px,100vw);max-width:100vw;overflow:auto;background:var(--bg);padding:14px;margin:0;border-left:1px solid var(--line);box-shadow:-16px 0 45px #001b1433;border-radius:0;overscroll-behavior:contain}
@@ -48,6 +48,7 @@ body.large-text{font-size:17px}
 @keyframes pgrLogoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}@keyframes pgrLoad{from{transform:translateX(-20%)}to{transform:translateX(190%)}}
 #pgrNoticeOverlay{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(4,28,22,.42)}#pgrNoticeOverlay.hidden{display:none!important}#pgrNoticeBox{width:min(340px,100%);background:#fff;border:1px solid #d9eee5;border-radius:16px;padding:20px 18px 16px;box-shadow:0 16px 45px #001c14aa;text-align:center;animation:pgrNoticeIn .16s ease-out}#pgrNoticeTitle{margin:0 0 8px;color:#0b6b57;font-size:18px;font-weight:800}#pgrNoticeText{margin:0 0 16px;color:#253b35;font-size:14px;line-height:1.5;overflow-wrap:anywhere}#pgrNoticeOk{min-width:90px;padding:9px 22px;border-radius:9px;background:#0b6b57;color:#fff;font-size:14px;font-weight:700}
 #authEmailStatus{font-size:12px;line-height:1.35;margin:5px 1px 0;min-height:16px;color:var(--muted)}#authEmailStatus.email-error{color:#b42318;font-weight:700}#authEmailStatus.email-good{color:#087443;font-weight:700}#authEmailStatus.email-wait{color:#8a5b00}
+#loginEmailStatus{font-size:12px;line-height:1.35;margin:5px 1px 0;min-height:16px;color:var(--muted)}#loginEmailStatus.email-error{color:#b42318;font-weight:700}#loginEmailStatus.email-good{color:#087443;font-weight:700}#loginEmailStatus.email-wait{color:#8a5b00}
 @keyframes pgrNoticeIn{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.pgr-splash-logo{animation:none}#pgrNoticeBox{animation:none}}
 
@@ -59,11 +60,11 @@ body.large-text{font-size:17px}
 @media(max-width:520px){.dash-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.repair-type-menu{grid-template-columns:repeat(3,minmax(0,1fr))}.dash-heading{padding:12px}.dash-heading h2{font-size:18px}}
 
 
-/* Screenshot-aligned mobile redesign for Pak GSM Repair 4.4.8 */
+/* Screenshot-aligned mobile redesign for Pak GSM Repair 4.4.9 */
 .brand-mark{width:64px;height:64px;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.9);border-radius:13px;margin:0 auto 8px}.brand-mark svg{width:100%;height:100%;padding:5px;box-sizing:border-box;color:#fff}.login-card{background:linear-gradient(180deg,#fff 0%,#f6fbf9 100%);border-radius:22px;border:3px solid #064e3b;padding:18px 16px 16px;box-shadow:0 18px 45px #001e1640}.login-card h2{font-size:23px;letter-spacing:-.4px}.version-pill{float:right;margin-top:-104px;margin-right:1px;background:#0b8068}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;background:#e7f1ef;border-radius:11px;margin:12px 0}.auth-tab{border-radius:8px!important;background:transparent!important;color:#174b40!important;border:0!important}.auth-tab.active{background:linear-gradient(135deg,#086c56,#0b8e6e)!important;color:white!important}.auth-field{margin:9px 0}.auth-field input{border:1px solid #d9e7e2!important;border-radius:9px!important;background:#fff!important;min-height:42px}.guest-view-btn{margin-top:10px;width:100%;border:1px solid #d5e7e0!important;background:#fff!important;color:#075c49!important;min-height:43px}.google-btn{width:100%;min-height:43px;background:#fff!important;color:#16483e!important;border:1px solid #d5e7e0!important;border-radius:10px!important;margin-top:10px}.auth-help,#loginMsg{display:none!important}.login-card #emailAuthPanel .auth-help{display:none!important}#googleButtonWrap{margin-top:8px}.dash-heading{background:linear-gradient(135deg,#075744,#087f68);color:white;border-radius:16px;padding:12px 14px;margin-bottom:12px;align-items:center}.dash-heading h2{color:#fff;margin:0}.dash-heading .muted{color:#d4f1e7;margin:2px 0 0}.dash-brand{display:flex;align-items:center;gap:9px}.dash-logo{display:grid;place-items:center;width:39px;height:39px;border:2px solid #d8f5eb;border-radius:10px;font-size:26px;font-weight:800}.dash-heading>button{background:#fff;color:#075744;white-space:nowrap}.stats{gap:7px}.stat{border:1px solid #dcebe5;border-radius:12px;background:#fff;box-shadow:0 2px 8px #063d2e0a;padding:10px 7px}.stat strong{color:#087b60}.dash-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}.dash-shortcuts button{grid-column:span 1;min-height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border:1px solid #d8e9e2;background:linear-gradient(180deg,#fff,#f6fbf9);border-radius:13px;color:#064e3b;font-size:12px}.dash-shortcuts button:nth-child(1),.dash-shortcuts button:nth-child(2){grid-column:span 2;min-height:92px}.dash-shortcuts button span{font-size:24px;line-height:1;color:#078362}.dash-shortcuts button b{font-weight:700}.repair-type-menu{display:grid;grid-template-columns:1fr;gap:7px}.repair-type-menu button{display:flex;align-items:center;text-align:left;gap:12px;min-height:61px;border:1px solid #dcebe5;border-radius:12px;background:#fff;color:#123f35;padding:9px 12px;box-shadow:0 2px 8px #064e3b08}.repair-type-menu button>span:first-child{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;background:#e4f5ee;border-radius:10px;color:#087e5c;font-size:21px}.repair-copy{display:flex;flex-direction:column;gap:3px}.repair-copy b{font-size:13px}.repair-copy small{font-size:11px;color:#789087}.repair-type-menu button:focus,.repair-type-menu button:hover{border-color:#0b8a69;background:#f4fbf8}.panel{border-color:#e0ece7;box-shadow:0 3px 12px #064e3b08}.tabs{gap:5px}.tab{border-radius:9px!important;font-size:12px;padding:9px 10px!important}@media(min-width:620px){.dash-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr))}.repair-type-menu{grid-template-columns:1fr 1fr}}@media(max-width:390px){.dash-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.dash-shortcuts button{font-size:10px;padding:7px 3px}.dash-shortcuts button:nth-child(1),.dash-shortcuts button:nth-child(2){min-height:84px}.login-card{padding:15px 12px}.login-card h2{font-size:21px}.version-pill{margin-top:-100px}.dash-heading{padding:10px}.dash-heading>button{font-size:11px;padding:8px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 
-/* 4.4.8 update controls: high contrast status and visible download action */
+/* 4.4.9 update controls: high contrast status and visible download action */
 .login-update-buttons{display:flex;gap:8px;margin:6px 0}
 .login-update-buttons button{flex:1;min-width:0;background:#075e4b!important;color:#fff!important;border:1px solid #064b3c!important;font-size:13px}
 .login-update-buttons #loginDownloadUpdate{background:#1459a6!important;border-color:#104985!important;color:#fff!important}
@@ -85,7 +86,7 @@ body.large-text{font-size:17px}
 <div id="loginGate" class="hidden">
  <div class="login-card">
   <div class="brand-mark" aria-label="Pak GSM Repair logo"><img src="./icons/pgr-logo.svg" alt="Pak GSM Repair logo"></div>
-  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v4.4.8</span>
+  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v4.4.9</span>
   <h3 id="authHeading">Welcome Back</h3><p id="authSubheading">Login to continue to your repair shop</p>
   <div id="emailAuthPanel">
    <div id="signupFields" class="hidden">
@@ -98,7 +99,7 @@ body.large-text{font-size:17px}
     <button type="button" id="backToLoginPage" class="secondary" style="width:100%;margin-top:8px">Back to Login</button>
    </div>
    <div id="loginFields">
-    <div class="auth-field"><label for="loginEmail">Email Address *</label><input id="loginEmail" type="email" autocomplete="username" placeholder="Enter your registered email" inputmode="email"></div>
+    <div class="auth-field"><label for="loginEmail">Email Address *</label><input id="loginEmail" type="email" autocomplete="username" placeholder="Enter your registered email" inputmode="email" aria-describedby="loginEmailStatus"><p id="loginEmailStatus" aria-live="polite"></p></div>
     <div class="auth-field"><label for="loginPassword">Password *</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password"></div>
     <button type="button" id="sendLoginOtp" style="width:100%;margin-top:12px">Login</button>
     <button type="button" id="openRegisterPage" class="secondary" style="width:100%;margin-top:8px">Register New Account</button>
@@ -121,7 +122,7 @@ body.large-text{font-size:17px}
   <p id="loginUpdateStatus" class="update-status-login" role="status" aria-live="polite">Check for the latest published version.</p>
  </div>
 </div>
-<header><div><h1>🔧 Pak GSM Repair</h1><p>Version 4.4.8 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
+<header><div><h1>🔧 Pak GSM Repair</h1><p>Version 4.4.9 <span id="who" class="signed"></span></p></div><div class="row" style="flex:0"><button id="openSettings" class="secondary" type="button" aria-label="Open settings" title="Settings" style="font-size:20px;min-width:46px">⚙</button></div></header>
 <main class="wrap">
 
 <div class="stats"><div class="stat"><span>Customers</span><strong id="nC">0</strong></div><div class="stat"><span>Repair jobs</span><strong id="nJ">0</strong></div><div class="stat"><span>Active jobs</span><strong id="nA">0</strong></div><div class="stat"><span>Unpaid (Rs)</span><strong id="nD">0</strong></div></div>
@@ -149,12 +150,12 @@ body.large-text{font-size:17px}
 
 <section id="backup" class="page hidden">
 <div class="panel"><div class="row"><div style="flex:1"><h2 style="margin:0">⚙️ Settings</h2><p class="muted">Manage updates, backup, appearance and sound in one place.</p></div><button id="closeSettings" class="secondary" type="button" aria-label="Close settings" style="flex:0 0 auto">✕</button></div><div class="row" style="margin-top:8px"><button id="signOut" class="secondary" type="button">Sign out</button></div><div class="settings-subnav"><button type="button" class="settings-option active" data-settings="updatePanel">App Update</button><button type="button" class="settings-option" data-settings="backupPanel">Backup &amp; Restore</button><button type="button" class="settings-option" data-settings="appearancePanel">Appearance</button><button type="button" class="settings-option" data-settings="soundPanel">Sound</button></div></div>
-<div id="updatePanel" class="panel settings-panel"><h2>🔄 App Update</h2><p class="muted">Installed version: <b>4.4.8</b>. Updates are checked only when you tap the check button.</p><div id="updateStatus" class="update-status" role="status" aria-live="polite">Tap “Check for Updates” to compare this app with the version published on GitHub.</div><div class="row"><button type="button" id="checkUpdate">🔎 Check for Updates</button><button type="button" id="downloadUpdate" class="secondary" disabled>⬆️ Update App</button></div><button type="button" id="applyUpdate" class="secondary hidden" disabled>Apply Update</button></div>
+<div id="updatePanel" class="panel settings-panel"><h2>🔄 App Update</h2><p class="muted">Installed version: <b>4.4.9</b>. Updates are checked only when you tap the check button.</p><div id="updateStatus" class="update-status" role="status" aria-live="polite">Tap “Check for Updates” to compare this app with the version published on GitHub.</div><div class="row"><button type="button" id="checkUpdate">🔎 Check for Updates</button><button type="button" id="downloadUpdate" class="secondary" disabled>⬆️ Update App</button></div><button type="button" id="applyUpdate" class="secondary hidden" disabled>Apply Update</button></div>
 <div id="appearancePanel" class="panel settings-panel hidden"><h2>Presentation / Appearance</h2><label for="themeSelect">App Theme</label><select id="themeSelect"><option value="light">Light</option><option value="dark">Dark</option><option value="system">Use device setting</option></select><label for="textSizeSelect">Text Size</label><select id="textSizeSelect"><option value="normal">Normal</option><option value="large">Large</option></select><p class="muted">These preferences are saved on this device.</p></div>
 <div id="soundPanel" class="panel settings-panel hidden"><h2>Sound</h2><div class="setting-row"><div><b>Welcome sound and voice</b><div class="muted">Welcome voice/music is used during the login experience. Some browsers require the first tap to start audio.</div></div><input class="switch" id="soundEnabled" type="checkbox" aria-label="Enable welcome sound"></div><p class="muted">Some mobile browsers block automatic audio. If needed, tap once on the logo screen to enable it.</p></div>
 <div id="backupPanel" class="settings-panel"><div class="grid"><div class="panel"><h2>💾 Local Backup</h2><button id="export">Download JSON Backup</button><label>Import JSON Backup</label><input id="file" type="file" accept=".json,application/json"><button id="import" class="secondary">Import Backup</button><p id="bm" class="muted"></p></div>
 <div class="panel"><h2>☁️ Cloud Backup</h2><p class="muted">The public Web App URL and Google Client ID are preconfigured. A Cloud Key is intentionally not embedded in this public package.</p><label>Apps Script Web App URL</label><input id="url" type="url"><label>Cloud Key</label><input id="key" type="password" autocomplete="off"><button id="saveSettings">Save Settings</button> <button id="testConnection" class="secondary">Test Connection</button><div class="row" style="margin-top:10px"><button id="cloudBackup">Back Up to Cloud</button><button id="cloudRestore" class="secondary">Restore from Cloud</button></div><p id="cm" class="muted"></p></div></div></div></section>
-<p class="muted" style="text-align:center;padding:20px">Pak GSM Repair 4.4.8 · Preview</p>
+<p class="muted" style="text-align:center;padding:20px">Pak GSM Repair 4.4.9 · Preview</p>
 </main>
 <div id="settingsBackdrop" aria-hidden="true"></div>
 <div id="restoreConfirm" class="modal hidden"><div class="box" style="max-width:430px;text-align:center"><h2 style="margin-top:0">Restore Backup</h2><p class="muted">Google Drive backup will replace your current local records. This action changes the data currently stored on this device.</p><div class="row"><button type="button" id="restoreCancel" class="secondary">✕ Cancel</button><button type="button" id="restoreOk">✓ OK</button></div></div></div>
@@ -239,7 +240,7 @@ function sellProduct(x){let p=db.products.find(p=>p.id===x);if(!p)return;let q=M
 function renderProducts(){let el=document.querySelector('#products');if(!el)return;el.innerHTML=db.products.length?db.products.map(p=>'<div class="product">'+(p.image?'<img src="'+esc(p.image)+'" alt="">':'<div style="height:150px;background:#edf5f1;display:flex;align-items:center;justify-content:center;font-size:45px">🧰</div>')+'<div class="body"><b>'+esc(p.name)+'</b><div class="muted">'+esc(p.sku)+' · Stock '+p.stock+'</div><p>'+esc(p.description||'')+'</p><strong>Rs '+money(p.price)+'</strong><div style="margin-top:8px"><button onclick="showProduct(\''+esc(p.id)+'\')">Edit</button> <button class="secondary" onclick="sellProduct(\''+esc(p.id)+'\')">Record Sale</button></div></div></div>').join(''):'<div class="empty">No products yet. Add your first tool/part/product.</div>'}
 function renderSales(){let el=document.querySelector('#sales');if(!el)return;el.innerHTML=db.sales.length?table(['Date','Product','Qty','Price','Total'],db.sales.map(s=>[new Date(s.createdAt).toLocaleString('en-PK'),esc(s.product),s.qty,'Rs '+money(s.price),'Rs '+money(s.total)])):'<div class="empty">No sales recorded.</div>'}
 document.querySelector('#globalSearch').addEventListener('input',render);
-document.querySelector('#export').onclick=()=>{let b={app:'Pak GSM Repair',version:'4.4.8',exportedAt:new Date().toISOString(),data:db},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(b,null,2)],{type:'application/json'}));a.download='pak-gsm-repair-4.4.8-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click()};
+document.querySelector('#export').onclick=()=>{let b={app:'Pak GSM Repair',version:'4.4.9',exportedAt:new Date().toISOString(),data:db},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(b,null,2)],{type:'application/json'}));a.download='pak-gsm-repair-4.4.9-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click()};
 document.querySelector('#import').onclick=async()=>{let f=document.querySelector('#file').files[0];if(!f){alert('Select a JSON file first.');return}try{let x=JSON.parse(await f.text()),d=x.data||x;if(!Array.isArray(d.customers)||!Array.isArray(d.jobs)||!Array.isArray(d.inventory))throw Error('Invalid backup');db=Object.assign(blank(),d);persist();document.querySelector('#bm').textContent='Backup imported.'}catch(e){alert('Import failed: '+e.message)}};
 function settings(){try{return JSON.parse(localStorage.getItem(S)||'{}')}catch(e){return {}}}function deviceId(){let v=localStorage.getItem(D);if(!v){v='pgsm-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);localStorage.setItem(D,v)}return v}
 let st=settings();document.querySelector('#url').value=st.url||window.PGR_CLOUD_BACKUP_URL||'';document.querySelector('#key').value=st.key||'';document.querySelector('#soundEnabled').checked=st.soundOn!==false;
@@ -251,7 +252,7 @@ applyAppearance();
 document.querySelector('#themeSelect').addEventListener('change',()=>{const s=settings();s.theme=document.querySelector('#themeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 document.querySelector('#textSizeSelect').addEventListener('change',()=>{const s=settings();s.textSize=document.querySelector('#textSizeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if((settings().theme||'light')==='system')applyAppearance()})}
-const APP_VERSION='4.4.8';
+const APP_VERSION='4.4.9';
 // Login-page update check. It now exposes Download & Apply directly on the login page.
 (function initLoginUpdateCheck(){
  const btn=document.getElementById('loginCheckUpdate'),dl=document.getElementById('loginDownloadUpdate'),out=document.getElementById('loginUpdateStatus');
@@ -374,6 +375,43 @@ function initLogin(){
  document.querySelector('#openRegisterPage').addEventListener('click',()=>{chooseAuth('signin');document.querySelector('#authName').focus({preventScroll:true});});
  document.querySelector('#backToLoginPage').addEventListener('click',()=>chooseAuth('login'));
  const msg=document.querySelector('#loginMsg');
+ // Check the login email against the server while the user types.
+ const loginEmailInput=document.querySelector('#loginEmail');
+ const loginEmailStatus=document.querySelector('#loginEmailStatus');
+ let loginEmailTimer=null,loginEmailCheckSeq=0;
+ function showLoginEmailStatus(message,kind=''){
+  loginEmailStatus.textContent=message;
+  loginEmailStatus.className=kind;
+ }
+ async function checkLoginEmailOnServer(){
+  const email=(loginEmailInput.value||'').trim().toLowerCase();
+  const seq=++loginEmailCheckSeq;
+  if(!email){showLoginEmailStatus('');return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+   showLoginEmailStatus('Please enter a valid email address.','email-error');return;
+  }
+  showLoginEmailStatus('Checking email on server…','email-wait');
+  try{
+   const result=await otpServerCall('checkEmail',email);
+   if(seq!==loginEmailCheckSeq)return;
+   if(!result||result.ok!==true){
+    showLoginEmailStatus('Email check is temporarily unavailable.','email-wait');
+   }else if(result.exists===true||result.registered===true||result.accountExists===true){
+    showLoginEmailStatus('✓ This email is registered.','email-good');
+   }else if(result.exists===false||result.registered===false||result.accountExists===false||result.available===true){
+    showLoginEmailStatus('✗ No account is registered with this email.','email-error');
+   }else{
+    showLoginEmailStatus('Could not confirm this email with the server.','email-wait');
+   }
+  }catch(error){
+   if(seq===loginEmailCheckSeq)showLoginEmailStatus('Could not verify email with the server.','email-wait');
+  }
+ }
+ loginEmailInput.addEventListener('input',()=>{
+  clearTimeout(loginEmailTimer);
+  loginEmailTimer=setTimeout(checkLoginEmailOnServer,550);
+ });
+ loginEmailInput.addEventListener('change',checkLoginEmailOnServer);
  document.querySelector('#pgrNoticeOk').onclick=closeAuthPopup;
  document.querySelector('#pgrNoticeOverlay').addEventListener('click',e=>{if(e.target.id==='pgrNoticeOverlay')closeAuthPopup()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.querySelector('#pgrNoticeOverlay').classList.contains('hidden'))closeAuthPopup()});
@@ -395,22 +433,21 @@ function initLogin(){
    if(password!==document.querySelector('#authConfirmPassword').value){showAuthPopup('Password and confirm password do not match.','Check your password');return}
   }else if(password.length<4){showAuthPopup('Enter your registered password (at least 4 characters).','Check your password');return}
   if(signup&&emailAlreadyExists){showAuthPopup('This email is already registered on the server. Please use a different email address.','Email already exists');return}
-  const b=document.querySelector(signup?'#sendEmailOtp':'#sendLoginOtp');b.disabled=true;msg.textContent=signup?'Checking account and sending OTP…':'Checking your account…';
+  const b=document.querySelector(signup?'#sendEmailOtp':'#sendLoginOtp');b.disabled=true;msg.textContent=signup?'Checking account and sending OTP…':'Checking your password…';
   try{
    const passwordHash=await passwordDigest(password);
    if(!signup){
     const account=await otpServerCall('loginAccount',email,'',{passwordHash});
-    if(!account||!account.ok)throw new Error('Wrong email or password. Please check your details and try again.');
-    unlock({email:email,name:account.name||email,sub:'email-password'});
-    return;
+    if(!account||!account.ok)throw new Error(account?.error||'Login failed. Please try again.');
+    // A correct password is not enough to open the app: require a fresh email OTP.
    }
    const r=await otpServerCall('sendOtp',email);
    if(!r||!r.ok)throw new Error(r?.error||'OTP request was not accepted.');
    pendingOtpEmail=email;
    document.querySelector('#signupFields').classList.add('hidden');document.querySelector('#loginFields').classList.add('hidden');
    document.querySelector('#otpStep').classList.remove('hidden');
-   document.querySelector('#otpStepText').textContent='A 6-digit code was sent to '+email+'. Check your inbox and spam folder. The code expires in 5 minutes.';
-   document.querySelector('#authEmailOtp').value='';document.querySelector('#authEmailOtp').focus();msg.textContent='OTP sent. Enter the code below to continue.';
+   document.querySelector('#otpStepText').textContent=(signup?'A 6-digit code was sent to ':'Password accepted. For security, a 6-digit login code was sent to ')+email+'. Check your inbox and spam folder. The code expires in 5 minutes.';
+   document.querySelector('#authEmailOtp').value='';document.querySelector('#authEmailOtp').focus();msg.textContent=signup?'OTP sent. Enter the code below to complete registration.':'Password accepted. Enter the email OTP to finish signing in.';
   }catch(e){showAuthPopup(e.message,'Login failed');msg.textContent='Could not continue: '+e.message}
   finally{b.disabled=false}
  }

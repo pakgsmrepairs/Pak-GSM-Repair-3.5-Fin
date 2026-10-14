@@ -4,8 +4,8 @@
  * Script Properties required: CLOUD_KEY
  */
 const APP_NAME = 'Pak GSM Repair';
-const APP_VERSION = '4.4.8';
-const BACKUP_FOLDER = 'Pak GSM Repair 4.4.8 Backups';
+const APP_VERSION = '4.4.9';
+const BACKUP_FOLDER = 'Pak GSM Repair 4.4.9 Backups';
 const MAX_BODY = 8 * 1024 * 1024;
 const OWNER_EMAIL = 'pakgsmrepairs@gmail.com';
 
@@ -284,11 +284,24 @@ function registerAccount_(email, name, phone, passwordHash) {
   } finally {lock.releaseLock();}
 }
 function loginAccount_(email, passwordHash) {
-  email=String(email||'').trim().toLowerCase();passwordHash=String(passwordHash||'').trim();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[a-f0-9]{64}$/i.test(passwordHash))return {ok:false,error:'Email or password is incorrect.'};
-  const rec=accountRecord_(email);if(!rec||!rec.salt||!rec.passwordHash)return {ok:false,error:'No registered account found for this email. Please Sign In first.'};
-  if(accountPasswordHash_(passwordHash,rec.salt)!==rec.passwordHash)return {ok:false,error:'Email or password is incorrect.'};
-  return {ok:true,email:rec.email,name:rec.name,phone:rec.phone};
+  email = String(email || '').trim().toLowerCase();
+  passwordHash = String(passwordHash || '').trim();
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, code: 'INVALID_EMAIL', error: 'Please enter a valid email address.' };
+  }
+  if (!/^[a-f0-9]{64}$/i.test(passwordHash)) {
+    return { ok: false, code: 'INVALID_PASSWORD_FORMAT', error: 'Please enter your password correctly.' };
+  }
+
+  const rec = accountRecord_(email);
+  if (!rec || !rec.salt || !rec.passwordHash) {
+    return { ok: false, code: 'EMAIL_NOT_REGISTERED', error: 'No account is registered with this email address.' };
+  }
+  if (accountPasswordHash_(passwordHash, rec.salt) !== rec.passwordHash) {
+    return { ok: false, code: 'WRONG_PASSWORD', error: 'Wrong password. Please try again.' };
+  }
+  return { ok: true, email: rec.email, name: rec.name, phone: rec.phone };
 }
 
 /**
@@ -308,7 +321,7 @@ function testSendEmail() {
   }
   MailApp.sendEmail({
     to: recipient,
-    subject: 'Pak GSM Repair 4.4.8 - Email Delivery Test',
+    subject: 'Pak GSM Repair 4.4.9 - Email Delivery Test',
     body: 'Pak GSM Repair Email Test\n\n' +
       'This is a test email from your Google Apps Script server.\n' +
       'If you received this message, the email sending request was accepted.\n\n' +

@@ -1,10 +1,14 @@
-# Pak GSM Repair Pro 4.4.8
+# Pak GSM Repair Pro 4.4.9
 
 Mobile repair-shop workspace with customer records, repair jobs, File Vault, Parts Availability, settings, local backup/restore, and a user-triggered GitHub Pages update flow.
 
 ## GitHub Pages setup
 
 See `SETUP_GITHUB.md`. Upload the extracted **contents** to the repository root, not a nested folder. `update.json` must be published beside `index.html`.
+
+## Important: first install this updater fix manually
+
+BOOTSTRAP FIX: This release addresses a stale 4.4.7 service worker and leftover partial staging caches. Do not apply this bootstrap ZIP using the old in-app updater. Extract it and upload/replace every file directly in the GitHub repository root, then commit and wait for GitHub Pages to publish. Open the published HTTPS site in Chrome once, wait a few seconds, close all app/site tabs, and reopen it. The new worker skips the waiting phase, takes control, and removes old app/staging caches while preserving localStorage customer data. The worker migration itself must be bootstrapped by publishing these files to GitHub; an old cached app cannot reliably self-replace its own broken updater.
 
 ## Manual update flow
 
