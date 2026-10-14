@@ -1,4 +1,4 @@
 {
-  "version": "4.4.9",
-  "changelog": "4.4.9 Google registration flow fix: Google sign-in now opens the required registration form; users must provide mobile number, password and confirmation, then verify email OTP before entering the app."
+  "version": "5.0",
+  "changelog": "5.0: password login without OTP; shop logo picker and top repair status lookup."
 }

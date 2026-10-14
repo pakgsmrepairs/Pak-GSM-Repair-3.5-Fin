@@ -1,7 +1,7 @@
 /* Pak GSM Repair PWA worker.
    App shell is cache-first: a published GitHub change is NOT served until the user
    checks for an update, downloads the release, and approves the restart. */
-const CACHE_NAME = 'pak-gsm-repair-v4.4.9-login-no-otp';
+const CACHE_NAME = 'pak-gsm-repair-v5.0.1-shop-logo-status';
 const STAGING_CACHE = 'pgr-update-staging';
 const APP_SHELL = [
   './', './index.html', './manifest.json', './update.json', './cloud-config.js',
@@ -51,7 +51,7 @@ self.addEventListener('fetch', event => {
 
   // Critical updater fix: update downloads carry release/download query parameters.
   // Bypass this worker's cache-first app-shell logic for those requests, otherwise
-  // the old worker can return the old cached 4.4.7 files during a 4.4.9 download.
+  // the old worker can return the old cached 4.4.7 files during a 5.0 download.
   if (url.searchParams.has('release') && url.searchParams.has('download')) {
     event.respondWith(fetch(new Request(req, { cache: 'no-store' })));
     return;
