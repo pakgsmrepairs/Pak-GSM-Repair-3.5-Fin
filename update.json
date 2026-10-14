@@ -1,4 +1,4 @@
 {
-  "version": "5.0",
-  "changelog": "5.0: password login without OTP; shop logo picker and top repair status lookup."
+  "version": "5.1",
+  "changelog": "5.1: fixed async login handler syntax; login button shows loading and Welcome to Pak GSM Repair before opening dashboard. Login remains email/password only; registration OTP retained."
 }

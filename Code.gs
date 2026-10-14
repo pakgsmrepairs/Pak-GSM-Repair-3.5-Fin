@@ -5,7 +5,7 @@
  */
 const APP_NAME = 'Pak GSM Repair';
 const APP_VERSION = '5.0';
-const BACKUP_FOLDER = 'Pak GSM Repair 5.0 Backups';
+const BACKUP_FOLDER = 'Pak GSM Repair 5.1 Backups';
 const MAX_BODY = 8 * 1024 * 1024;
 const OWNER_EMAIL = 'pakgsmrepairs@gmail.com';
 
@@ -321,7 +321,7 @@ function testSendEmail() {
   }
   MailApp.sendEmail({
     to: recipient,
-    subject: 'Pak GSM Repair 5.0 - Email Delivery Test',
+    subject: 'Pak GSM Repair 5.1 - Email Delivery Test',
     body: 'Pak GSM Repair Email Test\n\n' +
       'This is a test email from your Google Apps Script server.\n' +
       'If you received this message, the email sending request was accepted.\n\n' +
