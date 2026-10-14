@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'Pak_GSM_Repair_5.5_Native_Bluetooth_Android_Source.zip'
-      - '.github/workflows/build-apk.yml'
+      - '          path: ${{ env.ANDROID_PROJECT_DIR }}/app/build/outputs/apk/debug/app-debug.apk
 
 permissions:
   contents: read
@@ -38,8 +37,8 @@ jobs:
           test -f android-project/settings.gradle.kts
           test -f android-project/app/build.gradle.kts
 
-      - name: Build debug APK
-        working-directory: android-project
+      -       - name: Build debug APK
+        working-directory: ${{ env.ANDROID_PROJECT_DIR }}
         run: gradle --no-daemon assembleDebug
 
       - name: Upload debug APK
