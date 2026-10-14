@@ -462,7 +462,7 @@ function initLogin(){
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(password));
   return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
  }
- async async function requestOtp(mode){
+ async function requestOtp(mode){
   const signup=mode==='signin';
   const email=(document.querySelector(signup?'#authEmail':'#loginEmail').value||'').trim().toLowerCase();
   const password=document.querySelector(signup?'#authPassword':'#loginPassword').value||'';
