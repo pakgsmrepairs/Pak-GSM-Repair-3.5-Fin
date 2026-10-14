@@ -1,10 +1,11 @@
-name: Build Pak GSM Repair 5.5 Android APK
+name: Build Pak GSM Repair 5.7.2 Android APK
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - '          path: ${{ env.ANDROID_PROJECT_DIR }}/app/build/outputs/apk/debug/app-debug.apk
+      - 'Pak_GSM_Repair_5.7.2_Android_Source_Fixed.zip'
+      - '.github/workflows/build-android.yml'
 
 permissions:
   contents: read
@@ -12,6 +13,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -27,24 +29,56 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
 
       - name: Unpack Android project ZIP
+        shell: bash
         run: |
-          mkdir -p android-project
-          unzip -q Pak_GSM_Repair_5.5_Native_Bluetooth_Android_Source.zip -d android-project
-          test -f android-project/settings.gradle.kts
-          test -f android-project/app/build.gradle.kts
+          set -e
 
-      -       - name: Build debug APK
-        working-directory: ${{ env.ANDROID_PROJECT_DIR }}
-        run: gradle --no-daemon assembleDebug
+          ZIP="Pak_GSM_Repair_5.7.2_Android_Source_Fixed.zip"
+          test -f "$ZIP"
 
-      - name: Upload debug APK
+          mkdir -p extracted android-project
+          unzip -q "$ZIP" -d extracted
+
+          PROJECT_DIR="$(find extracted -type f \
+            \( -name settings.gradle.kts -o -name settings.gradle \) \
+            -print -quit | xargs -r dirname)"
+
+          test -n "$PROJECT_DIR"
+          test -f "$PROJECT_DIR/app/build.gradle.kts" || \
+            test -f "$PROJECT_DIR/app/build.gradle"
+
+          cp -a "$PROJECT_DIR"/. android-project/
+
+      - name: Build debug APK
+        working-directory: android-project
+        shell: bash
+        run: |
+          set -e
+
+          if [ -f gradlew ]; then
+            chmod +x gradlew
+            ./gradlew --no-daemon assembleDebug
+          else
+            echo "ERROR: Gradle wrapper (gradlew) is missing."
+            exit 1
+          fi
+
+      - name: Rename APK
+        shell: bash
+        run: |
+          set -e
+          APK="android-project/app/build/outputs/apk/debug/app-debug.apk"
+          test -f "$APK"
+
+          mkdir -p release
+          cp "$APK" "release/Pak-GSM-Repair-5.7.2.apk"
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-5.5-debug-APK
-          path: android-project/app/build/outputs/apk/debug/app-debug.apk
+          name: Pak-GSM-Repair-5.7.2-APK
+          path: release/Pak-GSM-Repair-5.7.2.apk
           if-no-files-found: error
           retention-days: 14
