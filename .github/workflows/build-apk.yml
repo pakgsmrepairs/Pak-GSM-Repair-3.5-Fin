@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'Pak_GSM_Repair_5.7.2_Android_Source_Gradle_Fix.zip'
+      - 'Pak_GSM_Repair_5.7.3_Bluetooth_Button_Fix.zip'
       - '.github/workflows/build-android.yml'
 
 permissions:
@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ZIP='Pak_GSM_Repair_5.7.2_Android_Source_Gradle_Fix.zip'
+          ZIP='Pak_GSM_Repair_5.7.3_Bluetooth_Button_Fix.zip'
           test -f "$ZIP"
           mkdir -p extracted android-project
           unzip -q "$ZIP" -d extracted
@@ -62,7 +62,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-5.7.2-APK
-          path: release/Pak-GSM-Repair-5.7.2.apk
+          name: Pak-GSM-Repair-5.7.3-APK
+          path: release/Pak-GSM-Repair-5.7.3.apk
           if-no-files-found: error
           retention-days: 14
