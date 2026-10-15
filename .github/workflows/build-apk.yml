@@ -57,7 +57,7 @@ jobs:
           APK='android-project/app/build/outputs/apk/debug/app-debug.apk'
           test -f "$APK"
           mkdir -p release
-          cp "$APK" 'release/Pak-GSM-Repair-5.7.2.apk'
+          cp "$APK" 'release/Pak-GSM-Repair-5.7.3.apk'
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
