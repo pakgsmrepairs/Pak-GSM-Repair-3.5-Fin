@@ -1,4 +1,4 @@
 {
-  "version": "5.7.2",
-  "changelog": "5.7.2: compact shop-first header; Pak GSM Repair app name moved to a small secondary line; registered shop name is prominent with shop logo beside it; shop cover photo remains available; migrated saved shop identity; version metadata aligned across release files."
+  "version": "5.7.4",
+  "changelog": "5.7.4 PWA test: restore compact Bluetooth Connect controls on small screens; test browser/native device selection before Android APK changes."
 }
