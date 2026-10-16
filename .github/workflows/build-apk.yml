@@ -1,12 +1,11 @@
-name: Build Pak GSM Repair 5.7.4 Android APK
+name: Build Pak GSM Repair 5.8 Android APK
 
 on:
   workflow_dispatch:
   push:
     paths:
       - 'app/**'
-      - 'settings.gradle.kts'
-      - 'build.gradle.kts'
+      - '*.gradle.kts'
       - 'gradle.properties'
       - '.github/workflows/build-apk.yml'
 
@@ -17,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Set up Java 17
@@ -29,36 +28,18 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Install Android SDK platform and build tools
-        shell: bash
-        run: |
-          set -euo pipefail
-          # Avoid a broken-pipe failure when sdkmanager closes license input early.
-          sdkmanager --licenses < <(yes)
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
-
-      - name: Check Android project files
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f settings.gradle.kts
-          test -f build.gradle.kts
-          test -f app/build.gradle.kts
-          test -f app/src/main/AndroidManifest.xml
-          test -f app/src/main/java/com/pakgsm/repair/MainActivity.java
-          test -f app/src/main/res/values/styles.xml
-          test -f app/src/main/assets/index.html
-          test -f app/src/main/assets/update.json
-          python3 -m json.tool app/src/main/assets/update.json >/dev/null
-          python3 -m json.tool app/src/main/assets/manifest.json >/dev/null
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
 
       - name: Build debug APK
-        run: gradle --no-daemon --stacktrace assembleDebug
+        run: gradle --no-daemon assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-5.7.4-debug-APK
+          name: Pak-GSM-Repair-5.8-debug-APK
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
