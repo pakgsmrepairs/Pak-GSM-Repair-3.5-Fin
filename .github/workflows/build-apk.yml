@@ -4,8 +4,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'Pak_GSM_Repair_5.7.4_Bluetooth_Compact_Permission_Fix.zip'
-      - '.github/workflows/build-android.yml'
+      - 'app/**'
+      - '*.gradle.kts'
+      - 'gradle.properties'
+      - '.github/workflows/build-apk.yml'
 
 permissions:
   contents: read
@@ -14,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Set up Java 17
@@ -26,43 +28,18 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Set up Gradle (no wrapper required)
+      - name: Set up Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Unpack Android project ZIP
-        shell: bash
-        run: |
-          set -euo pipefail
-          ZIP='Pak_GSM_Repair_5.7.4_Bluetooth_Compact_Permission_Fix.zip'
-          test -f "$ZIP"
-          mkdir -p extracted android-project
-          unzip -q "$ZIP" -d extracted
-          PROJECT_DIR="$(find extracted -type f \
-            \( -name settings.gradle.kts -o -name settings.gradle \) \
-            -print -quit | xargs -r dirname)"
-          test -n "$PROJECT_DIR"
-          test -f "$PROJECT_DIR/app/build.gradle.kts" -o -f "$PROJECT_DIR/app/build.gradle"
-          cp -a "$PROJECT_DIR"/. android-project/
-
       - name: Build debug APK
-        working-directory: android-project
         run: gradle --no-daemon assembleDebug
 
-      - name: Rename APK
-        shell: bash
-        run: |
-          set -euo pipefail
-          APK='android-project/app/build/outputs/apk/debug/app-debug.apk'
-          test -f "$APK"
-          mkdir -p release
-          cp "$APK" 'release/Pak-GSM-Repair-5.7.4.apk'
-
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-5.7.4-APK
-          path: release/Pak-GSM-Repair-5.7.4.apk
+          name: Pak-GSM-Repair-5.7.4-debug-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
