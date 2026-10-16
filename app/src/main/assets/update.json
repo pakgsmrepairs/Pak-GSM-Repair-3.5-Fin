@@ -1,0 +1,4 @@
+{
+  "version": "5.7.4",
+  "changelog": "5.7.4: aligns embedded app version metadata and fixes the update restart URL to load index.html instead of an asset directory. Bluetooth discovery remains subject to Android device visibility and device-specific capabilities."
+}
