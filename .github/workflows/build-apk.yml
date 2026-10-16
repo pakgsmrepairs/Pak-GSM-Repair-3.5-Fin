@@ -30,7 +30,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          yes | sdkmanager --licenses >/dev/null
+          # Process substitution avoids pipefail treating `yes`'s expected SIGPIPE
+          # as a failure when sdkmanager closes stdin after accepting licenses.
+          sdkmanager --licenses < <(yes)
           sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
 
       - name: Set up Gradle 8.9
