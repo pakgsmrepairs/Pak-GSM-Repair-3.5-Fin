@@ -1,0 +1,44 @@
+PAK GSM REPAIR 5.6 — Apps Script backend fields patch (Urdu instructions)
+
+اہم: صرف GitHub کی Code.gs فائل بدلنے سے live Google Apps Script خود بخود update نہیں ہوتی۔
+آپ کو اسی Apps Script پروجیکٹ میں Code.gs میں یہ تبدیلیاں کر کے Deploy > Manage deployments > Edit > New version > Deploy کرنا ہوگا۔
+پہلے موجودہ Code.gs کی backup copy ضرور رکھیں۔
+
+1) doGet(e) میں registerAccount والی لائن تلاش کریں:
+result = registerAccount_(params.email, params.name, params.phone, params.passwordHash);
+
+اسے اس لائن سے بدلیں:
+result = registerAccount_(params.email, params.name, params.phone, params.passwordHash, params.username, params.shopName);
+
+2) function signature تلاش کریں:
+function registerAccount_(email, name, phone, passwordHash) {
+
+اسے بدلیں:
+function registerAccount_(email, name, phone, passwordHash, username, shopName) {
+
+3) اس function کے شروع میں جہاں email/name/phone/passwordHash کو String میں بدلا جاتا ہے، وہاں یہ دو لائنیں بھی شامل کریں:
+username = String(username || '').trim().slice(0, 40);
+shopName = String(shopName || '').trim().slice(0, 100);
+
+4) موجودہ validation کے بعد (اور OTP verification سے پہلے) یہ validation شامل کریں:
+if (!/^[A-Za-z0-9._-]{3,40}$/.test(username)) return {ok:false,error:'Username must be 3–40 characters using letters, numbers, dot, underscore or hyphen.'};
+if (!shopName) return {ok:false,error:'Shop name is required.'};
+
+5) registerAccount_ میں account record کے اندر:
+const rec={email:email,name:name,phone:phone,salt:salt,passwordHash:accountPasswordHash_(passwordHash,salt),createdAt:new Date().toISOString(),verified:true};
+
+اسے بدلیں:
+const rec={email:email,name:name,username:username,shopName:shopName,phone:phone,salt:salt,passwordHash:accountPasswordHash_(passwordHash,salt),createdAt:new Date().toISOString(),verified:true};
+
+6) registerAccount_ کے کامیاب جواب میں username اور shopName بھی واپس کریں:
+return {ok:true,email:email,name:name,username:username,shopName:shopName,message:'Account registered.'};
+
+7) loginAccount_ کے کامیاب جواب کو بدلیں:
+return { ok: true, email: rec.email, name: rec.name, phone: rec.phone };
+
+اس سے:
+return { ok: true, email: rec.email, name: rec.name, username: rec.username || '', shopName: rec.shopName || '', phone: rec.phone };
+
+8) Deploy کرنے کے بعد Apps Script کا /exec URL وہی ہونا چاہیے جو app کے cloud-config.js میں موجود ہے۔ اگر نیا deployment URL بنے تو cloud-config.js میں PGR_OTP_SERVER_URL بھی اپڈیٹ کریں۔
+
+نوٹ: یہ تبدیلیاں نئے رجسٹر ہونے والے اکاؤنٹس میں username اور shopName سرور پر محفوظ کرتی ہیں۔ پرانے اکاؤنٹس کے لیے الگ profile-update action درکار ہوگا۔ Shop cover photo فی الحال اسی ڈیوائس پر محفوظ ہوتی ہے؛ اسے Google Drive/server پر محفوظ کرنے کے لیے الگ محفوظ upload API بنانی ہوگی۔
