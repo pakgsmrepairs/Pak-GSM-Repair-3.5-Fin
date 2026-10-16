@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,8 @@ import androidx.webkit.WebViewClientCompat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.LinkedHashMap;
+import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +37,16 @@ public class MainActivity extends Activity {
     private final Map<String, BluetoothDevice> discovered = new LinkedHashMap<>();
     private BroadcastReceiver discoveryReceiver;
     private WebViewAssetLoader assetLoader;
+    private final Set<String> connectedAddresses = new HashSet<>();
+    private final Map<Integer, BluetoothProfile> profileProxies = new HashMap<>();
+    private final BluetoothProfile.ServiceListener profileListener = new BluetoothProfile.ServiceListener() {
+        @Override public void onServiceConnected(int profile, BluetoothProfile proxy) {
+            synchronized (connectedAddresses) { profileProxies.put(profile, proxy); refreshConnectedAddressesLocked(); }
+        }
+        @Override public void onServiceDisconnected(int profile) {
+            synchronized (connectedAddresses) { profileProxies.remove(profile); refreshConnectedAddressesLocked(); }
+        }
+    };
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +78,7 @@ public class MainActivity extends Activity {
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html");
         registerDiscoveryReceiver();
         requestBluetoothPermissionsIfNeeded();
+        refreshBluetoothProfiles();
     }
 
     private void requestBluetoothPermissionsIfNeeded() {
@@ -97,15 +111,37 @@ public class MainActivity extends Activity {
             boolean ok=grantResults.length>0;
             for(int result:grantResults) if(result!=PackageManager.PERMISSION_GRANTED) ok=false;
             Toast.makeText(this, ok?"Bluetooth permission granted":"Bluetooth permission is needed for device discovery", Toast.LENGTH_SHORT).show();
+            if(ok) refreshBluetoothProfiles();
         }
     }
     @Override protected void onDestroy() {
         try { if(adapter!=null && adapter.isDiscovering()) adapter.cancelDiscovery(); } catch(Exception ignored) {}
+        try { for(BluetoothProfile proxy : profileProxies.values()) adapter.closeProfileProxy(profileProxies.entrySet().stream().filter(e -> e.getValue()==proxy).map(Map.Entry::getKey).findFirst().orElse(-1), proxy); } catch(Exception ignored) {}
         try { if(discoveryReceiver!=null) unregisterReceiver(discoveryReceiver); } catch(Exception ignored) {}
         if(webView!=null) webView.destroy();
         super.onDestroy();
     }
     @Override public void onBackPressed() { if(webView!=null && webView.canGoBack()) webView.goBack(); else super.onBackPressed(); }
+
+    private void refreshBluetoothProfiles() {
+        if(adapter==null) return;
+        try {
+            if(Build.VERSION.SDK_INT>=31 && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)!=PackageManager.PERMISSION_GRANTED) return;
+            adapter.getProfileProxy(this, profileListener, BluetoothProfile.HEADSET);
+            adapter.getProfileProxy(this, profileListener, BluetoothProfile.A2DP);
+            if(Build.VERSION.SDK_INT>=33) adapter.getProfileProxy(this, profileListener, BluetoothProfile.LE_AUDIO);
+        } catch(Exception ignored) {}
+    }
+    private void refreshConnectedAddressesLocked() {
+        connectedAddresses.clear();
+        for(BluetoothProfile proxy : profileProxies.values()) {
+            try { for(BluetoothDevice device : proxy.getConnectedDevices()) { String address=safeAddressStatic(device); if(!address.isEmpty()) connectedAddresses.add(address); } }
+            catch(Exception ignored) {}
+        }
+    }
+    private static String safeAddressStatic(BluetoothDevice device) {
+        try { String address=device.getAddress(); return address==null?"":address; } catch(Exception e) { return ""; }
+    }
 
     public class NativeBluetoothBridge {
         @JavascriptInterface public void requestBluetoothPermissions() {
@@ -160,6 +196,7 @@ public class MainActivity extends Activity {
                 if(Build.VERSION.SDK_INT>=31 && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)!=PackageManager.PERMISSION_GRANTED){result.put("error","Bluetooth permission is not granted. Allow Nearby devices permission, then try again.");return result.toString();}
                 if(adapter==null){result.put("error","This phone does not provide Bluetooth.");return result.toString();}
                 if(!adapter.isEnabled()){result.put("error","Bluetooth is off. Turn Bluetooth on in Android settings, then try again.");return result.toString();}
+                synchronized (connectedAddresses) { refreshConnectedAddressesLocked(); }
                 Map<String,BluetoothDevice> all=new LinkedHashMap<>();
                 Set<BluetoothDevice> bonded=adapter.getBondedDevices();
                 for(BluetoothDevice d:bonded) all.put(d.getAddress(),d);
@@ -190,8 +227,7 @@ public class MainActivity extends Activity {
         private boolean isConnected(BluetoothDevice d) {
             try {
                 if(Build.VERSION.SDK_INT>=31 && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)!=PackageManager.PERMISSION_GRANTED) return false;
-                // Android does not expose a universal public per-device profile state without profile proxies.
-                return false;
+                synchronized (connectedAddresses) { return connectedAddresses.contains(d.getAddress()); }
             } catch(Exception e){return false;}
         }
         private String safeName(BluetoothDevice d){try{String n=d.getName();return n==null||n.trim().isEmpty()?"Unknown Bluetooth device":n;}catch(Exception e){return "Bluetooth device";}}
