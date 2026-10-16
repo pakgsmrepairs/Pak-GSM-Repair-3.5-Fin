@@ -32,13 +32,10 @@ jobs:
       - name: Install Android SDK platform and build tools
         shell: bash
         run: |
-          yes | sdkmanager --licenses
+          set -euo pipefail
+          # Avoid a broken-pipe failure when sdkmanager closes license input early.
+          sdkmanager --licenses < <(yes)
           sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
-
-      - name: Set up Gradle 8.9
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
 
       - name: Check Android project files
         shell: bash
