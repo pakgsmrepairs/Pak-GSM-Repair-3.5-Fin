@@ -1,10 +1,13 @@
-name: Build Pak GSM Repair Android APK
+name: Build Pak GSM Repair 5.7.4 Android APK
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - 'Pak-GSM-Repair-5.7.4-Rechecked-Source-with-Build-YML.zip'
+      - 'app/**'
+      - 'settings.gradle.kts'
+      - 'build.gradle.kts'
+      - 'gradle.properties'
       - '.github/workflows/build-apk.yml'
 
 permissions:
@@ -26,13 +29,10 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Install Android SDK platform
+      - name: Install Android SDK platform and build tools
         shell: bash
         run: |
-          set -euo pipefail
-          # Process substitution avoids pipefail treating `yes`'s expected SIGPIPE
-          # as a failure when sdkmanager closes stdin after accepting licenses.
-          sdkmanager --licenses < <(yes)
+          yes | sdkmanager --licenses
           sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
 
       - name: Set up Gradle 8.9
@@ -40,81 +40,28 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Extract source ZIP and locate the Android project
+      - name: Check Android project files
         shell: bash
         run: |
           set -euo pipefail
-          ZIP="Pak-GSM-Repair-5.7.4-Rechecked-Source-with-Build-YML.zip"
-          if [[ ! -f "$ZIP" ]]; then
-            echo "::error::Missing source ZIP at repository root: $ZIP"
-            exit 1
-          fi
-          mkdir -p "$RUNNER_TEMP/pgr-source"
-          unzip -q "$ZIP" -d "$RUNNER_TEMP/pgr-source"
-
-          PROJECT_DIR=""
-          while IFS= read -r settings_file; do
-            candidate="$(dirname "$settings_file")"
-            if [[ -f "$candidate/app/build.gradle.kts" && -f "$candidate/app/src/main/AndroidManifest.xml" ]]; then
-              PROJECT_DIR="$candidate"
-              break
-            fi
-          done < <(find "$RUNNER_TEMP/pgr-source" -type f -name settings.gradle.kts -print)
-
-          if [[ -z "$PROJECT_DIR" ]]; then
-            echo "::error::No Android project root found in the source ZIP."
-            find "$RUNNER_TEMP/pgr-source" -maxdepth 6 -type f | head -100
-            exit 1
-          fi
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
-          echo "Using Android project root: $PROJECT_DIR"
-
-      - name: Validate Android project and JSON metadata
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd "$PROJECT_DIR"
           test -f settings.gradle.kts
           test -f build.gradle.kts
           test -f app/build.gradle.kts
           test -f app/src/main/AndroidManifest.xml
-          grep -q 'include(":app")' settings.gradle.kts
-          grep -q 'applicationId = "com.pakgsm.repair"' app/build.gradle.kts
+          test -f app/src/main/java/com/pakgsm/repair/MainActivity.java
+          test -f app/src/main/res/values/styles.xml
+          test -f app/src/main/assets/index.html
+          test -f app/src/main/assets/update.json
           python3 -m json.tool app/src/main/assets/update.json >/dev/null
           python3 -m json.tool app/src/main/assets/manifest.json >/dev/null
-          VERSION="$(sed -nE 's/.*versionName[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/p' app/build.gradle.kts | head -n1)"
-          if [[ -z "$VERSION" ]]; then
-            echo "::error::Could not read versionName from app/build.gradle.kts"
-            exit 1
-          fi
-          echo "APP_VERSION=$VERSION" >> "$GITHUB_ENV"
-          echo "Validated Android version: $VERSION"
 
       - name: Build debug APK
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd "$PROJECT_DIR"
-          gradle --no-daemon --stacktrace assembleDebug
-
-      - name: Collect APK
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p dist
-          APK="$(find "$PROJECT_DIR/app/build/outputs/apk/debug" -maxdepth 1 -type f -name '*.apk' -print -quit)"
-          if [[ -z "$APK" ]]; then
-            echo "::error::Build completed but no APK was found."
-            exit 1
-          fi
-          cp "$APK" "dist/Pak-GSM-Repair-$APP_VERSION-debug.apk"
-          printf 'Version: %s\nCommit: %s\nBuild type: debug/test APK\n' "$APP_VERSION" "$GITHUB_SHA" > dist/BUILD-INFO.txt
-          ls -lh dist
+        run: gradle --no-daemon --stacktrace assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-${{ env.APP_VERSION }}-debug-APK
-          path: dist/*
+          name: Pak-GSM-Repair-5.7.4-debug-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
