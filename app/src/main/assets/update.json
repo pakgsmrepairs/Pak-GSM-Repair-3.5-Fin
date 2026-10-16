@@ -1,4 +1,4 @@
 {
-  "version": "5.7.4",
-  "changelog": "5.7.4: aligns embedded app version metadata and fixes the update restart URL to load index.html instead of an asset directory. Bluetooth discovery remains subject to Android device visibility and device-specific capabilities."
+  "version": "5.8",
+  "changelog": "5.8: Bluetooth connected-device detection through supported headset/A2DP profiles, selected-device persistence during scan refresh, and built-in repair-shop calculator. Battery reporting depends on Android/device support."
 }
