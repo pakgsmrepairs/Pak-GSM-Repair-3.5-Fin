@@ -12,3 +12,6 @@ Pak GSM Repair 5.8 — Bluetooth Fix + Calculator
 - اس ماحول میں Gradle/Android build نہیں چلایا گیا، اس لیے GitHub Actions میں APK build مکمل ہونے اور حقیقی فون پر Bluetooth testing کے بعد ہی اسے final tested APK سمجھیں۔
 
 GitHub پر Android build کے لیے project کے اندر موجود app/، Gradle files اور .github/workflows/build-apk.yml کو repository root پر رکھیں۔ صرف ZIP فائل repository میں ڈالنا کافی نہیں، جب تک workflow اسے extract کرنے کے لیے نہ بنایا گیا ہو۔
+
+
+5.9 UPDATE: Calculator is now embedded immediately below Bluetooth on Dashboard; separate Calculator and File Vault pages are removed. Logo asset aliases include both icon/ and icons/. A one-time APK rebuild installs the native HTML-update bridge. Later HTML-only UI updates can be published in android-web-update/ without rebuilding APK; native Java/permissions changes still need a new APK.
