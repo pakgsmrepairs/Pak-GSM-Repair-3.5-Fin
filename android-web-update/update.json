@@ -1,4 +1,4 @@
 {
-  "version": "7.0",
-  "changelog": "Version 7.0: unified 7.0 version labels across PWA, Android WebView and APK; shop logo picker now opens reliably and saves a compressed image; compact calculator now records each calculation in a left-side history; retained Bluetooth status/device handling, fingerprint sign-in feedback and in-app update flow. Native Android changes are included in the 7.0 APK; PWA and Android HTML update metadata are synchronized."
+  "version": "7.1",
+  "changelog": "Version 7.1: fixed Android fingerprint sign-in compatibility; added Settings > Fingerprint enable/disable control, Android security-settings shortcut, explicit not-enrolled/unavailable messages and visible failed-scan feedback. Fingerprint remains optional and is requested once after each phone restart when enabled. Compact Bluetooth, calculator history, logo picker and in-app update flow are preserved."
 }
