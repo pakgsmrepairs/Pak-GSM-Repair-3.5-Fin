@@ -1,4 +1,4 @@
 {
-  "version": "6.8",
-  "changelog": "6.8: synchronize the app version and published update metadata with the Android source build. Keep compact calculator controls and the existing native Bluetooth bridge. Fingerprint login is not included in this release."
+  "version": "6.9",
+  "changelog": "6.9: Bluetooth Connect/Check now lists paired devices as well as connected devices and starts discovery when the list is empty. Adds fingerprint verification for saved login sessions once per device boot. Compact calculator and small Bluetooth controls preserved. Native APK changes require installing the new APK; the HTML updater alone cannot update native Android code."
 }
