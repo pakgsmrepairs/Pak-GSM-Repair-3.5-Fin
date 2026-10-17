@@ -1,4 +1,4 @@
 {
-  "version": "7.2",
-  "changelog": "Version 7.2: fixed fingerprint Settings switch so it can be selected before a fingerprint is enrolled. The preference is saved, and the app explains when enrollment or sensor availability is still needed. Fingerprint sign-in remains optional; email/password sign-in is preserved."
+  "version": "7.3",
+  "changelog": "Version 7.3: improved fingerprint enrollment flow and declared Android biometric permissions. The fingerprint switch can be enabled before enrollment; use the dedicated Android biometric enrollment screen to register a fingerprint. Email/password sign-in remains available."
 }
