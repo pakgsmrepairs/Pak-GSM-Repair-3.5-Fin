@@ -70,16 +70,21 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Build pak gsm 6.9 APK
-        run: gradle --no-daemon assembleDebug
+      - name: Build regular Pak GSM Repair 6.9 APK
+        run: |
+          mkdir -p dist
+          gradle --no-daemon assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk dist/Pak-GSM-Repair-6.9.apk
 
-      - name: Rename APK for release
-        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Pak-GSM-Repair-6.9.apk
+      - name: Build safe side-by-side test APK
+        run: |
+          gradle --no-daemon -PpgrTestInstall clean assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk dist/Pak-GSM-Repair-6.9-Test.apk
 
-      - name: Upload APK
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-6.9-APK
-          path: app/build/outputs/apk/debug/Pak-GSM-Repair-6.9.apk
+          name: Pak-GSM-Repair-6.9-APKs
+          path: dist/*.apk
           if-no-files-found: error
           retention-days: 14
