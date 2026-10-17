@@ -884,12 +884,12 @@ window.onNativeGattResult=function(raw){
 };
 btButton.addEventListener('click',async()=>{
  if(window.PGRNativeBluetooth){
+  const root=document.querySelector('#btInlineConnectedDevices');
   if(typeof window.PGRNativeBluetooth.getConnectedBluetoothDevices!=='function'){
    btState.textContent='⚠️ App update required';btStatus('اس APK میں connected-device bridge موجود نہیں۔ تازہ APK انسٹال کریں۔');
    if(root)root.innerHTML='<div class="bt-inline-empty">اس APK میں connected devices کی سہولت دستیاب نہیں۔</div>';
    return;
   }
-  const root=document.querySelector('#btInlineConnectedDevices');
   try{
    if(typeof window.PGRNativeBluetooth.hasBluetoothPermissions==='function' && !window.PGRNativeBluetooth.hasBluetoothPermissions()){
     window.PGRNativeBluetooth.requestBluetoothPermissions();btState.textContent='🔐 Permission needed';btStatus('Android کی Nearby devices اجازت دیں، پھر Connect / Check دوبارہ دبائیں۔');if(root)root.innerHTML='<div class="bt-inline-empty">Nearby devices permission درکار ہے۔ اجازت دینے کے بعد دوبارہ کوشش کریں۔</div>';return;
