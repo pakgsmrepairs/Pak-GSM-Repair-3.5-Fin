@@ -2,6 +2,10 @@ package com.pakgsm.repair;
 
 import android.Manifest;
 import android.app.Activity;
+import android.os.SystemClock;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -231,6 +235,62 @@ public class MainActivity extends Activity {
     }
 
     public class NativeBluetoothBridge {
+        @JavascriptInterface public boolean isBiometricRequired() {
+            String bootKey = currentBootKey();
+            String completedBoot = getSharedPreferences("pgr_biometric", MODE_PRIVATE).getString("authenticated_boot", "");
+            return !bootKey.equals(completedBoot);
+        }
+        @JavascriptInterface public void authenticateBiometric() {
+            runOnUiThread(() -> {
+                try {
+                    BiometricManager manager = BiometricManager.from(MainActivity.this);
+                    int availability = manager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
+                    if (availability != BiometricManager.BIOMETRIC_SUCCESS) {
+                        emitBiometricResult(false, "Fingerprint authentication is unavailable. Sign in with your email and password.");
+                        return;
+                    }
+                    BiometricPrompt prompt = new BiometricPrompt(MainActivity.this,
+                        ContextCompat.getMainExecutor(MainActivity.this),
+                        new BiometricPrompt.AuthenticationCallback() {
+                            @Override public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                                getSharedPreferences("pgr_biometric", MODE_PRIVATE).edit()
+                                    .putString("authenticated_boot", currentBootKey()).apply();
+                                emitBiometricResult(true, "Fingerprint verified.");
+                            }
+                            @Override public void onAuthenticationFailed() {
+                                emitBiometricResult(false, "Fingerprint was not recognized. Try again or sign in with your password.");
+                            }
+                            @Override public void onAuthenticationError(int errorCode, CharSequence errString) {
+                                emitBiometricResult(false, String.valueOf(errString));
+                            }
+                        });
+                    BiometricPrompt.PromptInfo info = new BiometricPrompt.PromptInfo.Builder()
+                        .setTitle("Pak GSM Repair")
+                        .setSubtitle("Verify your fingerprint to restore this session")
+                        .setNegativeButtonText("Use password")
+                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                        .build();
+                    prompt.authenticate(info);
+                } catch (Exception e) {
+                    emitBiometricResult(false, "Fingerprint sign-in could not start. Use your email and password.");
+                }
+            });
+        }
+        private String currentBootKey() {
+            return String.valueOf(System.currentTimeMillis() - SystemClock.elapsedRealtime());
+        }
+        private void emitBiometricResult(boolean success, String message) {
+            try {
+                JSONObject result = new JSONObject();
+                result.put("success", success);
+                result.put("message", message == null ? "" : message);
+                runOnUiThread(() -> {
+                    if (webView != null) webView.evaluateJavascript(
+                        "window.onPgrBiometricResult && window.onPgrBiometricResult(" + result.toString() + ")", null);
+                });
+            } catch (Exception ignored) {}
+        }
+
         @JavascriptInterface public String applyWebUpdate(String html, String version) {
             try {
                 if (html == null || html.length() < 50000 || html.length() > 1500000) return "Downloaded HTML size is invalid.";
