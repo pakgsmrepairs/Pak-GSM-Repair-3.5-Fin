@@ -1,4 +1,4 @@
 {
-  "version": "6.9.1",
-  "changelog": "6.9.1: compact scrollable Bluetooth device list, visible fingerprint sign-in button below login, restored Download & Apply update flow, and synchronized version labels. HTML/CSS updates can be applied in-app; native Android code still requires a new APK."
+  "version": "7.0",
+  "changelog": "Version 7.0: unified 7.0 version labels across PWA, Android WebView and APK; shop logo picker now opens reliably and saves a compressed image; compact calculator now records each calculation in a left-side history; retained Bluetooth status/device handling, fingerprint sign-in feedback and in-app update flow. Native Android changes are included in the 7.0 APK; PWA and Android HTML update metadata are synchronized."
 }
