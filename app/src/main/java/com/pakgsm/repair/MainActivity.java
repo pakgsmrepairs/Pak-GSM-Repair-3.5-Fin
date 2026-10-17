@@ -303,6 +303,27 @@ public class MainActivity extends FragmentActivity {
         }
 
         @JavascriptInterface public void openBiometricSystemSettings() {
+            // Open the dedicated biometric enrollment screen first, rather than the generic
+            // Security page. On older Android versions, try the fingerprint-specific screen.
+            try {
+                if (Build.VERSION.SDK_INT >= 30) {
+                    Intent enroll = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
+                    enroll.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED, BIOMETRIC_AUTHENTICATORS);
+                    if (enroll.resolveActivity(getPackageManager()) != null) {
+                        startActivity(enroll);
+                        return;
+                    }
+                }
+            } catch (Exception ignored) {}
+            try {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    Intent fingerprint = new Intent(Settings.ACTION_FINGERPRINT_ENROLL);
+                    if (fingerprint.resolveActivity(getPackageManager()) != null) {
+                        startActivity(fingerprint);
+                        return;
+                    }
+                }
+            } catch (Exception ignored) {}
             try { startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS)); }
             catch (Exception e) { try { startActivity(new Intent(Settings.ACTION_SETTINGS)); } catch (Exception ignored) {} }
         }
