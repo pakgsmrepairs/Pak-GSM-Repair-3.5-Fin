@@ -320,35 +320,66 @@ public class MainActivity extends Activity {
                     }
                     @Override public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                         JSONObject result = new JSONObject();
-                        try { result.put("deviceName", safeName(selectedTarget)); result.put("connected", status == BluetoothGatt.GATT_SUCCESS); } catch (Exception ignored) {}
+                        try { result.put("deviceName", safeName(selectedTarget)); result.put("address", safeAddress(selectedTarget)); result.put("connected", status == BluetoothGatt.GATT_SUCCESS); } catch (Exception ignored) {}
                         if (status != BluetoothGatt.GATT_SUCCESS) {
                             try { result.put("message", "BLE connected, but service discovery failed (status " + status + ")."); } catch (Exception ignored) {}
                             emitNativeGattResult(result); return;
                         }
+                        JSONArray serviceRows = new JSONArray();
+                        try {
+                            for (BluetoothGattService service : gatt.getServices()) {
+                                JSONObject serviceRow = new JSONObject();
+                                JSONArray characteristicRows = new JSONArray();
+                                serviceRow.put("uuid", service.getUuid().toString());
+                                for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
+                                    int properties = characteristic.getProperties();
+                                    JSONObject characteristicRow = new JSONObject();
+                                    characteristicRow.put("uuid", characteristic.getUuid().toString());
+                                    characteristicRow.put("readable", (properties & BluetoothGattCharacteristic.PROPERTY_READ) != 0);
+                                    characteristicRow.put("writable", (properties & (BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)) != 0);
+                                    characteristicRow.put("notify", (properties & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0);
+                                    characteristicRow.put("indicate", (properties & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0);
+                                    characteristicRows.put(characteristicRow);
+                                }
+                                serviceRow.put("characteristics", characteristicRows);
+                                serviceRows.put(serviceRow);
+                            }
+                            result.put("services", serviceRows);
+                            result.put("message", "BLE connected. Found " + serviceRows.length() + " GATT service(s); use Read value for characteristics marked Read.");
+                        } catch (Exception ignored) {}
                         BluetoothGattService batteryService = gatt.getService(java.util.UUID.fromString("0000180f-0000-1000-8000-00805f9b34fb"));
                         BluetoothGattCharacteristic batteryChar = batteryService == null ? null : batteryService.getCharacteristic(java.util.UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb"));
-                        if (batteryChar == null) {
-                            try { result.put("message", "BLE connected, but this device does not expose the standard Battery Service. Android cannot provide a reliable battery percentage for it."); } catch (Exception ignored) {}
-                            emitNativeGattResult(result); return;
-                        }
-                        boolean started = gatt.readCharacteristic(batteryChar);
-                        if (!started) {
-                            try { result.put("message", "Battery Service exists, but Android could not read its battery characteristic."); } catch (Exception ignored) {}
-                            emitNativeGattResult(result);
+                        emitNativeGattResult(result);
+                        if (batteryChar != null) {
+                            boolean started = gatt.readCharacteristic(batteryChar);
+                            if (!started) {
+                                try { result.put("message", "Services were found, but Android could not read the battery characteristic."); } catch (Exception ignored) {}
+                                emitNativeGattResult(result);
+                            }
                         }
                     }
                     @Override public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-                        if (!"00002a19-0000-1000-8000-00805f9b34fb".equalsIgnoreCase(characteristic.getUuid().toString())) return;
                         JSONObject result = new JSONObject();
                         try {
                             result.put("deviceName", safeName(selectedTarget));
+                            result.put("address", safeAddress(selectedTarget));
                             result.put("connected", true);
-                            if (status == BluetoothGatt.GATT_SUCCESS && characteristic.getValue() != null && characteristic.getValue().length > 0) {
-                                result.put("batteryLevel", characteristic.getValue()[0] & 0xff);
-                                result.put("message", "Read battery percentage from the standard BLE Battery Service.");
-                            } else {
-                                result.put("message", "The device has a Battery Service, but it did not allow the battery value to be read (status " + status + ").");
-                            }
+                            result.put("serviceUuid", characteristic.getService() == null ? "" : characteristic.getService().getUuid().toString());
+                            result.put("characteristicUuid", characteristic.getUuid().toString());
+                            if (status == BluetoothGatt.GATT_SUCCESS && characteristic.getValue() != null) {
+                                byte[] bytes = characteristic.getValue();
+                                StringBuilder hex = new StringBuilder();
+                                for (byte value : bytes) { if (hex.length() > 0) hex.append(' '); hex.append(String.format(java.util.Locale.US, "%02X", value & 0xff)); }
+                                result.put("valueHex", hex.toString());
+                                String decoded = new String(bytes, StandardCharsets.UTF_8).replaceAll("[\\u0000-\\u001F]", " ").trim();
+                                if (!decoded.isEmpty() && decoded.matches("[\\x20-\\x7E]+")) result.put("valueText", decoded);
+                                if ("00002a19-0000-1000-8000-00805f9b34fb".equalsIgnoreCase(characteristic.getUuid().toString()) && bytes.length > 0) {
+                                    int level = bytes[0] & 0xff;
+                                    result.put("batteryLevel", level);
+                                    deviceBatteryLevels.put(safeAddress(selectedTarget), level);
+                                    result.put("message", "Read battery percentage from the standard BLE Battery Service.");
+                                } else result.put("message", "Characteristic value read successfully.");
+                            } else result.put("message", "Characteristic read failed (status " + status + ").");
                         } catch (Exception ignored) {}
                         emitNativeGattResult(result);
                     }
@@ -358,6 +389,47 @@ public class MainActivity extends Activity {
                 return "Android denied Bluetooth access. Allow Nearby devices permission and retry.";
             } catch (Exception e) {
                 return "Could not start BLE connection: " + e.getMessage();
+            }
+        }
+
+        @JavascriptInterface public String readGattCharacteristic(String serviceUuid, String characteristicUuid) {
+            try {
+                if (activeGatt == null || !activeGatt.getDevice().getAddress().equalsIgnoreCase("")) {
+                    // The connection object is checked below; no device address is required for reads.
+                }
+                if (activeGatt == null) return "No active BLE GATT connection. Select a BLE device first.";
+                java.util.UUID serviceId = java.util.UUID.fromString(serviceUuid);
+                java.util.UUID characteristicId = java.util.UUID.fromString(characteristicUuid);
+                BluetoothGattService service = activeGatt.getService(serviceId);
+                BluetoothGattCharacteristic characteristic = service == null ? null : service.getCharacteristic(characteristicId);
+                if (characteristic == null) return "Characteristic is no longer available. Reconnect and try again.";
+                if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_READ) == 0) return "This characteristic does not support Read.";
+                boolean started = activeGatt.readCharacteristic(characteristic);
+                return started ? "Read requested. Waiting for the device…" : "Android could not start the read; try again in a moment.";
+            } catch (IllegalArgumentException e) {
+                return "Invalid service or characteristic UUID.";
+            } catch (SecurityException e) {
+                return "Android denied Bluetooth access. Allow Nearby devices permission and retry.";
+            } catch (Exception e) {
+                return "Could not read characteristic: " + e.getMessage();
+            }
+        }
+
+        @JavascriptInterface public String disconnectGattDevice() {
+            try {
+                BluetoothGatt gatt = activeGatt;
+                activeGatt = null;
+                if (gatt != null) {
+                    try { gatt.disconnect(); } catch (Exception ignored) {}
+                    try { gatt.close(); } catch (Exception ignored) {}
+                }
+                JSONObject result = new JSONObject();
+                result.put("connected", false);
+                result.put("message", "BLE diagnostic connection closed. Bluetooth audio pairing, if any, is still managed by Android.");
+                emitNativeGattResult(result);
+                return "BLE diagnostic connection closed. Audio pairing remains managed by Android.";
+            } catch (Exception e) {
+                return "Could not close BLE connection: " + e.getMessage();
             }
         }
 
