@@ -243,6 +243,7 @@ public class MainActivity extends Activity {
                 }
                 if (target == null) target = discovered.get(address);
                 if (target == null) return "This device is no longer in the Bluetooth list. Scan again.";
+                final BluetoothDevice selectedTarget = target;
                 if (target.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC) {
                     JSONObject result = new JSONObject();
                     result.put("deviceName", safeName(target));
@@ -254,11 +255,11 @@ public class MainActivity extends Activity {
                     return result.getString("message");
                 }
                 try { if (activeGatt != null) { activeGatt.disconnect(); activeGatt.close(); } } catch (Exception ignored) {}
-                activeGatt = target.connectGatt(MainActivity.this, false, new BluetoothGattCallback() {
+                activeGatt = selectedTarget.connectGatt(MainActivity.this, false, new BluetoothGattCallback() {
                     @Override public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                         if (status != BluetoothGatt.GATT_SUCCESS) {
                             JSONObject result = new JSONObject();
-                            try { result.put("deviceName", safeName(target)); result.put("connected", false); result.put("message", "BLE connection failed (status " + status + "). The headset may not support app-accessible GATT."); } catch (Exception ignored) {}
+                            try { result.put("deviceName", safeName(selectedTarget)); result.put("connected", false); result.put("message", "BLE connection failed (status " + status + "). The headset may not support app-accessible GATT."); } catch (Exception ignored) {}
                             emitNativeGattResult(result);
                             try { gatt.close(); } catch (Exception ignored) {}
                             return;
@@ -267,19 +268,19 @@ public class MainActivity extends Activity {
                             boolean started = gatt.discoverServices();
                             if (!started) {
                                 JSONObject result = new JSONObject();
-                                try { result.put("deviceName", safeName(target)); result.put("connected", true); result.put("message", "Connected over BLE, but Android could not start service discovery."); } catch (Exception ignored) {}
+                                try { result.put("deviceName", safeName(selectedTarget)); result.put("connected", true); result.put("message", "Connected over BLE, but Android could not start service discovery."); } catch (Exception ignored) {}
                                 emitNativeGattResult(result);
                             }
                         } else if (newState == android.bluetooth.BluetoothProfile.STATE_DISCONNECTED) {
                             JSONObject result = new JSONObject();
-                            try { result.put("deviceName", safeName(target)); result.put("connected", false); result.put("message", "BLE connection disconnected."); } catch (Exception ignored) {}
+                            try { result.put("deviceName", safeName(selectedTarget)); result.put("connected", false); result.put("message", "BLE connection disconnected."); } catch (Exception ignored) {}
                             emitNativeGattResult(result);
                             try { gatt.close(); } catch (Exception ignored) {}
                         }
                     }
                     @Override public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                         JSONObject result = new JSONObject();
-                        try { result.put("deviceName", safeName(target)); result.put("connected", status == BluetoothGatt.GATT_SUCCESS); } catch (Exception ignored) {}
+                        try { result.put("deviceName", safeName(selectedTarget)); result.put("connected", status == BluetoothGatt.GATT_SUCCESS); } catch (Exception ignored) {}
                         if (status != BluetoothGatt.GATT_SUCCESS) {
                             try { result.put("message", "BLE connected, but service discovery failed (status " + status + ")."); } catch (Exception ignored) {}
                             emitNativeGattResult(result); return;
@@ -300,7 +301,7 @@ public class MainActivity extends Activity {
                         if (!"00002a19-0000-1000-8000-00805f9b34fb".equalsIgnoreCase(characteristic.getUuid().toString())) return;
                         JSONObject result = new JSONObject();
                         try {
-                            result.put("deviceName", safeName(target));
+                            result.put("deviceName", safeName(selectedTarget));
                             result.put("connected", true);
                             if (status == BluetoothGatt.GATT_SUCCESS && characteristic.getValue() != null && characteristic.getValue().length > 0) {
                                 result.put("batteryLevel", characteristic.getValue()[0] & 0xff);
