@@ -801,6 +801,32 @@ window.onNativeBluetoothBatteryUpdate=function(raw){
   btState.textContent='🔋 Battery data received';
  }
 };
+function renderNativeGattServices(services){
+ const root=document.querySelector('#btServicesList');if(!root)return;
+ root.innerHTML='';
+ if(!Array.isArray(services)||!services.length){root.innerHTML='<p class="muted">اس ڈیوائس نے کوئی قابلِ رسائی GATT سروس ظاہر نہیں کی۔</p>';return}
+ services.forEach((service,index)=>{
+  const box=document.createElement('details');box.className='bt-service-card';box.open=index===0;
+  const summary=document.createElement('summary');summary.textContent='Service · '+service.uuid;box.appendChild(summary);
+  const body=document.createElement('div');body.className='bt-char-list';
+  const chars=Array.isArray(service.characteristics)?service.characteristics:[];
+  if(!chars.length)body.textContent='کوئی characteristic دستیاب نہیں۔';
+  chars.forEach(ch=>{
+   const line=document.createElement('div');line.className='bt-char-row';
+   const title=document.createElement('div');title.className='bt-char-title';
+   const props=[];if(ch.readable)props.push('Read');if(ch.writable)props.push('Write');if(ch.notify)props.push('Notify');if(ch.indicate)props.push('Indicate');
+   title.textContent=ch.uuid+' ['+(props.join(', ')||'No common operation')+']';line.appendChild(title);
+   const result=document.createElement('div');result.className='bt-char-result muted native-gatt-read-result';result.dataset.serviceUuid=service.uuid;result.dataset.characteristicUuid=ch.uuid;result.textContent='صرف وہی معلومات دستیاب ہیں جو ڈیوائس اجازت دے۔';line.appendChild(result);
+   if(ch.readable){const read=document.createElement('button');read.type='button';read.className='secondary';read.textContent='Read value';read.addEventListener('click',()=>{
+    read.disabled=true;result.textContent='Reading…';
+    try{const msg=window.PGRNativeBluetooth.readGattCharacteristic(service.uuid,ch.uuid);if(msg)result.textContent=msg}
+    catch(e){result.textContent='Read failed: '+(e.message||e);read.disabled=false}
+   });line.appendChild(read)}
+   body.appendChild(line);
+  });
+  box.appendChild(body);root.appendChild(box);
+ });
+}
 window.onNativeGattResult=function(raw){
  let data=raw;try{if(typeof raw==='string')data=JSON.parse(raw)}catch(e){data={message:String(raw)}}
  const status=document.querySelector('#nativeGattStatus');
@@ -816,6 +842,15 @@ window.onNativeGattResult=function(raw){
   if(data.connected)btState.textContent='📶 Connected; battery not exposed';
  }
  if(data.deviceName){document.querySelector('#btScannerDeviceName').textContent=data.deviceName;btName.textContent=data.deviceName}
+ if(Array.isArray(data.services))renderNativeGattServices(data.services);
+ if(data.characteristicUuid){
+  document.querySelectorAll('.native-gatt-read-result').forEach(el=>{
+   if(el.dataset.serviceUuid===data.serviceUuid&&el.dataset.characteristicUuid===data.characteristicUuid){
+    el.textContent=data.valueText?'Value: '+data.valueText+(data.valueHex?' (HEX: '+data.valueHex+')':''):(data.message||'No value returned.');
+    const row=el.parentElement;const read=row?.querySelector('button');if(read)read.disabled=false;
+   }
+  });
+ }
  if(data.model){btRenderInfo([{label:'Device',value:data.deviceName||'Bluetooth device'},{label:'Model',value:data.model},{label:'Battery',value:data.batteryLevel===undefined?'Not available':String(data.batteryLevel)+'%'}])}
 };
 btButton.addEventListener('click',async()=>{
@@ -1164,10 +1199,22 @@ updateDashboardFolderCounts();
 document.addEventListener('DOMContentLoaded',()=>{
  const connect=document.getElementById('dashBtConnect');
  if(connect) connect.addEventListener('click',()=>document.getElementById('btConnectButton')?.click());
+ const disconnect=document.getElementById('btDisconnectButton');
+ if(disconnect)disconnect.addEventListener('click',()=>{
+  try{
+   if(btDevice&&btDevice.gatt&&btDevice.gatt.connected)btDevice.gatt.disconnect();
+   btServer=null;
+   if(window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.disconnectGattDevice==='function'){
+    const message=window.PGRNativeBluetooth.disconnectGattDevice();
+    if(message)btStatus(message);
+   }else btStatus('Diagnostic GATT connection closed. Audio pairing, if any, remains managed by Android.');
+   btState.textContent='🔵 Diagnostic disconnected';
+  }catch(e){btStatus('Could not close diagnostic connection: '+(e.message||e))}
+ });
  document.querySelectorAll('[data-audio-option]').forEach(btn=>btn.addEventListener('click',()=>{
   const label=btn.querySelector('b')?.textContent||'Bluetooth feature';
-  if(typeof showModal==='function') showModal(label+' support check','Connect Pro2 using Option B (Bluetooth Diagnostics). The app can control this feature only if the headset exposes a compatible service. No command will be sent until support is verified.');
-  else alert(label+': Connect Pro2 using Option B (Bluetooth Diagnostics). This feature can be controlled only if the headset exposes a compatible service.');
+  if(typeof showModal==='function') showModal(label+' support check','This control needs a compatible headset service and its manufacturer protocol. The app will not send unverified commands.');
+  else alert(label+': A compatible headset service and manufacturer protocol are required.');
  }));
 });
 </script>
