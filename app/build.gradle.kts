@@ -8,8 +8,8 @@ android {
         applicationId = "com.pakgsm.repair"
         minSdk = 26
         targetSdk = 35
-        versionCode = 702
-        versionName = "7.2"
+        versionCode = 703
+        versionName = "7.3"
     }
 
     compileOptions {
