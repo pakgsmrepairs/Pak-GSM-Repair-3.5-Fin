@@ -1,4 +1,31 @@
-# Pak GSM Repair 6.1
+# Pak GSM Repair 6.2
+
+## Version 6.2 — corrective update
+
+- Corrected visible version labels on the login screen, app header, and Settings. These labels were hard-coded as 5.8 even though the internal updater version had advanced.
+- Reduced the Repair Shop Calculator panel to a maximum width of 320 px, reduced its display font and padding, and tightened keypad spacing.
+- Restored the File Vault screen and separate Dashboard shortcuts for **Flash Files**, **Dump Files**, and **Keypad Flash Files**. Missing built-in folders are added by ID or name without deleting existing files or custom folders.
+- Added optional device-local file saving through IndexedDB, plus file links and details. Saved local files can be downloaded from their folder. Files remain on this device; they are not automatically backed up to cloud.
+- Registration keeps **Full Name** and hides the duplicate **Username** field; an internal username continues to be generated for the current registration API.
+- The post-update **What’s New** popup lists the v6.2 changes once after the update is applied.
+
+## Test checklist
+
+1. Open the app and tap **Check for Update**. It should report v6.2.
+2. Tap **Download & Apply**, wait for reload, and confirm the login page and header show v6.2.
+3. Confirm the Calculator is visibly narrower and the keys are smaller.
+4. From Dashboard, open Flash Files, Dump Files, and Keypad Flash Files separately. Add a test filename; optionally choose a small file and verify it can be downloaded again.
+5. Verify existing customer records and folder items remain present.
+6. Open Register: Full Name should remain visible and Username should remain hidden.
+
+## Update notes
+
+- `android-web-update/index.html` and its `update.json` are the source for the Android WebView's HTML-only updater.
+- Root `index.html`, `update.json`, and `sw.js` serve the PWA release. Android embedded assets are kept synchronized for new APK builds.
+- This update changes the web UI only. Native Android code and Bluetooth permissions are unchanged.
+- The Android package version is 6.2 (`versionCode` 602); the installed display name remains **Pak GSM Repair**.
+
+---
 
 ## Version 6.1 release notes
 
