@@ -258,7 +258,7 @@ public class MainActivity extends Activity {
                                 emitBiometricResult(true, "Fingerprint verified.");
                             }
                             @Override public void onAuthenticationFailed() {
-                                emitBiometricResult(false, "Fingerprint was not recognized. Try again or sign in with your password.");
+                                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Fingerprint not recognized. Please try again.", Toast.LENGTH_SHORT).show());
                             }
                             @Override public void onAuthenticationError(int errorCode, CharSequence errString) {
                                 emitBiometricResult(false, String.valueOf(errString));
