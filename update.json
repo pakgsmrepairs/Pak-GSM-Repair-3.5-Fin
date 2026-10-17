@@ -1,4 +1,4 @@
 {
-  "version": "6.4",
-  "changelog": "6.4: make the calculator smaller and simpler; improve native Bluetooth device selection by attempting BLE GATT connection and reading standard battery service when supported. Classic Bluetooth battery/ANC features remain device-dependent. Native Android Bluetooth code updated."
+  "version": "6.5",
+  "changelog": "6.5: make the repair calculator extra compact; read and display Bluetooth headset battery data when Android exposes it, refresh battery readings from Android Bluetooth broadcasts, and show clearer unavailable-data status. ANC/Transparency controls remain model/protocol dependent. Native Android Bluetooth code updated; install the new APK for native changes."
 }
