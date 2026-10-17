@@ -1,4 +1,4 @@
 {
-  "version": "6.8",
-  "changelog": "6.8: synchronize the app version and published update metadata with the Android source build. Keep compact calculator controls and the existing native Bluetooth bridge. Fingerprint login is not included in this release."
+  "version": "6.9",
+  "changelog": "6.9: add Android biometric-protected fingerprint login; open paired Bluetooth device scanner when no device is connected; prompt for Bluetooth enable/permissions and avoid unsupported GATT attempts for classic-only devices. Calculator and Bluetooth controls remain compact."
 }
