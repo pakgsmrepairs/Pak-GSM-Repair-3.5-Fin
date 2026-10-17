@@ -335,7 +335,15 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
 #btInfoCards .bt-device-select small{font-size:10px!important;line-height:1.2!important}
 #btInlineConnectedDevices .secondary,#btInfoCards button.secondary{width:auto!important;max-width:100%;min-height:25px!important;padding:4px 8px!important;font-size:10px!important}
 @media(max-width:480px){#btInlineConnectedDevices,#btInfoCards{max-height:132px}#btInlineConnectedDevices .bt-inline-device{padding:4px 7px!important}}
-</style></head><body>
+</style>
+<style id="pgr-bt-fingerprint-final-fix">
+/* Keep the dashboard compact: report connection in the status strip, never expand a paired-device list. */
+#btInlineConnectedDevices{display:none!important}
+#btDeviceName{font-weight:700}
+#btConnectionState{white-space:normal}
+#loginMsg:not(.hidden){display:block!important;visibility:visible!important;opacity:1!important;margin-top:8px!important;padding:8px!important;border-radius:8px!important;line-height:1.4!important}
+</style>
+</head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
  <div class="pgr-splash-card">
   <img class="pgr-splash-logo" src="./icons/icon-192.png" alt="Pak GSM Repair app logo">
