@@ -155,6 +155,10 @@ public class MainActivity extends Activity {
             result.put("address", safeAddressStatic(device));
             result.put("deviceName", device.getName() == null ? "Bluetooth device" : device.getName());
             result.put("batteryLevel", level);
+            int leftBattery = readMetadataBattery(device, "METADATA_UNTETHERED_LEFT_BATTERY");
+            int rightBattery = readMetadataBattery(device, "METADATA_UNTETHERED_RIGHT_BATTERY");
+            if (leftBattery >= 0) result.put("leftBattery", leftBattery);
+            if (rightBattery >= 0) result.put("rightBattery", rightBattery);
         } catch (Exception ignored) { return; }
         runOnUiThread(() -> {
             if (webView != null) webView.evaluateJavascript(
@@ -489,7 +493,13 @@ public class MainActivity extends Activity {
                     item.put("bondState",d.getBondState()==BluetoothDevice.BOND_BONDED?"Paired":"Nearby — not paired");
                     item.put("connected",isConnected(d));
                     int batteryLevel = readBatteryLevel(d);
+                    int leftBattery = readMetadataBattery(d, "METADATA_UNTETHERED_LEFT_BATTERY");
+                    int rightBattery = readMetadataBattery(d, "METADATA_UNTETHERED_RIGHT_BATTERY");
+                    int caseBattery = readMetadataBattery(d, "METADATA_UNTETHERED_CASE_BATTERY");
                     item.put("battery", batteryLevel >= 0 ? batteryLevel + "%" : "Not exposed by this device");
+                    if (leftBattery >= 0) item.put("leftBattery", leftBattery);
+                    if (rightBattery >= 0) item.put("rightBattery", rightBattery);
+                    if (caseBattery >= 0) item.put("caseBattery", caseBattery);
                     devices.put(item);
                 }
                 result.put("devices",devices); result.put("scanning",adapter.isDiscovering());
@@ -519,6 +529,31 @@ public class MainActivity extends Activity {
             } catch (Exception ignored) {}
             return -1;
         }
+        // Newer Android builds may expose separate earbud/case battery metadata.
+        // Reflection keeps this compatible with Android versions lacking these APIs.
+        private int readMetadataBattery(BluetoothDevice device, String metadataField) {
+            if (device == null || Build.VERSION.SDK_INT < 33) return -1;
+            try {
+                java.lang.reflect.Field field = BluetoothDevice.class.getField(metadataField);
+                int key = field.getInt(null);
+                java.lang.reflect.Method method = BluetoothDevice.class.getMethod("getMetadata", int.class);
+                Object raw = method.invoke(device, key);
+                if (!(raw instanceof byte[])) return -1;
+                byte[] bytes = (byte[]) raw;
+                if (bytes.length == 0) return -1;
+                String text = new String(bytes, StandardCharsets.UTF_8).trim();
+                if (text.matches("\\d{1,3}")) {
+                    int value = Integer.parseInt(text);
+                    if (value >= 0 && value <= 100) return value;
+                }
+                if (bytes.length == 1) {
+                    int value = bytes[0] & 0xff;
+                    if (value >= 0 && value <= 100) return value;
+                }
+            } catch (Exception ignored) {}
+            return -1;
+        }
+
         private boolean isConnected(BluetoothDevice d) {
             try {
                 if(Build.VERSION.SDK_INT>=31 && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)!=PackageManager.PERMISSION_GRANTED) return false;
