@@ -819,7 +819,7 @@ function renderNativeGattServices(services){
    const result=document.createElement('div');result.className='bt-char-result muted native-gatt-read-result';result.dataset.serviceUuid=service.uuid;result.dataset.characteristicUuid=ch.uuid;result.textContent='صرف وہی معلومات دستیاب ہیں جو ڈیوائس اجازت دے۔';line.appendChild(result);
    if(ch.readable){const read=document.createElement('button');read.type='button';read.className='secondary';read.textContent='Read value';read.addEventListener('click',()=>{
     read.disabled=true;result.textContent='Reading…';
-    try{const msg=window.PGRNativeBluetooth.readGattCharacteristic(service.uuid,ch.uuid);if(msg)result.textContent=msg}
+    try{const msg=window.PGRNativeBluetooth.readGattCharacteristic(service.uuid,ch.uuid);if(msg)result.textContent=msg;if(!String(msg||'').startsWith('Read requested.'))read.disabled=false}
     catch(e){result.textContent='Read failed: '+(e.message||e);read.disabled=false}
    });line.appendChild(read)}
    body.appendChild(line);
