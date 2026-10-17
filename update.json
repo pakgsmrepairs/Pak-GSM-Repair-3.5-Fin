@@ -1,4 +1,4 @@
 {
-  "version": "6.3",
-  "changelog": "6.3: widen the compact calculator to fill its row and remove the right-side gap; move Flash Files, Dump Files, and Keypad Flash Files out of Dashboard into a separate File Vault tab at the right end of the menu; preserve registration and other working features. Web UI only; native Bluetooth code unchanged."
+  "version": "6.4",
+  "changelog": "6.4: make the calculator smaller and simpler; improve native Bluetooth device selection by attempting BLE GATT connection and reading standard battery service when supported. Classic Bluetooth battery/ANC features remain device-dependent. Native Android Bluetooth code updated."
 }
