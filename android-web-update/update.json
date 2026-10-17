@@ -1,4 +1,4 @@
 {
-  "version": "6.5",
-  "changelog": "6.5: make the repair calculator extra compact; read and display Bluetooth headset battery data when Android exposes it, refresh battery readings from Android Bluetooth broadcasts, and show clearer unavailable-data status. ANC/Transparency controls remain model/protocol dependent. Native Android Bluetooth code updated; install the new APK for native changes. This update package changes the web UI only; native battery handling requires the 6.5 APK."
+  "version": "6.6",
+  "changelog": "6.6: preserve the compact calculator keys/display while expanding its panel across the available width; show already-connected Bluetooth devices directly on the dashboard without opening the separate picker; select the first connected device automatically and refresh available battery/diagnostic data. Fingerprint login is not included in this patch and requires a separate native Android implementation."
 }
