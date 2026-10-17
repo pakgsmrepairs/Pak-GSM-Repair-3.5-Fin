@@ -277,7 +277,8 @@ public class MainActivity extends Activity {
             });
         }
         private String currentBootKey() {
-            return String.valueOf(System.currentTimeMillis() - SystemClock.elapsedRealtime());
+            long bootEstimate = System.currentTimeMillis() - SystemClock.elapsedRealtime();
+            return String.valueOf(Math.round(bootEstimate / 10000.0) * 10000L);
         }
         private void emitBiometricResult(boolean success, String message) {
             try {
