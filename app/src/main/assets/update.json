@@ -1,4 +1,4 @@
 {
-  "version": "5.9",
-  "changelog": "5.9: Calculator moved directly below Dashboard Bluetooth; separate Calculator and File Vault pages removed; native Android HTML updates now save to app-private storage so future UI-only updates do not need a new APK."
+  "version": "6.0",
+  "changelog": "6.0: synchronize Android WebView UI release metadata. Native Android/Bluetooth changes are included only when a new APK is built; verify controls on-device."
 }
