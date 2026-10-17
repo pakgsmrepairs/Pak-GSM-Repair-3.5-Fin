@@ -38,7 +38,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
     private WebView webView;
     private BluetoothAdapter adapter;
     private BluetoothGatt activeGatt;
