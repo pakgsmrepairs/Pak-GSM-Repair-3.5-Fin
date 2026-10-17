@@ -19,8 +19,14 @@ android {
 }
 
 
+configurations.configureEach {
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
+}
+
 dependencies {
     implementation("androidx.webkit:webkit:1.12.1")
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("androidx.fragment:fragment:1.8.5")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
 }
