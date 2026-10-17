@@ -267,14 +267,18 @@ public class MainActivity extends FragmentActivity {
         @JavascriptInterface public String setBiometricEnabled(boolean enabled) {
             BiometricManager manager = BiometricManager.from(MainActivity.this);
             int availability = manager.canAuthenticate(BIOMETRIC_AUTHENTICATORS);
-            if (enabled && availability != BiometricManager.BIOMETRIC_SUCCESS) {
-                return biometricStatusJson(false, false, biometricAvailabilityMessage(availability), availability);
-            }
+            // Save the user's preference even before a fingerprint is enrolled.
+            // Otherwise the Settings switch appears unselectable on first setup.
             getSharedPreferences("pgr_biometric", MODE_PRIVATE).edit().putBoolean("enabled", enabled).apply();
-            String message = enabled
-                ? "Fingerprint sign-in enabled. Android must have a fingerprint enrolled in system settings."
-                : "Fingerprint sign-in disabled. Use your email and password.";
-            return biometricStatusJson(true, enabled, message, availability);
+            String message;
+            if (!enabled) {
+                message = "Fingerprint sign-in disabled. Use your email and password.";
+            } else if (availability == BiometricManager.BIOMETRIC_SUCCESS) {
+                message = "Fingerprint sign-in enabled and ready.";
+            } else {
+                message = "Fingerprint sign-in is switched on, but is not ready yet. Use the button below to enroll a fingerprint in Android Settings. " + biometricAvailabilityMessage(availability);
+            }
+            return biometricStatusJson(availability == BiometricManager.BIOMETRIC_SUCCESS, enabled, message, availability);
         }
 
         private String biometricAvailabilityMessage(int availability) {
