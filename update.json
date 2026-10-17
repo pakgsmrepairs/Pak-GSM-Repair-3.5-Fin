@@ -1,4 +1,4 @@
 {
-  "version": "5.10",
-  "changelog": "5.10: force fresh HTML from GitHub Pages instead of serving a stale cached app shell; synchronize web and Android WebView version labels. Bluetooth hardware behavior still depends on Android native support and the headset's exposed services."
+  "version": "6.0",
+  "changelog": "6.0: align the PWA release metadata with Android; harden interactive controls and Bluetooth/update flows. Please verify all actions on-device after updating."
 }
