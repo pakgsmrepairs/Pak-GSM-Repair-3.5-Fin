@@ -5,7 +5,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.pakgsm.repair"
+        applicationId = if (project.hasProperty("pgrTestInstall")) "com.pakgsm.repair.test69" else "com.pakgsm.repair"
+        manifestPlaceholders["appLabel"] = if (project.hasProperty("pgrTestInstall")) "Pak GSM Repair 6.9 Test" else "Pak GSM Repair"
         minSdk = 26
         targetSdk = 35
         versionCode = 609
