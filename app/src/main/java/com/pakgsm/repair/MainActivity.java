@@ -148,6 +148,31 @@ public class MainActivity extends Activity {
         else registerReceiver(discoveryReceiver, f);
     }
 
+// Newer Android builds may expose separate earbud/case battery metadata.
+        // Reflection keeps this compatible with Android versions lacking these APIs.
+        private int readMetadataBattery(BluetoothDevice device, String metadataField) {
+            if (device == null || Build.VERSION.SDK_INT < 33) return -1;
+            try {
+                java.lang.reflect.Field field = BluetoothDevice.class.getField(metadataField);
+                int key = field.getInt(null);
+                java.lang.reflect.Method method = BluetoothDevice.class.getMethod("getMetadata", int.class);
+                Object raw = method.invoke(device, key);
+                if (!(raw instanceof byte[])) return -1;
+                byte[] bytes = (byte[]) raw;
+                if (bytes.length == 0) return -1;
+                String text = new String(bytes, StandardCharsets.UTF_8).trim();
+                if (text.matches("\\d{1,3}")) {
+                    int value = Integer.parseInt(text);
+                    if (value >= 0 && value <= 100) return value;
+                }
+                if (bytes.length == 1) {
+                    int value = bytes[0] & 0xff;
+                    if (value >= 0 && value <= 100) return value;
+                }
+            } catch (Exception ignored) {}
+            return -1;
+        }
+
     private void emitNativeBatteryUpdate(BluetoothDevice device, int level) {
         if (device == null || level < 0 || level > 100) return;
         JSONObject result = new JSONObject();
@@ -529,31 +554,6 @@ public class MainActivity extends Activity {
             } catch (Exception ignored) {}
             return -1;
         }
-        // Newer Android builds may expose separate earbud/case battery metadata.
-        // Reflection keeps this compatible with Android versions lacking these APIs.
-        private int readMetadataBattery(BluetoothDevice device, String metadataField) {
-            if (device == null || Build.VERSION.SDK_INT < 33) return -1;
-            try {
-                java.lang.reflect.Field field = BluetoothDevice.class.getField(metadataField);
-                int key = field.getInt(null);
-                java.lang.reflect.Method method = BluetoothDevice.class.getMethod("getMetadata", int.class);
-                Object raw = method.invoke(device, key);
-                if (!(raw instanceof byte[])) return -1;
-                byte[] bytes = (byte[]) raw;
-                if (bytes.length == 0) return -1;
-                String text = new String(bytes, StandardCharsets.UTF_8).trim();
-                if (text.matches("\\d{1,3}")) {
-                    int value = Integer.parseInt(text);
-                    if (value >= 0 && value <= 100) return value;
-                }
-                if (bytes.length == 1) {
-                    int value = bytes[0] & 0xff;
-                    if (value >= 0 && value <= 100) return value;
-                }
-            } catch (Exception ignored) {}
-            return -1;
-        }
-
         private boolean isConnected(BluetoothDevice d) {
             try {
                 if(Build.VERSION.SDK_INT>=31 && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)!=PackageManager.PERMISSION_GRANTED) return false;
