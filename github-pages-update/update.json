@@ -1,4 +1,4 @@
 {
-  "version": "6.8",
-  "changelog": "6.8: synchronize the app version and published update metadata with the Android source build. Keep compact calculator controls and the existing native Bluetooth bridge. Fingerprint login is not included in this release."
+  "version": "7.0",
+  "changelog": "Version 7.0: unified 7.0 version labels across PWA, Android WebView and APK; shop logo picker now opens reliably and saves a compressed image; compact calculator now records each calculation in a left-side history; retained Bluetooth status/device handling, fingerprint sign-in feedback and in-app update flow. Native Android changes are included in the 7.0 APK; PWA and Android HTML update metadata are synchronized."
 }
