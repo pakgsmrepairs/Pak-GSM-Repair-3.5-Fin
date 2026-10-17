@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 6.8</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 6.9.1</title><style>
 :root{--g:#0b6b57;--g2:#0f8a6e;--bg:#f2f7f5;--line:#dce8e3;--ink:#132b27;--muted:#63756f;--danger:#9b2118;--card:#fff}
 *{box-sizing:border-box}body{margin:0;font:15px system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
 /* Native mobile text-entry safeguard: keep browser keyboard/IME events unmodified. */
@@ -323,7 +323,22 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
 #btInlineConnectedDevices .bt-inline-device{padding:5px 7px!important;border-radius:8px!important;font-size:11px!important;line-height:1.2!important}
 #btInlineConnectedDevices .bt-inline-device small{font-size:9px!important}
 </style>
-</head><body>
+<style id="pgr-compact-bluetooth-fix">
+/* Compact Bluetooth lists: keep device discovery from stretching the whole dashboard. */
+#btInlineConnectedDevices,#btInfoCards{max-height:156px;overflow-y:auto;overscroll-behavior:contain;min-height:0;box-sizing:border-box}
+#btInlineConnectedDevices{gap:4px!important;margin-top:5px!important;padding-right:2px}
+#btInlineConnectedDevices .bt-inline-device{padding:5px 8px!important;border-radius:8px!important;font-size:11px!important;line-height:1.2!important;gap:1px;min-height:0}
+#btInlineConnectedDevices .bt-inline-device b{font-size:12px;line-height:1.2;max-width:100%;overflow-wrap:anywhere}
+#btInlineConnectedDevices .bt-inline-device small{font-size:10px!important;line-height:1.2!important;max-width:100%;overflow-wrap:anywhere}
+#btInfoCards{display:flex;flex-direction:column;gap:4px}
+#btInfoCards .bt-device-select{padding:5px 8px!important;margin:0!important;border-radius:8px!important;font-size:11px!important;line-height:1.2!important;min-height:0!important}
+#btInfoCards .bt-device-select b{font-size:12px;line-height:1.2}
+#btInfoCards .bt-device-select small{font-size:10px!important;line-height:1.2!important}
+#btInlineConnectedDevices .secondary,#btInfoCards button.secondary{width:auto!important;max-width:100%;min-height:25px!important;padding:4px 8px!important;font-size:10px!important}
+.pgr-biometric-login{width:100%;margin-top:8px!important;min-height:38px!important;padding:8px 10px!important;font-size:13px!important;border-radius:9px!important}
+.pgr-biometric-hint{margin:4px 0 0!important;font-size:11px!important;text-align:center}
+@media(max-width:480px){#btInlineConnectedDevices,#btInfoCards{max-height:132px}#btInlineConnectedDevices .bt-inline-device{padding:4px 7px!important}}
+</style></head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
  <div class="pgr-splash-card">
   <img class="pgr-splash-logo" src="./icons/icon-192.png" alt="Pak GSM Repair app logo">
@@ -337,7 +352,7 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
 <div id="loginGate" class="hidden">
  <div class="login-card">
   <div class="brand-mark" aria-label="Pak GSM Repair logo"><img src="./icons/icon-192.png" alt="Pak GSM Repair logo"></div>
-  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v6.8</span>
+  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v6.9.1</span>
   <h3 id="authHeading">Welcome Back</h3><p id="authSubheading">Login to continue to your repair shop</p>
   <div id="emailAuthPanel">
    <div id="signupFields" class="hidden">
@@ -367,6 +382,8 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
    </div>
    <p class="auth-help">Create an account on the second screen. Verify the 6-digit email OTP to complete registration.</p>
   </div>
+  <button id="loginBiometricButton" type="button" class="secondary pgr-biometric-login">🔒 Sign in with Fingerprint</button>
+  <p id="loginBiometricHint" class="auth-help pgr-biometric-hint">Use fingerprint after signing in once on this phone.</p>
   <button id="guestView" type="button" class="guest-view-btn">View with Guest Account</button>
   <div id="googleButtonWrap"><div id="googleButton"></div><button id="googleFallback" type="button" class="google-btn"><span class="google-mark">G</span> Sign in with Gmail</button></div>
   <p id="loginMsg" class="hidden" role="status">Login first, or tap Register New Account to create an account.</p>
@@ -376,7 +393,7 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
   <p id="loginUpdateStatus" class="update-status-login" role="status" aria-live="polite">Check for the latest published version.</p>
  </div>
 </div>
-<header class="pgr-modern-header pgr-reference-header"><div class="pgr-brand-wrap"><label for="shopLogoFile" class="pgr-shop-photo" title="Change shop photo" aria-label="Change shop photo"><img id="shopLogoPreview" alt="Shop logo" class="shop-logo-preview hidden"><span id="shopLogoFallback" aria-hidden="true">🏪</span></label><input id="shopLogoFile" type="file" accept="image/*" class="hidden"><div class="pgr-brand-text" id="shopBrandPanel"><div class="pgr-app-name">Pak GSM Repair <span class="pgr-version-chip">6.8</span></div><h1 id="shopNameDisplay" class="shop-name-display">Your Shop Name</h1><p class="pgr-shop-subtitle"><span id="shopLocationDisplay" class="shop-location-display hidden"></span><span id="who" class="signed"></span></p></div></div><div class="row header-actions pgr-header-actions" style="flex:0"><button id="openRepairStatus" class="secondary pgr-bell-button" type="button" title="Notifications / repair status" aria-label="Notifications">♧<span class="pgr-bell-dot"></span></button><button id="openSettings" class="secondary pgr-settings-button" type="button" aria-label="Open settings" title="Settings">⚙</button><input id="shopCoverFile" type="file" accept="image/*" class="hidden"></div></header>
+<header class="pgr-modern-header pgr-reference-header"><div class="pgr-brand-wrap"><label for="shopLogoFile" class="pgr-shop-photo" title="Change shop photo" aria-label="Change shop photo"><img id="shopLogoPreview" alt="Shop logo" class="shop-logo-preview hidden"><span id="shopLogoFallback" aria-hidden="true">🏪</span></label><input id="shopLogoFile" type="file" accept="image/*" class="hidden"><div class="pgr-brand-text" id="shopBrandPanel"><div class="pgr-app-name">Pak GSM Repair <span class="pgr-version-chip">6.9.1</span></div><h1 id="shopNameDisplay" class="shop-name-display">Your Shop Name</h1><p class="pgr-shop-subtitle"><span id="shopLocationDisplay" class="shop-location-display hidden"></span><span id="who" class="signed"></span></p></div></div><div class="row header-actions pgr-header-actions" style="flex:0"><button id="openRepairStatus" class="secondary pgr-bell-button" type="button" title="Notifications / repair status" aria-label="Notifications">♧<span class="pgr-bell-dot"></span></button><button id="openSettings" class="secondary pgr-settings-button" type="button" aria-label="Open settings" title="Settings">⚙</button><input id="shopCoverFile" type="file" accept="image/*" class="hidden"></div></header>
 
 <main class="wrap">
 
@@ -451,7 +468,7 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
 <div id="soundPanel" class="panel settings-panel hidden"><h2>Sound</h2><div class="setting-row"><div><b>Welcome sound and voice</b><div class="muted">Welcome voice/music is used during the login experience. Some browsers require the first tap to start audio.</div></div><input class="switch" id="soundEnabled" type="checkbox" aria-label="Enable welcome sound"></div><p class="muted">Some mobile browsers block automatic audio. If needed, tap once on the logo screen to enable it.</p></div>
 <div id="backupPanel" class="settings-panel"><div class="grid"><div class="panel"><h2>💾 Local Backup</h2><button id="export">Download JSON Backup</button><label>Import JSON Backup</label><input id="file" type="file" accept=".json,application/json"><button id="import" class="secondary">Import Backup</button><p id="bm" class="muted"></p></div>
 <div class="panel"><h2>☁️ Cloud Backup</h2><p class="muted">The public Web App URL and Google Client ID are preconfigured. A Cloud Key is intentionally not embedded in this public package.</p><label>Apps Script Web App URL</label><input id="url" type="url"><label>Cloud Key</label><input id="key" type="password" autocomplete="off"><button id="saveSettings">Save Settings</button> <button id="testConnection" class="secondary">Test Connection</button><div class="row" style="margin-top:10px"><button id="cloudBackup">Back Up to Cloud</button><button id="cloudRestore" class="secondary">Restore from Cloud</button></div><p id="cm" class="muted"></p></div></div></div></section>
-<p class="muted" style="text-align:center;padding:20px">Pak GSM Repair 6.8 · Preview</p>
+<p class="muted" style="text-align:center;padding:20px">Pak GSM Repair 6.9.1 · Preview</p>
 </main>
 <div id="settingsBackdrop" aria-hidden="true"></div>
 <div id="restoreConfirm" class="modal hidden"><div class="box" style="max-width:430px;text-align:center"><h2 style="margin-top:0">Restore Backup</h2><p class="muted">Google Drive backup will replace your current local records. This action changes the data currently stored on this device.</p><div class="row"><button type="button" id="restoreCancel" class="secondary">✕ Cancel</button><button type="button" id="restoreOk">✓ OK</button></div></div></div>
@@ -609,8 +626,8 @@ applyAppearance();
 document.querySelector('#themeSelect').addEventListener('change',()=>{const s=settings();s.theme=document.querySelector('#themeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 document.querySelector('#textSizeSelect').addEventListener('change',()=>{const s=settings();s.textSize=document.querySelector('#textSizeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if((settings().theme||'light')==='system')applyAppearance()})}
-const APP_VERSION='6.9';
-const PGR_V65_RELEASE_NOTES="Version 6.9: fix Bluetooth device selection to show paired devices, add boot-scoped fingerprint verification for saved sessions, and keep compact calculator controls.";
+const APP_VERSION='6.9.1';
+const PGR_V65_RELEASE_NOTES="Version 6.9.1: compact scrollable Bluetooth device list, visible fingerprint sign-in button, and restored in-app Download & Apply update flow.";
 (function showReleaseNotesForNewVersion(){try{const key='pgr_release_notes_seen';if(localStorage.getItem(key)===APP_VERSION)return;window.addEventListener('load',()=>{const ok=document.querySelector('#pgrNoticeOk');if(!ok)return;showAuthPopup(PGR_V65_RELEASE_NOTES,'Pak GSM Repair v'+APP_VERSION+' — What’s New');const markSeen=()=>{try{localStorage.setItem(key,APP_VERSION)}catch(e){};ok.removeEventListener('click',markSeen)};ok.addEventListener('click',markSeen,{once:true})},{once:true})}catch(e){}})();
 const PGR_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/';
 const PGR_ANDROID_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/android-web-update/';
@@ -1274,6 +1291,20 @@ window.addEventListener('unhandledrejection',function(event){
    msg.textContent='Login error: '+(reason&&reason.message?reason.message:String(reason||'Please try again.'));
   }
  }catch(_){}
+});
+document.getElementById('loginBiometricButton')?.addEventListener('click',()=>{
+ try{
+  const saved=JSON.parse(localStorage.getItem(F)||'null');
+  const msg=document.getElementById('loginMsg');
+  if(!saved||!saved.email||saved.guest){
+   if(msg){msg.classList.remove('hidden');msg.textContent='پہلے ایک بار email اور password سے sign in کریں؛ پھر fingerprint استعمال کیا جا سکے گا۔'}
+   return;
+  }
+  if(window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.authenticateBiometric==='function'){
+   const gate=document.getElementById('loginGate');if(gate)gate.classList.add('hidden');
+   window.PGRNativeBluetooth.authenticateBiometric();
+  }else if(msg){msg.classList.remove('hidden');msg.textContent='Fingerprint صرف Android APK میں دستیاب ہے۔'}
+ }catch(e){const msg=document.getElementById('loginMsg');if(msg){msg.classList.remove('hidden');msg.textContent='Fingerprint login شروع نہیں ہو سکا: '+(e.message||e)}}
 });
 window.onPgrBiometricResult=function(result){let data=result;try{if(typeof result==='string')data=JSON.parse(result)}catch(e){data={success:false,message:'Fingerprint verification failed.'}}let saved=null;try{saved=JSON.parse(localStorage.getItem(F)||'null')}catch(e){}const gate=document.querySelector('#loginGate');if(data&&data.success&&saved&&saved.email&&!saved.guest){unlock(saved);return}if(gate)gate.classList.remove('hidden');try{initLogin()}catch(e){}const msg=document.querySelector('#loginMsg');if(msg)msg.textContent=(data&&data.message)||'Please sign in with your email and password.'}
  function showLoginScreen(){if(splashTimer){clearTimeout(splashTimer);splashTimer=null}try{stopLoginAudio()}catch(e){}const splash=document.querySelector('#pgrSplash'),gate=document.querySelector('#loginGate');if(splash)splash.classList.add('hidden');let saved=null;try{saved=JSON.parse(localStorage.getItem(F)||'null')}catch(e){}splashStarted=true;if(saved&&saved.email&&!saved.guest){if(window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.isBiometricRequired==='function'&&window.PGRNativeBluetooth.isBiometricRequired()){if(gate)gate.classList.add('hidden');window.PGRNativeBluetooth.authenticateBiometric();return}if(gate)gate.classList.add('hidden');unlock(saved);return}if(gate)gate.classList.remove('hidden');try{initLogin()}catch(e){const m=document.querySelector('#loginMsg');if(m)m.textContent='Login screen opened, but setup reported an error. Please reload the page.'}}
