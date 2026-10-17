@@ -1,7 +1,7 @@
 
 /* Pak GSM Repair PWA worker.
    App shell cache is versioned so older app caches can be replaced. */
-const CACHE_NAME = 'pak-gsm-repair-v5.9-dashboard';
+const CACHE_NAME = 'pak-gsm-repair-v5.10-dashboard';
 const STAGING_CACHE = 'pgr-update-staging';
 
 const APP_SHELL = [
@@ -123,43 +123,38 @@ self.addEventListener('fetch', event => {
     if (approved) {
       const stagedRequest = isHtml
         ? absolute('./index.html')
-        : new URL(
-            url.pathname + url.search,
-            self.location.origin
-          ).toString();
+        : new URL(url.pathname + url.search, self.location.origin).toString();
 
-      const staged = await stage.match(stagedRequest, {
-        ignoreSearch: true
-      });
-
+      const staged = await stage.match(stagedRequest, { ignoreSearch: true });
       if (staged) return staged;
     }
 
     const cache = await caches.open(CACHE_NAME);
 
-    const cached = await cache.match(req, {
-      ignoreSearch: true
-    });
+    // HTML must be network-first so GitHub Pages changes are not hidden
+    // behind an older cached app shell. Fall back to cache only offline.
+    if (isHtml) {
+      try {
+        const fresh = await fetch(new Request(req, { cache: 'no-store' }));
+        if (fresh && fresh.ok) {
+          await cache.put(absolute('./index.html'), fresh.clone());
+          await cache.put(absolute('./'), fresh.clone());
+        }
+        if (fresh) return fresh;
+      } catch (error) {
+        return await cache.match(absolute('./index.html')) ||
+          await cache.match(absolute('./')) || Response.error();
+      }
+    }
 
+    const cached = await cache.match(req, { ignoreSearch: true });
     if (cached) return cached;
 
     try {
       const fresh = await fetch(req);
-
-      if (fresh && fresh.ok) {
-        await cache.put(req, fresh.clone());
-      }
-
+      if (fresh && fresh.ok) await cache.put(req, fresh.clone());
       return fresh;
     } catch (error) {
-      if (isHtml) {
-        return await cache.match(
-          absolute('./index.html')
-        ) || await cache.match(
-          absolute('./')
-        ) || Response.error();
-      }
-
       return Response.error();
     }
   })());
