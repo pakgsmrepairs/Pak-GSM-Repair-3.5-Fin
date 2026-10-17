@@ -291,14 +291,21 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
 </style>
 
 <style>
-/* v6.6: extra-compact calculator; keep the footprint small and centered. */
-#calculatorPanel{width:min(100%,224px)!important;max-width:224px!important;box-sizing:border-box!important;margin:4px auto!important;padding:5px!important}
-#calculatorPanel h2{font-size:11px!important;line-height:1.15!important;margin:0 0 2px!important}
-#calculatorPanel>p{font-size:8px!important;line-height:1.15!important;margin:1px 0 3px!important}
-#calculatorPanel #calcDisplay{width:100%!important;box-sizing:border-box!important;font-size:13px!important;padding:3px 5px!important;margin:2px 0 3px!important;min-height:22px!important}
-#calculatorPanel .calc-grid{gap:2px!important}
-#calculatorPanel .calc-grid button{min-height:21px!important;padding:1px!important;font-size:10px!important;border-radius:4px!important}
-#calculatorPanel #calcMessage{font-size:8px!important;margin-top:2px!important}
+/* Corrected 6.7 calculator: full available row width; keep controls compact and readable. */
+#calculatorPanel{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;grid-column:1/-1!important;justify-self:stretch!important;margin:8px 0!important;padding:8px!important}
+#calculatorPanel h2{font-size:14px!important;line-height:1.2!important;margin:0 0 4px!important}
+#calculatorPanel>p{font-size:10px!important;line-height:1.3!important;margin:3px 0 5px!important}
+#calculatorPanel #calcDisplay{display:block!important;width:100%!important;max-width:none!important;box-sizing:border-box!important;font-size:16px!important;padding:5px!important;margin:3px 0 5px!important;min-height:30px!important}
+#calculatorPanel .calc-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important;width:100%!important}
+#calculatorPanel .calc-grid button{min-width:0!important;min-height:28px!important;padding:3px!important;font-size:12px!important;border-radius:6px!important}
+#calculatorPanel #calcMessage{font-size:9px!important;margin-top:3px!important}
+/* Bluetooth dashboard: compact strip and small action button; never open the browser device picker in APK mode. */
+#dashboardBluetoothCard.bt-inline-reference{padding:5px 7px!important;gap:5px!important;margin:7px 0 9px!important;border-radius:12px!important}
+#dashboardBluetoothCard .dashboard-bt-icon{flex-basis:28px!important;width:28px!important;height:28px!important;font-size:16px!important}
+#dashboardBluetoothCard .bt-inline-connect,#dashboardBluetoothCard #dashBtConnect,#dashboardBluetoothCard .bt-inline-status #btConnectButton{font-size:8px!important;line-height:1!important;min-height:22px!important;padding:3px 6px!important;border-radius:7px!important}
+#dashboardBluetoothCard .bt-inline-device{padding:6px 8px!important;font-size:11px!important}
+#dashboardBluetoothCard .bt-inline-device small{font-size:10px!important}
+@media(max-width:600px){#dashboardBluetoothCard.bt-inline-reference{grid-template-columns:minmax(0,1fr) auto!important;gap:5px!important;padding:6px!important}#dashboardBluetoothCard .bt-inline-connect,#dashboardBluetoothCard #dashBtConnect{display:inline-flex!important;min-height:22px!important;font-size:8px!important;padding:3px 6px!important}}
 </style>
 </head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
@@ -799,9 +806,9 @@ function showInlineConnectedDevice(d){
  if(!d)return;
  window.pgrSelectedBluetoothAddress=d.address||'';
  btName.textContent=d.name||'Bluetooth device';
- const knownBattery=/^\\d{1,3}%$/.test(String(d.battery||''))?String(d.battery):'—%';
- const left=document.querySelector('#btLeftBattery');if(left)left.textContent=knownBattery;
- const right=document.querySelector('#btRightBattery');if(right)right.textContent='N/A';
+ const knownBattery=/^\d{1,3}%$/.test(String(d.battery||''))?String(d.battery):'—%';
+ const left=document.querySelector('#btLeftBattery');if(left)left.textContent=(d.leftBattery&&/^\d{1,3}%$/.test(String(d.leftBattery)))?String(d.leftBattery):knownBattery;
+ const right=document.querySelector('#btRightBattery');if(right)right.textContent=(d.rightBattery&&/^\d{1,3}%$/.test(String(d.rightBattery)))?String(d.rightBattery):'Not exposed';
  btState.textContent='📶 Connected to phone';
  btStatus((d.name||'Bluetooth device')+' فون سے connected ہے۔ Battery: '+(d.battery||'اس ڈیوائس نے ظاہر نہیں کی')+'. دستیاب BLE تفصیلات چیک کی جا رہی ہیں…');
  if(window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.connectGattDevice==='function'&&d.address){
@@ -817,8 +824,8 @@ window.onNativeBluetoothBatteryUpdate=function(raw){
   if(card.dataset.btAddress===data.address){const battery=card.querySelector('.bt-device-battery');if(battery)battery.textContent='Battery: '+value}
  });
  if(window.pgrSelectedBluetoothAddress===data.address){
-  const left=document.querySelector('#btLeftBattery');if(left)left.textContent=value;
-  const right=document.querySelector('#btRightBattery');if(right)right.textContent='N/A';
+  const left=document.querySelector('#btLeftBattery');if(left)left.textContent=(data.leftBattery!==undefined&&Number(data.leftBattery)>=0)?String(Number(data.leftBattery))+'%':value;
+  const right=document.querySelector('#btRightBattery');if(right)right.textContent=(data.rightBattery!==undefined&&Number(data.rightBattery)>=0)?String(Number(data.rightBattery))+'%':'Not exposed';
   btDetails.textContent='Android Bluetooth نے اس ڈیوائس کی بیٹری '+value+' رپورٹ کی۔';
   btState.textContent='🔋 Battery data received';
  }
@@ -876,7 +883,12 @@ window.onNativeGattResult=function(raw){
  if(data.model){btRenderInfo([{label:'Device',value:data.deviceName||'Bluetooth device'},{label:'Model',value:data.model},{label:'Battery',value:data.batteryLevel===undefined?'Not available':String(data.batteryLevel)+'%'}])}
 };
 btButton.addEventListener('click',async()=>{
- if(window.PGRNativeBluetooth && typeof window.PGRNativeBluetooth.getConnectedBluetoothDevices==='function'){
+ if(window.PGRNativeBluetooth){
+  if(typeof window.PGRNativeBluetooth.getConnectedBluetoothDevices!=='function'){
+   btState.textContent='⚠️ App update required';btStatus('اس APK میں connected-device bridge موجود نہیں۔ تازہ APK انسٹال کریں۔');
+   if(root)root.innerHTML='<div class="bt-inline-empty">اس APK میں connected devices کی سہولت دستیاب نہیں۔</div>';
+   return;
+  }
   const root=document.querySelector('#btInlineConnectedDevices');
   try{
    if(typeof window.PGRNativeBluetooth.hasBluetoothPermissions==='function' && !window.PGRNativeBluetooth.hasBluetoothPermissions()){
