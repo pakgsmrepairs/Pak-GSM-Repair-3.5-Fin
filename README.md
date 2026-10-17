@@ -1,20 +1,27 @@
-# Pak GSM Repair 7.0
+# Pak GSM Repair 7.1
 
-## Version 7.0 — synchronized release
+## Version 7.1 — fingerprint authentication fix
 
-- Standardized the current release version to **7.0** across PWA and Android WebView HTML, update metadata, manifests, service-worker cache names, Android package metadata, and APK build artifact naming.
+- Added an Android-only Settings > Fingerprint panel with enable/disable control and a shortcut to Android security settings for enrolling a fingerprint.
+- Fixed the biometric bridge to use AndroidX biometric compatibility, provide precise sensor/enrollment status, and surface failed scans in the login UI.
+- Fingerprint is optional; when enabled, the app requests it once after each phone restart. Email/password login remains available.
+- Preserved PWA session behavior, compact Bluetooth controls, calculator history, shop logo selection and the in-app update flow.
+
+## Version 7.1 — synchronized release
+
+- Standardized the current release version to **7.1** across PWA and Android WebView HTML, update metadata, manifests, service-worker cache names, Android package metadata, and APK build artifact naming.
 - Retained the compact Bluetooth panel and native connected-device status handling.
 - Retained fingerprint sign-in and visible failure feedback.
 - Fixed shop-logo selection so tapping the shop photo opens the image picker; the selected image is resized/compressed and saved locally.
 - Added a compact calculator history on the left, showing each completed expression and result separately, with the keypad on the right.
-- Kept root PWA and Android WebView update metadata synchronized at 7.0.
+- Kept root PWA and Android WebView update metadata synchronized at 7.1.
 
-## Version 7.0 verification checklist
+## Version 7.1 verification checklist
 
-1. Confirm login badge, dashboard version chip, Settings update panel, PWA title, manifest and update checker show 7.0.
-2. Confirm root and Android `update.json` files advertise 7.0.
-3. Confirm the Android package uses `versionName = "7.0"` and `versionCode = 700`.
-4. Confirm the APK artifact is named `Pak-GSM-Repair-7.0.apk`.
+1. Confirm login badge, dashboard version chip, Settings update panel, PWA title, manifest and update checker show 7.1.
+2. Confirm root and Android `update.json` files advertise 7.1.
+3. Confirm the Android package uses `versionName = "7.1"` and `versionCode = 700`.
+4. Confirm the APK artifact is named `Pak-GSM-Repair-7.1.apk`.
 5. Test logo selection, calculator history, Bluetooth and fingerprint on the target phone after installation. Syntax/build success does not replace device testing.
 
 ---
