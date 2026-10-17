@@ -1,7 +1,7 @@
 
 /* Pak GSM Repair PWA worker.
    App shell cache is versioned so older app caches can be replaced. */
-const CACHE_NAME = 'pak-gsm-repair-v7.2-dashboard';
+const CACHE_NAME = 'pak-gsm-repair-v7.3-dashboard';
 const STAGING_CACHE = 'pgr-update-staging';
 
 const APP_SHELL = [
