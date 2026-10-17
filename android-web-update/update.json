@@ -1,4 +1,4 @@
 {
-  "version": "6.2",
-  "changelog": "6.2: correct visible app version labels to 6.2; compact the dashboard calculator; restore the File Vault and separate dashboard shortcuts for Flash Files, Dump Files, and Keypad Flash Files; allow saving local files in IndexedDB and adding file links; keep Full Name visible and Username hidden. Web UI update only; native Bluetooth code is unchanged. This updates the web UI only; native Android and Bluetooth code are unchanged."
+  "version": "6.3",
+  "changelog": "6.3: widen the compact calculator to fill its row and remove the right-side gap; move Flash Files, Dump Files, and Keypad Flash Files out of Dashboard into a separate File Vault tab at the right end of the menu; preserve registration and other working features. Web UI only; native Bluetooth code unchanged. This updates the web UI only; native Android and Bluetooth code are unchanged."
 }
