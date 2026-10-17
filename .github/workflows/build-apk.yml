@@ -61,7 +61,7 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Build pak gsm 6.5 APK
+      - name: Build pak gsm 6.6 APK
         run: gradle --no-daemon assembleDebug
 
       - name: Rename APK for release
