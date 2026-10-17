@@ -8,8 +8,8 @@ android {
         applicationId = "com.pakgsm.repair"
         minSdk = 26
         targetSdk = 35
-        versionCode = 608
-        versionName = "6.8"
+        versionCode = 609
+        versionName = "6.9"
     }
 
     compileOptions {
@@ -21,4 +21,5 @@ android {
 
 dependencies {
     implementation("androidx.webkit:webkit:1.12.1")
+    implementation("androidx.biometric:biometric:1.1.0")
 }
