@@ -29,6 +29,10 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
     private WebView webView;
@@ -67,10 +71,13 @@ public class MainActivity extends Activity {
         assetLoader = new WebViewAssetLoader.Builder().addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this)).build();
         webView.setWebViewClient(new WebViewClientCompat() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                return assetLoader.shouldInterceptRequest(request.getUrl());
+                WebResourceResponse updated = updatedIndexResponse(request.getUrl());
+                return updated != null ? updated : assetLoader.shouldInterceptRequest(request.getUrl());
             }
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                return assetLoader.shouldInterceptRequest(android.net.Uri.parse(url));
+                android.net.Uri uri = android.net.Uri.parse(url);
+                WebResourceResponse updated = updatedIndexResponse(uri);
+                return updated != null ? updated : assetLoader.shouldInterceptRequest(uri);
             }
         });
         webView.addJavascriptInterface(new NativeBluetoothBridge(), "PGRNativeBluetooth");
@@ -79,6 +86,14 @@ public class MainActivity extends Activity {
         registerDiscoveryReceiver();
         requestBluetoothPermissionsIfNeeded();
         refreshBluetoothProfiles();
+    }
+
+    private WebResourceResponse updatedIndexResponse(android.net.Uri uri) {
+        if (uri == null || !"/assets/index.html".equals(uri.getPath())) return null;
+        File saved = new File(new File(getFilesDir(), "pgr-web-update"), "index.html");
+        if (!saved.isFile()) return null;
+        try { return new WebResourceResponse("text/html", "UTF-8", new FileInputStream(saved)); }
+        catch (Exception ignored) { return null; }
     }
 
     private void requestBluetoothPermissionsIfNeeded() {
@@ -144,6 +159,27 @@ public class MainActivity extends Activity {
     }
 
     public class NativeBluetoothBridge {
+        @JavascriptInterface public String applyWebUpdate(String html, String version) {
+            try {
+                if (html == null || html.length() < 50000 || html.length() > 1500000) return "Downloaded HTML size is invalid.";
+                if (version == null || !version.matches("\\d+(\\.\\d+)*")) return "Update version is invalid.";
+                String one = "const APP_VERSION='" + version + "';";
+                String two = "const APP_VERSION=\"" + version + "\";";
+                if (!html.contains(one) && !html.contains(two)) return "Downloaded HTML version does not match " + version + ".";
+                File dir = new File(getFilesDir(), "pgr-web-update");
+                if (!dir.exists() && !dir.mkdirs()) return "Could not create app update folder.";
+                File tmp = new File(dir, "index.html.tmp"), saved = new File(dir, "index.html");
+                try (FileOutputStream out = new FileOutputStream(tmp)) { out.write(html.getBytes(StandardCharsets.UTF_8)); out.flush(); }
+                if (saved.exists() && !saved.delete()) { tmp.delete(); return "Could not replace previous update."; }
+                if (!tmp.renameTo(saved)) { tmp.delete(); return "Could not activate downloaded update."; }
+                getSharedPreferences("pgr_web_update", MODE_PRIVATE).edit().putString("version", version).apply();
+                return "OK";
+            } catch (Exception e) { return "Update could not be saved: " + e.getMessage(); }
+        }
+        @JavascriptInterface public void reloadWebApp() {
+            runOnUiThread(() -> { if (webView != null) webView.loadUrl("https://appassets.androidplatform.net/assets/index.html?updated=" + System.currentTimeMillis()); });
+        }
+
         @JavascriptInterface public void requestBluetoothPermissions() {
             runOnUiThread(() -> requestBluetoothPermissionsIfNeeded());
         }
