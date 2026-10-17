@@ -1,4 +1,4 @@
 {
-  "version": "5.7.4",
-  "changelog": "5.7.4 PWA test: restore compact Bluetooth Connect controls on small screens; test browser/native device selection before Android APK changes."
+  "version": "5.9",
+  "changelog": "5.9: version alignment and PWA update metadata refresh. Bluetooth device selection/connect behavior still requires device-side testing."
 }
