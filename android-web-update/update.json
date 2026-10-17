@@ -1,4 +1,4 @@
 {
-  "version": "7.3",
-  "changelog": "Version 7.3: improved fingerprint enrollment flow and declared Android biometric permissions. The fingerprint switch can be enabled before enrollment; use the dedicated Android biometric enrollment screen to register a fingerprint. Email/password sign-in remains available."
+  "version": "7.4",
+  "changelog": "Version 7.4: keeps the dashboard and app pages hidden until fingerprint verification succeeds, keeps the sign-in screen visible while authentication is pending or fails, and opens standard phone security settings for fingerprint enrollment. Fingerprints must be enrolled in Android Settings; email/password sign-in remains available."
 }
