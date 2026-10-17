@@ -1,4 +1,41 @@
-# Pak GSM Repair 5.4
+# Pak GSM Repair 6.1
+
+## Version 6.1 release notes
+
+- Reduced the dashboard Repair Shop Calculator size: narrower panel, smaller display, tighter spacing, and smaller keys.
+- Restored missing built-in **Dump Files**, **Flash Files**, and **Keypad Flash Files** folders on existing installations. The migration adds only missing built-in folders and preserves existing files and custom folders.
+- Simplified registration: **Full Name** remains visible; the duplicate **Username** field is removed. The app generates a compatible internal username from the email and phone details so the current registration API continues receiving its required field.
+- After the v6.1 update is applied and the app view reloads, a one-time **What’s New** popup lists these changes. Tap OK to mark the release notes as seen.
+- Published version metadata is synchronized to 6.1 across the PWA, Android HTML-update package, and GitHub Pages update package.
+
+## Recommended v6.1 test sequence
+
+1. Open the installed app and choose **Check for Update**.
+2. Confirm that it reports v6.1, then tap **Download & Apply**.
+3. Wait for the app view to restart and confirm the v6.1 release-notes popup appears.
+4. Confirm the calculator is smaller; open File Vault and verify Flash Files, Dump Files, and Keypad Flash Files are present.
+5. Open Register and verify only Full Name (not Username) is shown; do not create a duplicate test account unless you intend to.
+6. Re-open the app and confirm the release-notes popup does not repeat after pressing OK.
+
+## GitHub Pages setup
+
+See `SETUP_GITHUB.md`. Upload the extracted **contents** to the repository root, not a nested folder. `update.json` must be published beside `index.html`.
+
+## Update behavior and limitations
+
+- The in-app updater downloads the new HTML from `android-web-update/index.html` for the native Android WebView build, then saves it through the native bridge. This release changes the web UI only; it does not update native Java code or Bluetooth permissions.
+- The PWA updater stages `index.html`, `manifest.json`, `sw.js`, `cloud-config.js`, `update.json`, and app icons from the repository root before applying the update.
+- For each future web release, update `APP_VERSION` and `update.json` together in the root and `android-web-update` package. Keep the version strings identical.
+- If Android **Download & Apply** fails, use the GitHub Actions artifact `Pak-GSM-Repair-6.1-APK` as the fallback APK, then report the exact on-screen error before trying again.
+- The APK display name remains **Pak GSM Repair**. The workflow artifact contains the renamed APK file `Pak-GSM-Repair-6.1.apk`.
+
+## Existing project notes
+
+- Run on the HTTPS GitHub Pages URL for service-worker and Google sign-in support.
+- Customer data is local to the browser unless a cloud backup backend is configured.
+- `Code.gs` is intentionally NOT included in this public GitHub Pages package. The backend is a separate Google Apps Script project and must not be uploaded to a public GitHub repository.
+
+---
 
 Mobile repair-shop workspace with customer records, repair jobs, File Vault, Parts Availability, settings, local backup/restore, and a user-triggered GitHub Pages update flow.
 

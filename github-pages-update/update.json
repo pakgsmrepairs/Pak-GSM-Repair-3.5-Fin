@@ -1,4 +1,4 @@
 {
-  "version": "5.8",
-  "changelog": "5.8: Bluetooth connected-device detection through supported headset/A2DP profiles, selected-device persistence during scan refresh, and built-in repair-shop calculator. Battery reporting depends on Android/device support."
+  "version": "6.1",
+  "changelog": "6.1: smaller repair-shop calculator; restore missing Dump Files, Flash Files, and Keypad Flash Files folders on existing installs without deleting user data; keep Full Name and remove the visible Username field while generating the username internally for server compatibility; show a one-time release-notes popup after update."
 }

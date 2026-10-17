@@ -74,7 +74,7 @@ body.large-text{font-size:17px}
 .update-status-login[data-kind="error"]{background:#fff0ee!important;border-color:#e6aaa3;color:#842018!important}
 #downloadUpdate:disabled,#loginDownloadUpdate:disabled{opacity:.65;cursor:not-allowed}
 
-/* v6.0 shop identity and top repair-status action */
+/* v6.1 shop identity and top repair-status action */
 .profile-avatar-img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}.bt-status-strip{margin:10px auto 0;max-width:1150px;padding:10px 14px;border-radius:14px;background:linear-gradient(110deg,#063f37,#087b67);color:#fff;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 4px 14px #063f3218}.bt-status-strip .bt-meta{font-size:12px;color:#d9fff0;flex:1;min-width:130px}.bt-status-strip .bt-pill{font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;background:#ffffff1c}.bt-status-strip button{background:#d4fce9;color:#075543;padding:8px 11px}.profile-photo-preview{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid #0b8a69;background:#edf5f1}.bt-small-note{font-size:11px;opacity:.85;line-height:1.4}.customer-photo-field{padding:10px;border:1px dashed #a5cfc0;border-radius:12px;background:#f5fbf8;margin:8px 0}
 .header-actions{align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .header-actions button,.header-actions label{font-size:12px!important;padding:8px 10px!important;min-height:36px!important;cursor:pointer}
@@ -104,7 +104,7 @@ body.large-text{font-size:17px}
 @media(max-width:420px){.dashboard-bt-top{gap:8px}.dashboard-bt-icon{width:42px;height:42px}.dashboard-bt-connect{width:100%}.dash-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))!important}.dash-shortcuts button{font-size:10px!important}.audio-option small{font-size:9px}}
 
 
-/* v6.0 approved fixes: compact registration, visible password policy, unified Bluetooth panel */
+/* v6.1 approved fixes: compact registration, visible password policy, unified Bluetooth panel */
 .login-card:has(#signupFields:not(.hidden)){padding:12px 14px 13px;max-height:92vh;overflow-y:auto}
 .login-card:has(#signupFields:not(.hidden)) .brand-mark{width:48px;height:48px;margin-bottom:3px}
 .login-card:has(#signupFields:not(.hidden)) h2{font-size:20px;margin:2px 0}
@@ -125,7 +125,7 @@ body.large-text{font-size:17px}
 @media(max-width:420px){.login-card:has(#signupFields:not(.hidden)){padding:10px 11px}.password-requirements{font-size:10px}}
 
 
-/* v6.0 compact shop-first header: app name is secondary; registered shop identity is prominent */
+/* v6.1 compact shop-first header: app name is secondary; registered shop identity is prominent */
 .pgr-app-name{font-size:11px;font-weight:700;letter-spacing:.35px;text-transform:uppercase;color:#c9f4e4;line-height:1.2;margin-bottom:4px}
 .pgr-shop-identity{display:flex;align-items:center;gap:8px;min-width:0}
 .pgr-shop-identity .shop-logo-preview{width:42px!important;height:42px!important;max-width:42px;flex:0 0 42px;object-fit:cover;border:2px solid #d5f7e8;border-radius:10px;background:#fff}
@@ -177,7 +177,7 @@ body.large-text{font-size:17px}
 .pgr-reference-header .pgr-bell-dot{position:absolute;width:9px;height:9px;border-radius:50%;background:#ff5252;right:5px;top:5px;border:1px solid #0a6959}
 @media(max-width:600px){.pgr-reference-header{padding:6px 10px!important;gap:6px!important}.pgr-reference-header .pgr-brand-wrap{gap:8px!important}.pgr-reference-header .pgr-shop-photo{width:60px;height:60px;flex-basis:60px}.pgr-reference-header .pgr-shop-name-display{font-size:17px!important}.pgr-reference-header .pgr-app-name{font-size:10px!important}.pgr-reference-header .pgr-shop-subtitle{font-size:10px!important}.pgr-reference-header .pgr-bell-button,.pgr-reference-header .pgr-settings-button{width:34px!important;min-width:34px!important;height:38px!important;min-height:38px!important;font-size:24px!important}.pgr-reference-header .header-actions{gap:3px!important}}
 </style><style>
-/* v6.0 compact visual pass for user review */
+/* v6.1 compact visual pass for user review */
 .pgr-modern-header{padding:5px 9px!important;min-height:0!important;gap:6px!important;background:linear-gradient(110deg,#063b35 0%,#087f72 58%,#0b6a79 100%)!important;box-shadow:0 3px 12px #063b3520!important}
 .pgr-modern-header .pgr-brand-wrap{gap:6px!important;align-items:center!important}
 .pgr-modern-header .pgr-profile-icon{width:30px!important;height:30px!important;flex-basis:30px!important}
@@ -246,6 +246,16 @@ body.large-text{font-size:17px}
 }
 </style>
 
+
+<style>
+/* v6.1: compact repair calculator; only calculator controls are affected. */
+#calculatorPanel{max-width:330px!important;padding:10px!important;margin:8px 0!important}
+#calculatorPanel h2{font-size:16px!important;margin:0 0 6px!important}
+#calculatorPanel>p{font-size:11px!important;line-height:1.35;margin:4px 0 8px!important}
+#calculatorPanel #calcDisplay{font-size:18px!important;padding:8px!important;margin:5px 0 7px!important;min-height:36px}
+#calculatorPanel .calc-grid{gap:5px!important}
+#calculatorPanel .calc-grid button{min-height:34px!important;padding:5px!important;font-size:13px!important;border-radius:7px!important}
+</style>
 </head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
  <div class="pgr-splash-card">
@@ -260,12 +270,12 @@ body.large-text{font-size:17px}
 <div id="loginGate" class="hidden">
  <div class="login-card">
   <div class="brand-mark" aria-label="Pak GSM Repair logo"><img src="./icons/icon-192.png" alt="Pak GSM Repair logo"></div>
-  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v6.0</span>
+  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v6.1</span>
   <h3 id="authHeading">Welcome Back</h3><p id="authSubheading">Login to continue to your repair shop</p>
   <div id="emailAuthPanel">
    <div id="signupFields" class="hidden">
     <div class="auth-field"><label for="authName">Full Name *</label><input id="authName" type="text" required autocomplete="name" placeholder="Enter your full name" maxlength="100"></div>
-    <div class="auth-field"><label for="authUsername">Username *</label><input id="authUsername" type="text" required autocomplete="new-password" name="pgr_signup_username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Choose a username" maxlength="40" pattern="[A-Za-z0-9._-]{3,40}"><small class="muted">3–40 characters: letters, numbers, dot, underscore or hyphen.</small></div>
+    <input id="authUsername" type="hidden" value="">
     <div class="auth-field"><label for="authShopName">Shop Name *</label><input id="authShopName" type="text" required autocomplete="organization" placeholder="Enter your mobile repair shop name" maxlength="100"></div>
     <div class="auth-field"><label for="authShopLocation">Shop Location (optional)</label><input id="authShopLocation" type="text" autocomplete="street-address" placeholder="City, Country (e.g. Lahore, Pakistan)" maxlength="100"></div>
     <div class="auth-field"><label for="authEmail">Email Address *</label><input id="authEmail" type="email" required autocomplete="email" name="pgr_signup_email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Enter your email address" inputmode="email" aria-describedby="authEmailStatus"><p id="authEmailStatus" aria-live="polite"></p></div>
@@ -421,6 +431,8 @@ const K='pgr36_data',S='pgr36_settings',D='pgr36_device', F='pgr36_session';
 const DEFAULT_FOLDERS=[['flash','📂','Flash Files'],['keypad','⌨','Keypad Flash Files'],['dump','▤','Dump Files'],['schematic','⌁','Schematic Diagram']];
 const blank=()=>({customers:[],jobs:[],inventory:[],folders:DEFAULT_FOLDERS.map(x=>({id:x[0],icon:x[1],name:x[2],files:[]})),products:[],sales:[]});
 let db; try{db=Object.assign(blank(),JSON.parse(localStorage.getItem(K)||'{}')); if(!db.folders?.length)db.folders=blank().folders;if(!db.products)db.products=[];if(!db.sales)db.sales=[]}catch(e){db=blank()}
+// v6.1 migration: restore missing built-in file folders without deleting user folders or files.
+let pgrFoldersMigrated=false;for(const def of DEFAULT_FOLDERS){if(!db.folders.some(folder=>folder.id===def[0])){db.folders.push({id:def[0],icon:def[1],name:def[2],files:[]});pgrFoldersMigrated=true}}if(pgrFoldersMigrated){try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}}
 const id=p=>p+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),money=n=>Math.round(Number(n)||0).toLocaleString('en-PK');
 function persist(){try{localStorage.setItem(K,JSON.stringify(db));render();return true}catch(e){alert('Could not save records in this browser.');return false}}
 let currentTab='customers';
@@ -515,7 +527,9 @@ applyAppearance();
 document.querySelector('#themeSelect').addEventListener('change',()=>{const s=settings();s.theme=document.querySelector('#themeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 document.querySelector('#textSizeSelect').addEventListener('change',()=>{const s=settings();s.textSize=document.querySelector('#textSizeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if((settings().theme||'light')==='system')applyAppearance()})}
-const APP_VERSION='6.0';
+const APP_VERSION='6.1';
+const PGR_V61_RELEASE_NOTES="Version 6.1 changes: the repair-shop calculator is smaller for a cleaner dashboard; missing Dump Files, Flash Files, and Keypad Flash Files folders are restored automatically without deleting existing folders or files; registration keeps Full Name and removes the visible Username field (a compatible username is generated internally for the existing registration API); after updating, a one-time release-notes popup explains these changes.";
+(function showReleaseNotesForNewVersion(){try{const key='pgr_release_notes_seen';if(localStorage.getItem(key)===APP_VERSION)return;window.addEventListener('load',()=>{const ok=document.querySelector('#pgrNoticeOk');if(!ok)return;showAuthPopup(PGR_V61_RELEASE_NOTES,'Pak GSM Repair v'+APP_VERSION+' — What’s New');const markSeen=()=>{try{localStorage.setItem(key,APP_VERSION)}catch(e){};ok.removeEventListener('click',markSeen)};ok.addEventListener('click',markSeen,{once:true})},{once:true})}catch(e){}})();
 const PGR_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/';
 const PGR_ANDROID_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/android-web-update/';
 // Login-page update check. It now exposes Download & Apply directly on the login page.
@@ -877,7 +891,7 @@ function initLogin(){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showAuthPopup('Please enter a valid email address.','Check your email');return}
   if(signup){
    if(!document.querySelector('#authName').value.trim()){showAuthPopup('Please enter your full name.','Missing information');return}
-   const username=document.querySelector('#authUsername').value.trim();
+   const signupPhone=document.querySelector('#authPhone').value.trim();const emailParts=email.toLowerCase().split('@');const safeLocal=(emailParts[0]||'user').replace(/[^A-Za-z0-9._-]/g,'_').slice(0,18)||'user';const safeDomain=(emailParts[1]||'mail').replace(/[^A-Za-z0-9._-]/g,'_').slice(0,8)||'mail';const phoneSuffix=signupPhone.replace(/\D/g,'').slice(-6)||'000000';const username=(safeLocal+'_'+safeDomain+'_'+phoneSuffix).slice(0,40);document.querySelector('#authUsername').value=username;
    const shopName=document.querySelector('#authShopName').value.trim();
    if(!/^[A-Za-z0-9._-]{3,40}$/.test(username)){showAuthPopup('Username must be 3–40 characters and use only letters, numbers, dot, underscore or hyphen.','Check username');return}
    if(!shopName){showAuthPopup('Please enter your shop name.','Missing information');return}

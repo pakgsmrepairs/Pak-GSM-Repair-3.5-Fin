@@ -1,4 +1,4 @@
 {
-  "version": "6.0",
-  "changelog": "6.0: align the PWA release metadata with Android; harden interactive controls and Bluetooth/update flows. Please verify all actions on-device after updating."
+  "version": "6.1",
+  "changelog": "6.1: smaller repair-shop calculator; restore missing Dump Files, Flash Files, and Keypad Flash Files folders on existing installs without deleting user data; keep Full Name and remove the visible Username field while generating the username internally for server compatibility; show a one-time release-notes popup after update."
 }
