@@ -4,6 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
@@ -37,6 +41,7 @@ import java.nio.charset.StandardCharsets;
 public class MainActivity extends Activity {
     private WebView webView;
     private BluetoothAdapter adapter;
+    private BluetoothGatt activeGatt;
     private static final int BT_PERMISSION_REQUEST = 410;
     private final Map<String, BluetoothDevice> discovered = new LinkedHashMap<>();
     private BroadcastReceiver discoveryReceiver;
@@ -133,6 +138,7 @@ public class MainActivity extends Activity {
         try { if(adapter!=null && adapter.isDiscovering()) adapter.cancelDiscovery(); } catch(Exception ignored) {}
         try { for(BluetoothProfile proxy : profileProxies.values()) adapter.closeProfileProxy(profileProxies.entrySet().stream().filter(e -> e.getValue()==proxy).map(Map.Entry::getKey).findFirst().orElse(-1), proxy); } catch(Exception ignored) {}
         try { if(discoveryReceiver!=null) unregisterReceiver(discoveryReceiver); } catch(Exception ignored) {}
+        try { if(activeGatt!=null) { activeGatt.disconnect(); activeGatt.close(); activeGatt=null; } } catch(Exception ignored) {}
         if(webView!=null) webView.destroy();
         super.onDestroy();
     }
@@ -222,6 +228,105 @@ public class MainActivity extends Activity {
               catch(Exception e){try{out.put("ok",false);out.put("error","Scan failed: "+e.getMessage());}catch(Exception ignored){}}
             return out.toString();
         }
+        @JavascriptInterface public String connectGattDevice(String address) {
+            try {
+                if (address == null || address.trim().isEmpty()) return "No Bluetooth device address was supplied.";
+                if (adapter == null) return "Bluetooth is not available on this phone.";
+                if (Build.VERSION.SDK_INT >= 31 && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    requestBluetoothPermissions();
+                    return "Allow Nearby devices permission, then select the device again.";
+                }
+                if (!adapter.isEnabled()) return "Bluetooth is off. Turn it on, then select the device again.";
+                BluetoothDevice target = null;
+                for (BluetoothDevice d : adapter.getBondedDevices()) {
+                    if (address.equalsIgnoreCase(d.getAddress())) { target = d; break; }
+                }
+                if (target == null) target = discovered.get(address);
+                if (target == null) return "This device is no longer in the Bluetooth list. Scan again.";
+                if (target.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC) {
+                    JSONObject result = new JSONObject();
+                    result.put("deviceName", safeName(target));
+                    result.put("connected", isConnected(target));
+                    result.put("message", isConnected(target)
+                        ? "Android confirms this classic Bluetooth device is connected, but it does not expose a standard BLE battery service. Battery and headset controls may require the manufacturer's app/protocol."
+                        : "This is a classic Bluetooth device. Android's public API cannot force-connect every headset from an app. Use Android Bluetooth settings to pair/connect it; battery data is shown only if the headset exposes it.");
+                    emitNativeGattResult(result);
+                    return result.getString("message");
+                }
+                try { if (activeGatt != null) { activeGatt.disconnect(); activeGatt.close(); } } catch (Exception ignored) {}
+                activeGatt = target.connectGatt(MainActivity.this, false, new BluetoothGattCallback() {
+                    @Override public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                        if (status != BluetoothGatt.GATT_SUCCESS) {
+                            JSONObject result = new JSONObject();
+                            try { result.put("deviceName", safeName(target)); result.put("connected", false); result.put("message", "BLE connection failed (status " + status + "). The headset may not support app-accessible GATT."); } catch (Exception ignored) {}
+                            emitNativeGattResult(result);
+                            try { gatt.close(); } catch (Exception ignored) {}
+                            return;
+                        }
+                        if (newState == android.bluetooth.BluetoothProfile.STATE_CONNECTED) {
+                            boolean started = gatt.discoverServices();
+                            if (!started) {
+                                JSONObject result = new JSONObject();
+                                try { result.put("deviceName", safeName(target)); result.put("connected", true); result.put("message", "Connected over BLE, but Android could not start service discovery."); } catch (Exception ignored) {}
+                                emitNativeGattResult(result);
+                            }
+                        } else if (newState == android.bluetooth.BluetoothProfile.STATE_DISCONNECTED) {
+                            JSONObject result = new JSONObject();
+                            try { result.put("deviceName", safeName(target)); result.put("connected", false); result.put("message", "BLE connection disconnected."); } catch (Exception ignored) {}
+                            emitNativeGattResult(result);
+                            try { gatt.close(); } catch (Exception ignored) {}
+                        }
+                    }
+                    @Override public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                        JSONObject result = new JSONObject();
+                        try { result.put("deviceName", safeName(target)); result.put("connected", status == BluetoothGatt.GATT_SUCCESS); } catch (Exception ignored) {}
+                        if (status != BluetoothGatt.GATT_SUCCESS) {
+                            try { result.put("message", "BLE connected, but service discovery failed (status " + status + ")."); } catch (Exception ignored) {}
+                            emitNativeGattResult(result); return;
+                        }
+                        BluetoothGattService batteryService = gatt.getService(java.util.UUID.fromString("0000180f-0000-1000-8000-00805f9b34fb"));
+                        BluetoothGattCharacteristic batteryChar = batteryService == null ? null : batteryService.getCharacteristic(java.util.UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb"));
+                        if (batteryChar == null) {
+                            try { result.put("message", "BLE connected, but this device does not expose the standard Battery Service. Android cannot provide a reliable battery percentage for it."); } catch (Exception ignored) {}
+                            emitNativeGattResult(result); return;
+                        }
+                        boolean started = gatt.readCharacteristic(batteryChar);
+                        if (!started) {
+                            try { result.put("message", "Battery Service exists, but Android could not read its battery characteristic."); } catch (Exception ignored) {}
+                            emitNativeGattResult(result);
+                        }
+                    }
+                    @Override public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                        if (!"00002a19-0000-1000-8000-00805f9b34fb".equalsIgnoreCase(characteristic.getUuid().toString())) return;
+                        JSONObject result = new JSONObject();
+                        try {
+                            result.put("deviceName", safeName(target));
+                            result.put("connected", true);
+                            if (status == BluetoothGatt.GATT_SUCCESS && characteristic.getValue() != null && characteristic.getValue().length > 0) {
+                                result.put("batteryLevel", characteristic.getValue()[0] & 0xff);
+                                result.put("message", "Read battery percentage from the standard BLE Battery Service.");
+                            } else {
+                                result.put("message", "The device has a Battery Service, but it did not allow the battery value to be read (status " + status + ").");
+                            }
+                        } catch (Exception ignored) {}
+                        emitNativeGattResult(result);
+                    }
+                }, android.bluetooth.BluetoothDevice.TRANSPORT_LE);
+                return "Attempting a real BLE GATT connection. The result will appear here when the device responds.";
+            } catch (SecurityException e) {
+                return "Android denied Bluetooth access. Allow Nearby devices permission and retry.";
+            } catch (Exception e) {
+                return "Could not start BLE connection: " + e.getMessage();
+            }
+        }
+
+        private void emitNativeGattResult(JSONObject result) {
+            if (result == null) return;
+            runOnUiThread(() -> {
+                if (webView != null) webView.evaluateJavascript("window.onNativeGattResult && window.onNativeGattResult(" + result.toString() + ")", null);
+            });
+        }
+
         @JavascriptInterface public void openBluetoothSettings() {
             runOnUiThread(() -> { try { startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS)); }
                 catch(Exception e){Toast.makeText(MainActivity.this,"Unable to open Bluetooth settings",Toast.LENGTH_SHORT).show();} });
