@@ -1,4 +1,4 @@
 {
-  "version": "6.7",
-  "changelog": "6.7: calculator now fills the available row while retaining compact keys; APK Connect / Check lists connected devices inline instead of opening a separate picker; battery display regex corrected; separate left/right earbud battery metadata is shown only when Android exposes it. Biometric login is not included in this build."
+  "version": "6.8",
+  "changelog": "6.8: synchronize the app version and published update metadata with the Android source build. Keep compact calculator controls and the existing native Bluetooth bridge. Fingerprint login is not included in this release."
 }
