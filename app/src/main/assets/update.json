@@ -1,4 +1,4 @@
 {
-  "version": "7.1",
-  "changelog": "Version 7.1: fixed Android fingerprint sign-in compatibility; added Settings > Fingerprint enable/disable control, Android security-settings shortcut, explicit not-enrolled/unavailable messages and visible failed-scan feedback. Fingerprint remains optional and is requested once after each phone restart when enabled. Compact Bluetooth, calculator history, logo picker and in-app update flow are preserved."
+  "version": "7.2",
+  "changelog": "Version 7.2: fixed fingerprint Settings switch so it can be selected before a fingerprint is enrolled. The preference is saved, and the app explains when enrollment or sensor availability is still needed. Fingerprint sign-in remains optional; email/password sign-in is preserved."
 }
