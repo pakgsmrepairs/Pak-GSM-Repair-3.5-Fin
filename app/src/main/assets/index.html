@@ -831,7 +831,10 @@ function showInlineConnectedDevice(d){
  const left=document.querySelector('#btLeftBattery');if(left)left.textContent=pgrBatteryText(d.leftBattery,knownBattery);
  const right=document.querySelector('#btRightBattery');if(right)right.textContent=pgrBatteryText(d.rightBattery,'Not exposed');
  btState.textContent='📶 Connected to phone';
- btStatus((d.name||'Bluetooth device')+(d.connected?' فون سے connected ہے۔':' paired ہے لیکن فون سے connected نہیں۔ Android Bluetooth settings سے connect کریں۔')+' Battery: '+(knownBattery==='—%'?'اس ڈیوائس نے ظاہر نہیں کی':knownBattery)+'. Left/Right battery صرف تب دکھے گی جب Android/headset یہ معلومات دے۔');
+ const leftText=pgrBatteryText(d.leftBattery,'Not exposed'),rightText=pgrBatteryText(d.rightBattery,'Not exposed'),caseText=pgrBatteryText(d.caseBattery,'Not exposed');
+ btDetails.textContent='Battery: '+knownBattery+' · Left: '+leftText+' · Right: '+rightText+' · Case: '+caseText;
+ btState.textContent=d.connected?'📶 Connected to phone':'🔎 Paired device selected';
+ btStatus((d.name||'Bluetooth device')+(d.connected?' فون سے connected ہے۔':' paired ہے لیکن فون سے connected نہیں۔ نیچے چھوٹا بٹن دباکر Android settings میں connect کریں۔')+' Battery details صرف وہی دکھتی ہیں جو Android/headset فراہم کرے۔');
  if(window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.connectGattDevice==='function'&&d.address){
   try{const result=window.PGRNativeBluetooth.connectGattDevice(d.address);if(result&&!String(result).startsWith('BLE connection'))btStatus((d.name||'Bluetooth device')+' connected ہے۔ '+result)}
   catch(e){btStatus('Device connected ہے، مگر اضافی معلومات نہیں پڑھ سکیں: '+(e.message||e))}
@@ -933,6 +936,11 @@ btButton.addEventListener('click',async()=>{
     root.querySelectorAll('.bt-inline-device').forEach(x=>x.classList.remove('is-selected'));btn.classList.add('is-selected');
     const d=devices[Number(btn.dataset.inlineBtIndex)];showInlineConnectedDevice(d);
    }));
+   if(devices.some(d=>!d.connected)&&root){
+    root.insertAdjacentHTML('beforeend','<button type="button" id="btInlineOpenSettings" class="secondary" style="min-height:24px;padding:4px 8px;font-size:10px;margin-top:4px">Connect paired device in Android settings</button>');
+    const openSettings=document.querySelector('#btInlineOpenSettings');
+    if(openSettings)openSettings.onclick=()=>window.PGRNativeBluetooth.openBluetoothSettings();
+   }
    showInlineConnectedDevice(devices[0]);
   }catch(e){btState.textContent='⚠️ Bluetooth error';btStatus(String(e.message||e));if(root)root.innerHTML='<div class="bt-inline-empty">Bluetooth معلومات نہیں پڑھ سکیں: '+btEsc(e.message||e)+'</div>'}
   finally{btButton.disabled=false;btButton.textContent='Connect / Check'}
