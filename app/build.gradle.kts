@@ -5,11 +5,12 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.pakgsm.repair"
+        applicationId = if (project.hasProperty("pgrTestInstall")) "com.pakgsm.repair.test69" else "com.pakgsm.repair"
+        manifestPlaceholders["appLabel"] = if (project.hasProperty("pgrTestInstall")) "Pak GSM Repair 6.9 Test" else "Pak GSM Repair"
         minSdk = 26
         targetSdk = 35
-        versionCode = 608
-        versionName = "6.8"
+        versionCode = 609
+        versionName = "6.9"
     }
 
     compileOptions {
@@ -19,6 +20,14 @@ android {
 }
 
 
+configurations.configureEach {
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
+}
+
 dependencies {
     implementation("androidx.webkit:webkit:1.12.1")
+    implementation("androidx.biometric:biometric:1.1.0")
+    implementation("androidx.fragment:fragment:1.8.5")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
 }
