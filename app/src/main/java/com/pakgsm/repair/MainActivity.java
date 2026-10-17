@@ -249,6 +249,32 @@ public class MainActivity extends Activity {
             });
         }
         @JavascriptInterface public String getPairedDevices() { return listDevices(); }
+        @JavascriptInterface public String getConnectedBluetoothDevices() {
+            try {
+                JSONObject all = new JSONObject(listDevices());
+                if (all.has("error")) return all.toString();
+                JSONArray source = all.optJSONArray("devices");
+                JSONArray connected = new JSONArray();
+                if (source != null) {
+                    for (int i = 0; i < source.length(); i++) {
+                        JSONObject device = source.optJSONObject(i);
+                        if (device != null && device.optBoolean("connected", false)) connected.put(device);
+                    }
+                }
+                JSONObject result = new JSONObject();
+                result.put("devices", connected);
+                result.put("connectedOnly", true);
+                result.put("message", connected.length() > 0
+                    ? "Connected Bluetooth devices found."
+                    : "Android did not report any currently connected Bluetooth devices.");
+                return result.toString();
+            } catch (Exception e) {
+                JSONObject error = new JSONObject();
+                try { error.put("error", "Could not read connected Bluetooth devices: " + e.getMessage()); }
+                catch (Exception ignored) {}
+                return error.toString();
+            }
+        }
         @JavascriptInterface public String startDiscovery() {
             JSONObject out=new JSONObject();
             try {
