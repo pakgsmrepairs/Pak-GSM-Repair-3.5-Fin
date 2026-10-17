@@ -323,7 +323,22 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
 #btInlineConnectedDevices .bt-inline-device{padding:5px 7px!important;border-radius:8px!important;font-size:11px!important;line-height:1.2!important}
 #btInlineConnectedDevices .bt-inline-device small{font-size:9px!important}
 </style>
-</head><body>
+<style id="pgr-compact-bluetooth-fix">
+/* Compact Bluetooth lists: keep device discovery from stretching the whole dashboard. */
+#btInlineConnectedDevices,#btInfoCards{max-height:156px;overflow-y:auto;overscroll-behavior:contain;min-height:0;box-sizing:border-box}
+#btInlineConnectedDevices{gap:4px!important;margin-top:5px!important;padding-right:2px}
+#btInlineConnectedDevices .bt-inline-device{padding:5px 8px!important;border-radius:8px!important;font-size:11px!important;line-height:1.2!important;gap:1px;min-height:0}
+#btInlineConnectedDevices .bt-inline-device b{font-size:12px;line-height:1.2;max-width:100%;overflow-wrap:anywhere}
+#btInlineConnectedDevices .bt-inline-device small{font-size:10px!important;line-height:1.2!important;max-width:100%;overflow-wrap:anywhere}
+#btInfoCards{display:flex;flex-direction:column;gap:4px}
+#btInfoCards .bt-device-select{padding:5px 8px!important;margin:0!important;border-radius:8px!important;font-size:11px!important;line-height:1.2!important;min-height:0!important}
+#btInfoCards .bt-device-select b{font-size:12px;line-height:1.2}
+#btInfoCards .bt-device-select small{font-size:10px!important;line-height:1.2!important}
+#btInlineConnectedDevices .secondary,#btInfoCards button.secondary{width:auto!important;max-width:100%;min-height:25px!important;padding:4px 8px!important;font-size:10px!important}
+.pgr-biometric-login{width:100%;margin-top:8px!important;min-height:38px!important;padding:8px 10px!important;font-size:13px!important;border-radius:9px!important}
+.pgr-biometric-hint{margin:4px 0 0!important;font-size:11px!important;text-align:center}
+@media(max-width:480px){#btInlineConnectedDevices,#btInfoCards{max-height:132px}#btInlineConnectedDevices .bt-inline-device{padding:4px 7px!important}}
+</style></head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
  <div class="pgr-splash-card">
   <img class="pgr-splash-logo" src="./icons/icon-192.png" alt="Pak GSM Repair app logo">
@@ -337,7 +352,7 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
 <div id="loginGate" class="hidden">
  <div class="login-card">
   <div class="brand-mark" aria-label="Pak GSM Repair logo"><img src="./icons/icon-192.png" alt="Pak GSM Repair logo"></div>
-  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v6.8</span>
+  <h2>Pak GSM Repair</h2><p class="brand-subtitle">Mobile Repair &amp; Services</p><span class="version-pill">v6.9</span>
   <h3 id="authHeading">Welcome Back</h3><p id="authSubheading">Login to continue to your repair shop</p>
   <div id="emailAuthPanel">
    <div id="signupFields" class="hidden">
@@ -367,6 +382,8 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
    </div>
    <p class="auth-help">Create an account on the second screen. Verify the 6-digit email OTP to complete registration.</p>
   </div>
+  <button id="loginBiometricButton" type="button" class="secondary pgr-biometric-login">🔒 Sign in with Fingerprint</button>
+  <p id="loginBiometricHint" class="auth-help pgr-biometric-hint">Use fingerprint after signing in once on this phone.</p>
   <button id="guestView" type="button" class="guest-view-btn">View with Guest Account</button>
   <div id="googleButtonWrap"><div id="googleButton"></div><button id="googleFallback" type="button" class="google-btn"><span class="google-mark">G</span> Sign in with Gmail</button></div>
   <p id="loginMsg" class="hidden" role="status">Login first, or tap Register New Account to create an account.</p>
@@ -376,7 +393,7 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
   <p id="loginUpdateStatus" class="update-status-login" role="status" aria-live="polite">Check for the latest published version.</p>
  </div>
 </div>
-<header class="pgr-modern-header pgr-reference-header"><div class="pgr-brand-wrap"><label for="shopLogoFile" class="pgr-shop-photo" title="Change shop photo" aria-label="Change shop photo"><img id="shopLogoPreview" alt="Shop logo" class="shop-logo-preview hidden"><span id="shopLogoFallback" aria-hidden="true">🏪</span></label><input id="shopLogoFile" type="file" accept="image/*" class="hidden"><div class="pgr-brand-text" id="shopBrandPanel"><div class="pgr-app-name">Pak GSM Repair <span class="pgr-version-chip">6.8</span></div><h1 id="shopNameDisplay" class="shop-name-display">Your Shop Name</h1><p class="pgr-shop-subtitle"><span id="shopLocationDisplay" class="shop-location-display hidden"></span><span id="who" class="signed"></span></p></div></div><div class="row header-actions pgr-header-actions" style="flex:0"><button id="openRepairStatus" class="secondary pgr-bell-button" type="button" title="Notifications / repair status" aria-label="Notifications">♧<span class="pgr-bell-dot"></span></button><button id="openSettings" class="secondary pgr-settings-button" type="button" aria-label="Open settings" title="Settings">⚙</button><input id="shopCoverFile" type="file" accept="image/*" class="hidden"></div></header>
+<header class="pgr-modern-header pgr-reference-header"><div class="pgr-brand-wrap"><label for="shopLogoFile" class="pgr-shop-photo" title="Change shop photo" aria-label="Change shop photo"><img id="shopLogoPreview" alt="Shop logo" class="shop-logo-preview hidden"><span id="shopLogoFallback" aria-hidden="true">🏪</span></label><input id="shopLogoFile" type="file" accept="image/*" class="hidden"><div class="pgr-brand-text" id="shopBrandPanel"><div class="pgr-app-name">Pak GSM Repair <span class="pgr-version-chip">6.9</span></div><h1 id="shopNameDisplay" class="shop-name-display">Your Shop Name</h1><p class="pgr-shop-subtitle"><span id="shopLocationDisplay" class="shop-location-display hidden"></span><span id="who" class="signed"></span></p></div></div><div class="row header-actions pgr-header-actions" style="flex:0"><button id="openRepairStatus" class="secondary pgr-bell-button" type="button" title="Notifications / repair status" aria-label="Notifications">♧<span class="pgr-bell-dot"></span></button><button id="openSettings" class="secondary pgr-settings-button" type="button" aria-label="Open settings" title="Settings">⚙</button><input id="shopCoverFile" type="file" accept="image/*" class="hidden"></div></header>
 
 <main class="wrap">
 
@@ -1274,6 +1291,20 @@ window.addEventListener('unhandledrejection',function(event){
    msg.textContent='Login error: '+(reason&&reason.message?reason.message:String(reason||'Please try again.'));
   }
  }catch(_){}
+});
+document.getElementById('loginBiometricButton')?.addEventListener('click',()=>{
+ try{
+  const saved=JSON.parse(localStorage.getItem(F)||'null');
+  const msg=document.getElementById('loginMsg');
+  if(!saved||!saved.email||saved.guest){
+   if(msg){msg.classList.remove('hidden');msg.textContent='پہلے ایک بار email اور password سے sign in کریں؛ پھر fingerprint استعمال کیا جا سکے گا۔'}
+   return;
+  }
+  if(window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.authenticateBiometric==='function'){
+   const gate=document.getElementById('loginGate');if(gate)gate.classList.add('hidden');
+   window.PGRNativeBluetooth.authenticateBiometric();
+  }else if(msg){msg.classList.remove('hidden');msg.textContent='Fingerprint صرف Android APK میں دستیاب ہے۔'}
+ }catch(e){const msg=document.getElementById('loginMsg');if(msg){msg.classList.remove('hidden');msg.textContent='Fingerprint login شروع نہیں ہو سکا: '+(e.message||e)}}
 });
 window.onPgrBiometricResult=function(result){let data=result;try{if(typeof result==='string')data=JSON.parse(result)}catch(e){data={success:false,message:'Fingerprint verification failed.'}}let saved=null;try{saved=JSON.parse(localStorage.getItem(F)||'null')}catch(e){}const gate=document.querySelector('#loginGate');if(data&&data.success&&saved&&saved.email&&!saved.guest){unlock(saved);return}if(gate)gate.classList.remove('hidden');try{initLogin()}catch(e){}const msg=document.querySelector('#loginMsg');if(msg)msg.textContent=(data&&data.message)||'Please sign in with your email and password.'}
  function showLoginScreen(){if(splashTimer){clearTimeout(splashTimer);splashTimer=null}try{stopLoginAudio()}catch(e){}const splash=document.querySelector('#pgrSplash'),gate=document.querySelector('#loginGate');if(splash)splash.classList.add('hidden');let saved=null;try{saved=JSON.parse(localStorage.getItem(F)||'null')}catch(e){}splashStarted=true;if(saved&&saved.email&&!saved.guest){if(window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.isBiometricRequired==='function'&&window.PGRNativeBluetooth.isBiometricRequired()){if(gate)gate.classList.add('hidden');window.PGRNativeBluetooth.authenticateBiometric();return}if(gate)gate.classList.add('hidden');unlock(saved);return}if(gate)gate.classList.remove('hidden');try{initLogin()}catch(e){const m=document.querySelector('#loginMsg');if(m)m.textContent='Login screen opened, but setup reported an error. Please reload the page.'}}
