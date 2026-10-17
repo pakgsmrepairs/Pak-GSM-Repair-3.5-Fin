@@ -371,8 +371,13 @@ public class MainActivity extends Activity {
                                 StringBuilder hex = new StringBuilder();
                                 for (byte value : bytes) { if (hex.length() > 0) hex.append(' '); hex.append(String.format(java.util.Locale.US, "%02X", value & 0xff)); }
                                 result.put("valueHex", hex.toString());
-                                String decoded = new String(bytes, StandardCharsets.UTF_8).replaceAll("[\\u0000-\\u001F]", " ").trim();
-                                if (!decoded.isEmpty() && decoded.matches("[\\x20-\\x7E]+")) result.put("valueText", decoded);
+                                String decoded = new String(bytes, StandardCharsets.UTF_8).trim();
+                                StringBuilder printable = new StringBuilder();
+                                for (int k = 0; k < decoded.length(); k++) {
+                                    char ch = decoded.charAt(k);
+                                    if (ch >= 32 && ch <= 126) printable.append(ch);
+                                }
+                                if (printable.length() > 0) result.put("valueText", printable.toString());
                                 if ("00002a19-0000-1000-8000-00805f9b34fb".equalsIgnoreCase(characteristic.getUuid().toString()) && bytes.length > 0) {
                                     int level = bytes[0] & 0xff;
                                     result.put("batteryLevel", level);
@@ -394,9 +399,6 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface public String readGattCharacteristic(String serviceUuid, String characteristicUuid) {
             try {
-                if (activeGatt == null || !activeGatt.getDevice().getAddress().equalsIgnoreCase("")) {
-                    // The connection object is checked below; no device address is required for reads.
-                }
                 if (activeGatt == null) return "No active BLE GATT connection. Select a BLE device first.";
                 java.util.UUID serviceId = java.util.UUID.fromString(serviceUuid);
                 java.util.UUID characteristicId = java.util.UUID.fromString(characteristicUuid);
