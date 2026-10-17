@@ -235,18 +235,80 @@ public class MainActivity extends FragmentActivity {
     }
 
     public class NativeBluetoothBridge {
+        private static final int BIOMETRIC_AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK;
+
+        @JavascriptInterface public boolean isBiometricEnabled() {
+            return getSharedPreferences("pgr_biometric", MODE_PRIVATE).getBoolean("enabled", false);
+        }
+
         @JavascriptInterface public boolean isBiometricRequired() {
+            if (!isBiometricEnabled()) return false;
             String bootKey = currentBootKey();
             String completedBoot = getSharedPreferences("pgr_biometric", MODE_PRIVATE).getString("authenticated_boot", "");
             return !bootKey.equals(completedBoot);
         }
+
+        @JavascriptInterface public String getBiometricStatus() {
+            BiometricManager manager = BiometricManager.from(MainActivity.this);
+            int availability = manager.canAuthenticate(BIOMETRIC_AUTHENTICATORS);
+            boolean available = availability == BiometricManager.BIOMETRIC_SUCCESS;
+            JSONObject status = new JSONObject();
+            try {
+                status.put("enabled", isBiometricEnabled());
+                status.put("available", available);
+                status.put("message", biometricAvailabilityMessage(availability));
+                status.put("availabilityCode", availability);
+                return status.toString();
+            } catch (Exception e) {
+                return "{\"enabled\":false,\"available\":false,\"message\":\"Could not read fingerprint status.\"}";
+            }
+        }
+
+        @JavascriptInterface public String setBiometricEnabled(boolean enabled) {
+            BiometricManager manager = BiometricManager.from(MainActivity.this);
+            int availability = manager.canAuthenticate(BIOMETRIC_AUTHENTICATORS);
+            if (enabled && availability != BiometricManager.BIOMETRIC_SUCCESS) {
+                return biometricStatusJson(false, false, biometricAvailabilityMessage(availability), availability);
+            }
+            getSharedPreferences("pgr_biometric", MODE_PRIVATE).edit().putBoolean("enabled", enabled).apply();
+            String message = enabled
+                ? "Fingerprint sign-in enabled. Android must have a fingerprint enrolled in system settings."
+                : "Fingerprint sign-in disabled. Use your email and password.";
+            return biometricStatusJson(true, enabled, message, availability);
+        }
+
+        private String biometricAvailabilityMessage(int availability) {
+            if (availability == BiometricManager.BIOMETRIC_SUCCESS) return "Biometric authentication is ready on this phone.";
+            if (availability == BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE) return "This phone does not have a supported biometric sensor.";
+            if (availability == BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE) return "The fingerprint sensor is temporarily unavailable. Try again later.";
+            if (availability == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED) return "No fingerprint is enrolled. Add a fingerprint in Android Settings > Security/Privacy > Fingerprint, then return here.";
+            return "Fingerprint authentication is unavailable. Check Android fingerprint settings and try again.";
+        }
+
+        private String biometricStatusJson(boolean available, boolean enabled, String message, int availability) {
+            JSONObject status = new JSONObject();
+            try {
+                status.put("available", available);
+                status.put("enabled", enabled);
+                status.put("message", message);
+                status.put("availabilityCode", availability);
+                return status.toString();
+            } catch (Exception e) {
+                return "{\"enabled\":false,\"available\":false,\"message\":\"Could not update fingerprint settings.\"}";
+            }
+        }
+
         @JavascriptInterface public void authenticateBiometric() {
             runOnUiThread(() -> {
                 try {
+                    if (!isBiometricEnabled()) {
+                        emitBiometricResult(false, "Fingerprint sign-in is disabled. Sign in with your email and password, then enable it in Settings.");
+                        return;
+                    }
                     BiometricManager manager = BiometricManager.from(MainActivity.this);
-                    int availability = manager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
+                    int availability = manager.canAuthenticate(BIOMETRIC_AUTHENTICATORS);
                     if (availability != BiometricManager.BIOMETRIC_SUCCESS) {
-                        emitBiometricResult(false, "Fingerprint authentication is unavailable. Sign in with your email and password.");
+                        emitBiometricResult(false, biometricAvailabilityMessage(availability));
                         return;
                     }
                     BiometricPrompt prompt = new BiometricPrompt(MainActivity.this,
@@ -258,6 +320,7 @@ public class MainActivity extends FragmentActivity {
                                 emitBiometricResult(true, "Fingerprint verified.");
                             }
                             @Override public void onAuthenticationFailed() {
+                                emitBiometricAttemptFailed("Fingerprint not recognized. Please try again.");
                                 runOnUiThread(() -> Toast.makeText(MainActivity.this, "Fingerprint not recognized. Please try again.", Toast.LENGTH_SHORT).show());
                             }
                             @Override public void onAuthenticationError(int errorCode, CharSequence errString) {
@@ -268,17 +331,27 @@ public class MainActivity extends FragmentActivity {
                         .setTitle("Pak GSM Repair")
                         .setSubtitle("Verify your fingerprint to restore this session")
                         .setNegativeButtonText("Use password")
-                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                        .setAllowedAuthenticators(BIOMETRIC_AUTHENTICATORS)
                         .build();
                     prompt.authenticate(info);
                 } catch (Exception e) {
-                    emitBiometricResult(false, "Fingerprint sign-in could not start. Use your email and password.");
+                    emitBiometricResult(false, "Fingerprint sign-in could not start: " + (e.getMessage() == null ? "Use your email and password." : e.getMessage()));
                 }
             });
         }
         private String currentBootKey() {
             long bootEstimate = System.currentTimeMillis() - SystemClock.elapsedRealtime();
             return String.valueOf(Math.round(bootEstimate / 10000.0) * 10000L);
+        }
+        private void emitBiometricAttemptFailed(String message) {
+            try {
+                JSONObject encoded = new JSONObject();
+                encoded.put("message", message);
+                runOnUiThread(() -> {
+                    if (webView != null) webView.evaluateJavascript(
+                        "window.onPgrBiometricAttemptFailed && window.onPgrBiometricAttemptFailed(" + encoded.toString() + ")", null);
+                });
+            } catch (Exception ignored) {}
         }
         private void emitBiometricResult(boolean success, String message) {
             try {
