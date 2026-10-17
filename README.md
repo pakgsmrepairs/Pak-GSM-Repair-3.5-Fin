@@ -1,6 +1,23 @@
-# Pak GSM Repair 6.2
+# Pak GSM Repair 7.0
 
-## Version 6.2 — corrective update
+## Version 7.0 — synchronized release
+
+- Standardized the current release version to **7.0** across PWA and Android WebView HTML, update metadata, manifests, service-worker cache names, Android package metadata, and APK build artifact naming.
+- Retained the compact Bluetooth panel and native connected-device status handling.
+- Retained fingerprint sign-in and visible failure feedback.
+- Fixed shop-logo selection so tapping the shop photo opens the image picker; the selected image is resized/compressed and saved locally.
+- Added a compact calculator history on the left, showing each completed expression and result separately, with the keypad on the right.
+- Kept root PWA and Android WebView update metadata synchronized at 7.0.
+
+## Version 7.0 verification checklist
+
+1. Confirm login badge, dashboard version chip, Settings update panel, PWA title, manifest and update checker show 7.0.
+2. Confirm root and Android `update.json` files advertise 7.0.
+3. Confirm the Android package uses `versionName = "7.0"` and `versionCode = 700`.
+4. Confirm the APK artifact is named `Pak-GSM-Repair-7.0.apk`.
+5. Test logo selection, calculator history, Bluetooth and fingerprint on the target phone after installation. Syntax/build success does not replace device testing.
+
+---
 
 - Corrected visible version labels on the login screen, app header, and Settings. These labels were hard-coded as 5.8 even though the internal updater version had advanced.
 - Reduced the Repair Shop Calculator panel to a maximum width of 320 px, reduced its display font and padding, and tightened keypad spacing.
