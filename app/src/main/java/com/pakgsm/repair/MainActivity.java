@@ -24,6 +24,10 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.widget.Toast;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
 import org.json.JSONArray;
@@ -37,6 +41,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
 
 public class MainActivity extends FragmentActivity {
     private WebView webView;
@@ -87,6 +99,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
         webView.addJavascriptInterface(new NativeBluetoothBridge(), "PGRNativeBluetooth");
+        webView.addJavascriptInterface(new NativeBiometricBridge(), "PGRNativeBiometric");
         setContentView(webView);
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html");
         registerDiscoveryReceiver();
@@ -228,6 +241,72 @@ public class MainActivity extends FragmentActivity {
     }
     private static String safeAddressStatic(BluetoothDevice device) {
         try { String address=device.getAddress(); return address==null?"":address; } catch(Exception e) { return ""; }
+    }
+
+    private static final String BIOMETRIC_PREFS = "pgr_biometric_login";
+    private static final String BIOMETRIC_DATA = "encrypted_session";
+    private static final String BIOMETRIC_KEY_ALIAS = "PakGSMRepairBiometricKey";
+    private BiometricPrompt.PromptInfo pendingBiometricPromptInfo;
+    private SecretKey getOrCreateBiometricKey(boolean create) throws Exception {
+        KeyStore ks=KeyStore.getInstance("AndroidKeyStore");ks.load(null);
+        java.security.Key existing=ks.getKey(BIOMETRIC_KEY_ALIAS,null);
+        if(existing instanceof SecretKey)return (SecretKey)existing;
+        if(!create)return null;
+        KeyGenerator generator=KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES,"AndroidKeyStore");
+        KeyGenParameterSpec.Builder b=new KeyGenParameterSpec.Builder(BIOMETRIC_KEY_ALIAS,KeyProperties.PURPOSE_ENCRYPT|KeyProperties.PURPOSE_DECRYPT)
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setUserAuthenticationRequired(true).setInvalidatedByBiometricEnrollment(true);
+        if(Build.VERSION.SDK_INT>=30)b.setUserAuthenticationParameters(0,KeyProperties.AUTH_BIOMETRIC_STRONG);
+        else b.setUserAuthenticationValidityDurationSeconds(-1);
+        generator.init(b.build());return generator.generateKey();
+    }
+    private boolean isBiometricAvailableNow(){try{return BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)==BiometricManager.BIOMETRIC_SUCCESS;}catch(Exception e){return false;}}
+    private void emitBiometricStatus(String message){String safe=JSONObject.quote(message==null?"":message);runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript("window.onNativeBiometricStatus && window.onNativeBiometricStatus("+safe+")",null);});}
+    private BiometricPrompt makeBiometricPrompt(String subtitle,BiometricPrompt.AuthenticationCallback callback){
+        BiometricPrompt prompt=new BiometricPrompt(this,ContextCompat.getMainExecutor(this),callback);
+        pendingBiometricPromptInfo=new BiometricPrompt.PromptInfo.Builder().setTitle("Pak GSM Repair").setSubtitle(subtitle).setNegativeButtonText("Cancel").setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG).build();return prompt;
+    }
+    public class NativeBiometricBridge {
+        @JavascriptInterface public boolean isBiometricAvailable(){return isBiometricAvailableNow();}
+        @JavascriptInterface public boolean isBiometricEnabled(){try{return !getSharedPreferences(BIOMETRIC_PREFS,MODE_PRIVATE).getString(BIOMETRIC_DATA,"").isEmpty();}catch(Exception e){return false;}}
+        @JavascriptInterface public void enableBiometricSession(String sessionJson){
+            if(sessionJson==null||sessionJson.length()<2||sessionJson.length()>12000){emitBiometricStatus("Login session could not be prepared.");return;}
+            if(!isBiometricAvailableNow()){emitBiometricStatus("Fingerprint/strong biometric is not enrolled. Set it up in Android settings first.");return;}
+            runOnUiThread(()->{try{
+                KeyStore ks=KeyStore.getInstance("AndroidKeyStore");ks.load(null);if(ks.containsAlias(BIOMETRIC_KEY_ALIAS))ks.deleteEntry(BIOMETRIC_KEY_ALIAS);
+                Cipher cipher=Cipher.getInstance("AES/GCM/NoPadding");cipher.init(Cipher.ENCRYPT_MODE,getOrCreateBiometricKey(true));
+                BiometricPrompt prompt=makeBiometricPrompt("Confirm to enable fingerprint login",new BiometricPrompt.AuthenticationCallback(){
+                    @Override public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result){try{
+                        Cipher c=result.getCryptoObject()==null?null:result.getCryptoObject().getCipher();if(c==null)throw new Exception("Secure cipher unavailable");
+                        byte[] encrypted=c.doFinal(sessionJson.getBytes(StandardCharsets.UTF_8));
+                        String data=Base64.encodeToString(c.getIV(),Base64.NO_WRAP)+":"+Base64.encodeToString(encrypted,Base64.NO_WRAP);
+                        getSharedPreferences(BIOMETRIC_PREFS,MODE_PRIVATE).edit().putString(BIOMETRIC_DATA,data).apply();emitBiometricStatus("Fingerprint login enabled on this device.");
+                    }catch(Exception e){emitBiometricStatus("Could not save protected login. Please sign in normally and retry.");}}
+                    @Override public void onAuthenticationError(int code,CharSequence message){emitBiometricStatus("Fingerprint setup cancelled or failed: "+message);}
+                });prompt.authenticate(pendingBiometricPromptInfo,new BiometricPrompt.CryptoObject(cipher));
+            }catch(Exception e){emitBiometricStatus("Fingerprint setup unavailable. Please use email/password login.");}});
+        }
+        @JavascriptInterface public void requestBiometricLogin(){
+            if(!isBiometricAvailableNow()){emitBiometricStatus("Fingerprint is unavailable. Use email/password login.");return;}
+            runOnUiThread(()->{try{
+                String stored=getSharedPreferences(BIOMETRIC_PREFS,MODE_PRIVATE).getString(BIOMETRIC_DATA,"");int split=stored.indexOf(':');
+                if(split<=0){emitBiometricStatus("No protected login saved. Sign in with email/password first.");return;}
+                byte[] iv=Base64.decode(stored.substring(0,split),Base64.NO_WRAP),encrypted=Base64.decode(stored.substring(split+1),Base64.NO_WRAP);
+                SecretKey key=getOrCreateBiometricKey(false);if(key==null)throw new Exception("Protected key missing");
+                Cipher cipher=Cipher.getInstance("AES/GCM/NoPadding");cipher.init(Cipher.DECRYPT_MODE,key,new GCMParameterSpec(128,iv));
+                BiometricPrompt prompt=makeBiometricPrompt("Verify your fingerprint to sign in",new BiometricPrompt.AuthenticationCallback(){
+                    @Override public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result){try{
+                        Cipher c=result.getCryptoObject()==null?null:result.getCryptoObject().getCipher();if(c==null)throw new Exception("Secure cipher unavailable");
+                        String json=new String(c.doFinal(encrypted),StandardCharsets.UTF_8),safe=JSONObject.quote(json);
+                        runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript("window.onNativeBiometricLogin && window.onNativeBiometricLogin("+safe+")",null);});
+                    }catch(Exception e){emitBiometricStatus("Could not open protected session. Sign in with email/password.");}}
+                    @Override public void onAuthenticationError(int code,CharSequence message){emitBiometricStatus("Fingerprint login cancelled or failed: "+message);}
+                });prompt.authenticate(pendingBiometricPromptInfo,new BiometricPrompt.CryptoObject(cipher));
+            }catch(Exception e){disableBiometricLogin();emitBiometricStatus("Fingerprint login unavailable. Sign in with email/password again.");}});
+        }
+        @JavascriptInterface public void disableBiometricLogin(){try{
+            getSharedPreferences(BIOMETRIC_PREFS,MODE_PRIVATE).edit().remove(BIOMETRIC_DATA).apply();KeyStore ks=KeyStore.getInstance("AndroidKeyStore");ks.load(null);if(ks.containsAlias(BIOMETRIC_KEY_ALIAS))ks.deleteEntry(BIOMETRIC_KEY_ALIAS);emitBiometricStatus("Fingerprint login disabled.");
+        }catch(Exception e){emitBiometricStatus("Could not disable fingerprint login.");}}
     }
 
     public class NativeBluetoothBridge {
