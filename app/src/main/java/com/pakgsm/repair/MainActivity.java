@@ -298,6 +298,11 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
+        @JavascriptInterface public void openBiometricSystemSettings() {
+            try { startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS)); }
+            catch (Exception e) { try { startActivity(new Intent(Settings.ACTION_SETTINGS)); } catch (Exception ignored) {} }
+        }
+
         @JavascriptInterface public void authenticateBiometric() {
             runOnUiThread(() -> {
                 try {
