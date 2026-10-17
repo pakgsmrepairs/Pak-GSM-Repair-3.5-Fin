@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 5.8</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b6b57"><meta name="google-signin-client_id" content=""><link rel="manifest" href="./manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pak GSM Repair"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>Pak GSM Repair 5.9</title><style>
 :root{--g:#0b6b57;--g2:#0f8a6e;--bg:#f2f7f5;--line:#dce8e3;--ink:#132b27;--muted:#63756f;--danger:#9b2118;--card:#fff}
 *{box-sizing:border-box}body{margin:0;font:15px system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
 /* Native mobile text-entry safeguard: keep browser keyboard/IME events unmodified. */
@@ -306,7 +306,7 @@ body.large-text{font-size:17px}
 <div class="stats"><div class="stat"><span>Customers</span><strong id="nC">0</strong></div><div class="stat"><span>Repair jobs</span><strong id="nJ">0</strong></div><div class="stat"><span>Active jobs</span><strong id="nA">0</strong></div><div class="stat"><span>Unpaid (Rs)</span><strong id="nD">0</strong></div></div>
 <div class="global-search"><input id="globalSearch" type="search" placeholder="Search customers, IMEI, repair jobs, devices or products…"></div>
 <nav class="tabs">
-<button class="tab active" data-tab="dashboard">🏠 Dashboard</button><button class="tab" data-tab="customers">👥 Customers</button><button class="tab" data-tab="setup">📁 File Vault</button><button class="tab" data-tab="tools">🧰 Parts Availability</button><button class="tab" data-tab="calculator">🧮 Calculator</button>
+<button class="tab active" data-tab="dashboard">🏠 Dashboard</button><button class="tab" data-tab="customers">👥 Customers</button><button class="tab" data-tab="tools">🧰 Parts Availability</button>
 </nav>
 <section id="dashboard" class="page hidden" aria-hidden="true">
  <div class="dash-heading"><div class="dash-brand"><span class="dash-logo">🛠</span><div><h2>Pak GSM Repair</h2><p class="muted">Mobile Repair &amp; Service Solution</p></div></div><button type="button" onclick="tab('customers')">👤 Add Customer</button></div>
@@ -331,16 +331,17 @@ body.large-text{font-size:17px}
   </div>
   <button type="button" id="dashBtConnect" class="dashboard-bt-connect bt-inline-connect">Connect / Check</button>
  </div>
+ <div class="panel" id="calculatorPanel" style="max-width:480px;margin:12px 0"><h2>🧮 Repair Shop Calculator</h2><p class="muted">Quick calculations for repair charges, payments and parts.</p><input id="calcDisplay" type="text" inputmode="decimal" autocomplete="off" aria-label="Calculator display" placeholder="0" style="width:100%;font-size:25px;font-weight:700;text-align:right;padding:14px;margin:8px 0 12px" readonly><div class="calc-grid" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px"><button type="button" data-calc="clear" class="secondary">C</button><button type="button" data-calc="back" class="secondary">⌫</button><button type="button" data-calc="/" class="secondary">÷</button><button type="button" data-calc="*" class="secondary">×</button><button type="button" data-calc="7" class="secondary">7</button><button type="button" data-calc="8" class="secondary">8</button><button type="button" data-calc="9" class="secondary">9</button><button type="button" data-calc="-" class="secondary">−</button><button type="button" data-calc="4" class="secondary">4</button><button type="button" data-calc="5" class="secondary">5</button><button type="button" data-calc="6" class="secondary">6</button><button type="button" data-calc="+" class="secondary">+</button><button type="button" data-calc="1" class="secondary">1</button><button type="button" data-calc="2" class="secondary">2</button><button type="button" data-calc="3" class="secondary">3</button><button type="button" data-calc="=" style="grid-row:span 2;background:#087b67">=</button><button type="button" data-calc="0" class="secondary" style="grid-column:span 2">0</button><button type="button" data-calc="." class="secondary">.</button></div><p id="calcMessage" class="muted" aria-live="polite" style="margin-top:10px">Ready</p></div>
  <div class="dash-shortcuts">
   <button type="button" onclick="tab('customers')"><span>👤</span><b>Add Customer</b></button>
   <button type="button" onclick="tab('customers')"><span>🔧</span><b>New Repair</b></button>
   <button type="button" onclick="tab('tools')"><span>🛍️</span><b>Products &amp; Sales</b></button>
-  <button type="button" onclick="tab('calculator')"><span>🧮</span><b>Calculator</b></button>
+  
   <button type="button" onclick="tab('backup')"><span>☁️</span><b>Backup</b></button>
-  <button type="button" onclick="tab('setup')"><span>📁</span><b>Files / Setup</b></button>
+  
   <button type="button" onclick="tab('tools')"><span>🧰</span><b>Tools &amp; Parts</b></button>
  </div>
- <div class="grid"><div class="panel"><h2>🛠️ Recent Repair Jobs</h2><div id="recent" class="empty">No jobs yet.</div><button onclick="tab('customers')">＋ New Customer / Repair</button></div><div class="panel"><h2>📁 Files / Setup</h2><p class="muted">Quick access to your repair files.</p><div class="chips"><span class="chip">📂 Flash Files</span><span class="chip">▤ Dump Files</span><span class="chip">⌁ Schematic</span><span class="chip">🧰 Parts</span></div><button type="button" onclick="tab('setup')" style="margin-top:10px">Open File Vault</button></div></div>
+ <div class="grid"><div class="panel"><h2>🛠️ Recent Repair Jobs</h2><div id="recent" class="empty">No jobs yet.</div><button onclick="tab('customers')">＋ New Customer / Repair</button></div></div>
 </section>
 <section id="customers" class="page hidden"><div class="panel"><h2>👤 Customer + Repair Details</h2><p class="muted">Customer information and the repair job stay together in this section.</p>
 <form id="cf"><div class="grid3">
@@ -354,11 +355,9 @@ body.large-text{font-size:17px}
 <button>💾 Save Customer + Repair Job</button></form></div>
 <div class="panel"><h2>📋 Customer Records</h2><div id="ct"></div></div></section>
 
-<section id="setup" class="page hidden"><div class="panel"><div class="row"><div><h2 style="margin:0">File Vault</h2><p class="muted">Keep your repair files organized and rename folders whenever needed.</p></div><button onclick="newFolder()">📁 Add Folder</button></div><div id="folders" class="folder-grid"></div></div><div class="panel hidden" id="folderPanel"><div class="row"><div><h2 id="folderTitle" style="margin:0"></h2><p id="folderMeta" class="muted"></p></div><button class="secondary" onclick="closeFolder()">Back</button></div><div class="grid"><div><form id="fileForm"><label><span aria-hidden="true">📄</span> File / Item Name</label><input name="name" required maxlength="160"><label><span aria-hidden="true">📝</span> Details</label><textarea name="details" maxlength="1200"></textarea><label><span aria-hidden="true">🔗</span> File link (optional)</label><input name="url" type="url" placeholder="https://..."><button>➕ Add to Folder</button></form></div><div id="fileList"></div></div></div></section>
-
 <section id="tools" class="page hidden"><div class="panel"><div class="row"><div><h2 style="margin:0">Parts Availability</h2><p class="muted">Add product picture, details, price and stock, then record sales.</p></div><button onclick="showProduct()">＋ Add Product</button></div><div id="products" class="product-grid"></div></div><div class="panel"><h2>Sales</h2><div id="sales"></div></div></section>
 
-<section id="calculator" class="page hidden"><div class="panel" style="max-width:480px;margin:0 auto"><h2>🧮 Repair Shop Calculator</h2><p class="muted">Quick calculations for repair charges, payments and parts.</p><input id="calcDisplay" type="text" inputmode="decimal" autocomplete="off" aria-label="Calculator display" placeholder="0" style="width:100%;font-size:25px;font-weight:700;text-align:right;padding:14px;margin:8px 0 12px" readonly><div class="calc-grid" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px"><button type="button" data-calc="clear" class="secondary">C</button><button type="button" data-calc="back" class="secondary">⌫</button><button type="button" data-calc="/" class="secondary">÷</button><button type="button" data-calc="*" class="secondary">×</button><button type="button" data-calc="7" class="secondary">7</button><button type="button" data-calc="8" class="secondary">8</button><button type="button" data-calc="9" class="secondary">9</button><button type="button" data-calc="-" class="secondary">−</button><button type="button" data-calc="4" class="secondary">4</button><button type="button" data-calc="5" class="secondary">5</button><button type="button" data-calc="6" class="secondary">6</button><button type="button" data-calc="+" class="secondary">+</button><button type="button" data-calc="1" class="secondary">1</button><button type="button" data-calc="2" class="secondary">2</button><button type="button" data-calc="3" class="secondary">3</button><button type="button" data-calc="=" style="grid-row:span 2;background:#087b67">=</button><button type="button" data-calc="0" class="secondary" style="grid-column:span 2">0</button><button type="button" data-calc="." class="secondary">.</button></div><p id="calcMessage" class="muted" aria-live="polite" style="margin-top:10px">Ready</p></div></section>
+
 
 <section id="backup" class="page hidden">
 <div class="panel"><div class="row"><div style="flex:1"><h2 style="margin:0">⚙️ Settings</h2><p class="muted">Manage updates, backup, appearance and sound in one place.</p></div><button id="closeSettings" class="secondary" type="button" aria-label="Close settings" style="flex:0 0 auto">✕</button></div><div class="row" style="margin-top:8px"><button id="signOut" class="secondary" type="button">Sign out</button></div><div class="settings-subnav"><button type="button" class="settings-option active" data-settings="updatePanel">App Update</button><button type="button" class="settings-option" data-settings="backupPanel">Backup &amp; Restore</button><button type="button" class="settings-option" data-settings="appearancePanel">Appearance</button><button type="button" class="settings-option" data-settings="soundPanel">Sound</button></div></div>
@@ -516,8 +515,9 @@ applyAppearance();
 document.querySelector('#themeSelect').addEventListener('change',()=>{const s=settings();s.theme=document.querySelector('#themeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 document.querySelector('#textSizeSelect').addEventListener('change',()=>{const s=settings();s.textSize=document.querySelector('#textSizeSelect').value;localStorage.setItem(S,JSON.stringify(s));applyAppearance()});
 if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if((settings().theme||'light')==='system')applyAppearance()})}
-const APP_VERSION='5.8';
+const APP_VERSION='5.9';
 const PGR_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/';
+const PGR_ANDROID_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/android-web-update/';
 // Login-page update check. It now exposes Download & Apply directly on the login page.
 (function initLoginUpdateCheck(){
  const btn=document.getElementById('loginCheckUpdate'),dl=document.getElementById('loginDownloadUpdate'),out=document.getElementById('loginUpdateStatus');
@@ -525,7 +525,7 @@ const PGR_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/'
  btn.addEventListener('click',async()=>{
   btn.disabled=true;dl.classList.add('hidden');out.dataset.kind='';out.textContent='Checking the published version…';
   try{
-   const url=new URL('update.json',PGR_RELEASE_BASE);url.searchParams.set('check',String(Date.now()));
+   const url=new URL('update.json',window.PGRNativeBluetooth?PGR_ANDROID_RELEASE_BASE:PGR_RELEASE_BASE);url.searchParams.set('check',String(Date.now()));
    const response=await fetch(url.toString(),{cache:'no-store'});
    if(!response.ok)throw new Error('Update file could not be reached (HTTP '+response.status+').');
    const data=await response.json();if(!data.version)throw new Error('Published update file has no version number.');
@@ -545,7 +545,8 @@ const updateStatus=document.querySelector('#updateStatus'),checkUpdateButton=doc
 checkUpdateButton.addEventListener('click',async()=>{
  checkUpdateButton.disabled=true;downloadUpdateButton.disabled=true;pendingUpdate=null;updateStatus.textContent='🔎 Checking GitHub Pages for a newer version…';updateStatus.style.background='#e8f1ff';updateStatus.style.color='#17365f';
  try{
-  const res=await fetch(PGR_RELEASE_BASE+'update.json?check='+Date.now(),{cache:'no-store'});
+  const updateBase=window.PGRNativeBluetooth?PGR_ANDROID_RELEASE_BASE:PGR_RELEASE_BASE;
+  const res=await fetch(updateBase+'update.json?check='+Date.now(),{cache:'no-store'});
   if(!res.ok)throw new Error('update.json could not be reached (HTTP '+res.status+'). Upload update.json beside index.html in the repository root.');
   const data=await res.json();if(!data.version)throw new Error('update.json has no version field.');
   const cmp=compareVersions(data.version,APP_VERSION);
@@ -563,6 +564,19 @@ async function downloadAndApplyUpdate(statusTarget,downloadButton,checkButton){
  const say=(text,kind='')=>{if(statusTarget){statusTarget.textContent=text;statusTarget.dataset.kind=kind;if(statusTarget.id==='updateStatus'){statusTarget.style.background=kind==='error'?'#fff0ee':kind==='success'?'#e5f6eb':'#fff4d6';statusTarget.style.color=kind==='error'?'#842018':kind==='success'?'#124b27':'#563900';}}};
  say('Downloading and verifying update files…');
  try{
+  // Native Android: save the latest published HTML in app-private storage. Future HTML-only UI updates do not need a new APK.
+  if(window.PGRNativeBluetooth && typeof window.PGRNativeBluetooth.applyWebUpdate==='function'){
+   const response=await fetch(PGR_ANDROID_RELEASE_BASE+'index.html?release='+encodeURIComponent(version)+'&t='+Date.now(),{cache:'no-store'});
+   if(!response.ok)throw new Error('Could not download Android app files (HTTP '+response.status+').');
+   const remoteHtml=await response.text();
+   const versionPattern=new RegExp('const\\s+APP_VERSION\\s*=\\s*["\\\']'+String(version)+'["\\\']');
+   if(!/^\d+(?:\.\d+)*$/.test(String(version))||!versionPattern.test(remoteHtml)||remoteHtml.length<50000)throw new Error('Downloaded HTML is incomplete or its version does not match '+version+'.');
+   const result=window.PGRNativeBluetooth.applyWebUpdate(remoteHtml,String(version));
+   if(result!=='OK')throw new Error(String(result||'Android could not save the update.'));
+   say('Update v'+version+' saved. Restarting app view…','success');
+   window.PGRNativeBluetooth.reloadWebApp();
+   return;
+  }
   if(!('caches' in window))throw new Error('This browser does not support offline update storage. Open the HTTPS app in Chrome.');
   const files=['./index.html','./manifest.json','./sw.js','./cloud-config.js','./update.json','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-512-maskable.png','./icons/pgr-logo.svg'];
   await caches.delete('pgr-update-download-temp');const temp=await caches.open('pgr-update-download-temp');
