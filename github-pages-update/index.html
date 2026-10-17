@@ -307,6 +307,22 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
 #dashboardBluetoothCard .bt-inline-device small{font-size:10px!important}
 @media(max-width:600px){#dashboardBluetoothCard.bt-inline-reference{grid-template-columns:minmax(0,1fr) auto!important;gap:5px!important;padding:6px!important}#dashboardBluetoothCard .bt-inline-connect,#dashboardBluetoothCard #dashBtConnect{display:inline-flex!important;min-height:22px!important;font-size:8px!important;padding:3px 6px!important}}
 </style>
+
+<style id="pgr-compact-calculator-bluetooth-fix">
+/* Repair UI correction: full-width calculator panel, compact keys and Bluetooth controls. */
+#calculatorPanel{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;grid-column:1/-1!important;margin:4px 0 8px!important;padding:6px!important}
+#calculatorPanel h2{font-size:13px!important;line-height:1.2!important;margin:0 0 4px!important}
+#calculatorPanel>p{font-size:9px!important;line-height:1.25!important;margin:2px 0 4px!important}
+#calculatorPanel #calcDisplay{display:block!important;width:100%!important;min-height:26px!important;box-sizing:border-box!important;font-size:14px!important;padding:4px 6px!important;margin:3px 0 4px!important}
+#calculatorPanel .calc-grid{display:grid!important;gap:3px!important}
+#calculatorPanel .calc-grid button{min-height:26px!important;padding:2px 3px!important;font-size:11px!important;line-height:1.1!important;border-radius:5px!important}
+#calculatorPanel #calcMessage{font-size:9px!important;margin-top:3px!important}
+#dashboardBluetoothCard{padding:8px!important;margin-bottom:8px!important}
+#dashboardBluetoothCard .bt-inline-connect,#dashboardBluetoothCard #dashBtConnect,#dashboardBluetoothCard .bt-inline-status #btConnectButton{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;min-height:25px!important;padding:4px 8px!important;font-size:10px!important;line-height:1.1!important;border-radius:7px!important}
+#btInlineConnectedDevices{gap:4px!important;margin-top:4px!important}
+#btInlineConnectedDevices .bt-inline-device{padding:5px 7px!important;border-radius:8px!important;font-size:11px!important;line-height:1.2!important}
+#btInlineConnectedDevices .bt-inline-device small{font-size:9px!important}
+</style>
 </head><body>
 <div id="pgrSplash" aria-label="Pak GSM Repair loading screen">
  <div class="pgr-splash-card">
