@@ -1,4 +1,4 @@
 {
-  "version": "7.6",
-  "changelog": "Version 7.6: synchronized app version; fixed shop-name fallback so unregistered accounts do not show a fabricated name; made shop-logo picker explicitly open in WebView; adjusted calculator history/display/keypad layout while preserving the calculator card size. Bluetooth device details and battery values remain dependent on Android/device-reported data."
+  "version": "7.7",
+  "changelog": "Version 7.7: show the selected Bluetooth device name in the dashboard; enable shop-logo picker activation in Android WebView; refine calculator layout so History remains left and the keypad uses more of the existing calculator card width. Shop name is shown only from saved/registered account data; battery levels are shown only when reported by Android/device."
 }
