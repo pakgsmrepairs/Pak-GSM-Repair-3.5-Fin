@@ -1,4 +1,4 @@
 {
-  "version": "7.8",
-  "changelog": "Version 7.8: calculator layout correction — History and live display share the top row (History left, digits right); calculator keypad spans the available width below. Existing calculator card dimensions are preserved."
+  "version": "7.9",
+  "changelog": "Version 7.9: calculator width fix — expanded the existing calculator card and keypad to fill the available dashboard width; calculator layout, controls, and functionality are otherwise unchanged."
 }
