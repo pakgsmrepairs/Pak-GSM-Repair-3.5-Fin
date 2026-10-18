@@ -1,4 +1,4 @@
 {
-  "version": "7.5",
-  "changelog": "Version 7.5: when fingerprint sign-in is enabled, require biometric verification each time the Android app process starts. Keep the sign-in screen visible until verification succeeds. If no fingerprint is enrolled, open standard phone Security settings; email/password sign-in remains available."
+  "version": "7.6",
+  "changelog": "Version 7.6: synchronized app version; fixed shop-name fallback so unregistered accounts do not show a fabricated name; made shop-logo picker explicitly open in WebView; adjusted calculator history/display/keypad layout while preserving the calculator card size. Bluetooth device details and battery values remain dependent on Android/device-reported data."
 }
