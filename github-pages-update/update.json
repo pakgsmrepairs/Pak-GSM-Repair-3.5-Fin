@@ -1,4 +1,4 @@
 {
-  "version": "7.7",
-  "changelog": "Version 7.7: show the selected Bluetooth device name in the dashboard; enable shop-logo picker activation in Android WebView; refine calculator layout so History remains left and the keypad uses more of the existing calculator card width. Shop name is shown only from saved/registered account data; battery levels are shown only when reported by Android/device."
+  "version": "7.8",
+  "changelog": "Version 7.8: calculator layout correction — History and live display share the top row (History left, digits right); calculator keypad spans the available width below. Existing calculator card dimensions are preserved."
 }
