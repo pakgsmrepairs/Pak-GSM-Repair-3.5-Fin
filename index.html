@@ -889,7 +889,10 @@ window.onNativeBluetoothBatteryUpdate=function(raw){
  if(window.pgrSelectedBluetoothAddress===data.address){
   const left=document.querySelector('#btLeftBattery');if(left)left.textContent=(data.leftBattery!==undefined&&Number(data.leftBattery)>=0)?String(Number(data.leftBattery))+'%':value;
   const right=document.querySelector('#btRightBattery');if(right)right.textContent=(data.rightBattery!==undefined&&Number(data.rightBattery)>=0)?String(Number(data.rightBattery))+'%':'Not exposed';
-  btDetails.textContent='Android Bluetooth نے اس ڈیوائس کی بیٹری '+value+' رپورٹ کی۔';
+  const leftText=(data.leftBattery!==undefined&&Number(data.leftBattery)>=0)?String(Number(data.leftBattery))+'%':'Not exposed';
+  const rightText=(data.rightBattery!==undefined&&Number(data.rightBattery)>=0)?String(Number(data.rightBattery))+'%':'Not exposed';
+  const caseText=(data.caseBattery!==undefined&&Number(data.caseBattery)>=0)?String(Number(data.caseBattery))+'%':'Not exposed';
+  btDetails.textContent='Battery: '+value+' · Left: '+leftText+' · Right: '+rightText+' · Case: '+caseText;
   btState.textContent='🔋 Battery data received';
  }
 };
