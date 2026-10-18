@@ -1379,7 +1379,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 <style id="pgr-v77-calculator-only">
 /* v7.8 calculator-only revision: keep the existing card dimensions; top row = History + display, keypad uses full card width. */
-#calculatorPanel{width:min(100%,320px)!important;max-width:320px!important;min-width:0!important;box-sizing:border-box!important;justify-self:start!important;grid-column:1/-1!important;padding:10px!important;margin:8px 0!important}
+#calculatorPanel{width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;justify-self:stretch!important;grid-column:1/-1!important;padding:10px!important;margin:8px 0!important}
 #calculatorPanel .pgr-calc-layout{display:flex!important;flex-direction:column!important;gap:7px!important;align-items:stretch!important}
 #calculatorPanel .pgr-calc-topline{display:grid!important;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)!important;gap:7px!important;align-items:stretch!important;width:100%!important}
 #calculatorPanel .pgr-calc-history{min-width:0!important;max-height:68px!important;overflow:auto!important;border:1px solid var(--line)!important;border-radius:8px!important;padding:6px!important;background:var(--card)!important}
@@ -1635,7 +1635,7 @@ document.querySelectorAll('#dashboardBluetoothCard [data-audio-option]').forEach
 
 <style id="pgr-calc-logo-fix-v692">
 /* Calculator-only layout correction: top bar has history left and digits right; keypad spans full card below. */
-#calculatorPanel{width:min(100%,320px)!important;max-width:320px!important;min-width:0!important;box-sizing:border-box!important;justify-self:start!important;grid-column:1/-1!important;padding:10px!important;margin:8px 0!important}
+#calculatorPanel{width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;justify-self:stretch!important;grid-column:1/-1!important;padding:10px!important;margin:8px 0!important}
 #calculatorPanel h2{font-size:14px!important;margin:0 0 4px!important}
 #calculatorPanel>p{font-size:10px!important;line-height:1.25!important;margin:2px 0 5px!important}
 #calculatorPanel .pgr-calc-layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"topline" "keypad" "message"!important;gap:7px!important;align-items:stretch!important}
