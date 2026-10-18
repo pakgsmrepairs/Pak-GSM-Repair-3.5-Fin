@@ -863,6 +863,8 @@ function pgrBatteryText(value,fallback='Not exposed'){
 function showInlineConnectedDevice(d){
  if(!d)return;
  window.pgrSelectedBluetoothAddress=d.address||'';
+ const dashStatus=document.querySelector('#dashBtStatus');
+ if(dashStatus)dashStatus.textContent=(d.name||'Bluetooth device')+(d.connected?' · Connected':' · Paired, not connected');
  btName.textContent=d.name||'Bluetooth device';
  const knownBattery=pgrBatteryText(d.battery,'—%');
  const left=document.querySelector('#btLeftBattery');if(left)left.textContent=pgrBatteryText(d.leftBattery,knownBattery);
