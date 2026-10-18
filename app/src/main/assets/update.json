@@ -1,4 +1,4 @@
 {
-  "version": "7.4",
-  "changelog": "Version 7.4: keeps the dashboard and app pages hidden until fingerprint verification succeeds, keeps the sign-in screen visible while authentication is pending or fails, and opens standard phone security settings for fingerprint enrollment. Fingerprints must be enrolled in Android Settings; email/password sign-in remains available."
+  "version": "7.5",
+  "changelog": "Version 7.5: when fingerprint sign-in is enabled, require biometric verification each time the Android app process starts. Keep the sign-in screen visible until verification succeeds. If no fingerprint is enrolled, open standard phone Security settings; email/password sign-in remains available."
 }
