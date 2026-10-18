@@ -241,11 +241,12 @@ public class MainActivity extends FragmentActivity {
             return getSharedPreferences("pgr_biometric", MODE_PRIVATE).getBoolean("enabled", false);
         }
 
+        // Require biometric verification once each time the native app process starts.
+        // Do not trust a previous boot's cached session to unlock the dashboard silently.
+        private boolean biometricAuthenticatedThisLaunch = false;
+
         @JavascriptInterface public boolean isBiometricRequired() {
-            if (!isBiometricEnabled()) return false;
-            String bootKey = currentBootKey();
-            String completedBoot = getSharedPreferences("pgr_biometric", MODE_PRIVATE).getString("authenticated_boot", "");
-            return !bootKey.equals(completedBoot);
+            return isBiometricEnabled() && !biometricAuthenticatedThisLaunch;
         }
 
         @JavascriptInterface public String getBiometricStatus() {
@@ -331,6 +332,7 @@ public class MainActivity extends FragmentActivity {
                         ContextCompat.getMainExecutor(MainActivity.this),
                         new BiometricPrompt.AuthenticationCallback() {
                             @Override public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                                biometricAuthenticatedThisLaunch = true;
                                 getSharedPreferences("pgr_biometric", MODE_PRIVATE).edit()
                                     .putString("authenticated_boot", currentBootKey()).apply();
                                 emitBiometricResult(true, "Fingerprint verified.");
