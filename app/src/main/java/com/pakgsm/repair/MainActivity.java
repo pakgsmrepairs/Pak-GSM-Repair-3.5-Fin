@@ -186,8 +186,10 @@ public class MainActivity extends FragmentActivity {
             result.put("batteryLevel", level);
             int leftBattery = readMetadataBattery(device, "METADATA_UNTETHERED_LEFT_BATTERY");
             int rightBattery = readMetadataBattery(device, "METADATA_UNTETHERED_RIGHT_BATTERY");
+            int caseBattery = readMetadataBattery(device, "METADATA_UNTETHERED_CASE_BATTERY");
             if (leftBattery >= 0) result.put("leftBattery", leftBattery);
             if (rightBattery >= 0) result.put("rightBattery", rightBattery);
+            if (caseBattery >= 0) result.put("caseBattery", caseBattery);
         } catch (Exception ignored) { return; }
         runOnUiThread(() -> {
             if (webView != null) webView.evaluateJavascript(
