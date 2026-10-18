@@ -1,5 +1,5 @@
 
-name: Build Pak GSM Repair 7.4 Android APK
+name: Build Pak GSM Repair 7.5 Android APK
 
 on:
   workflow_dispatch:
@@ -70,16 +70,16 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Build pak gsm 7.4 APK
+      - name: Build pak gsm 7.5 APK
         run: gradle --no-daemon assembleDebug
 
       - name: Rename APK for release
-        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Pak-GSM-Repair-7.4.apk
+        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Pak-GSM-Repair-7.5.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-7.4-APK
-          path: app/build/outputs/apk/debug/Pak-GSM-Repair-7.4.apk
+          name: Pak-GSM-Repair-7.5-APK
+          path: app/build/outputs/apk/debug/Pak-GSM-Repair-7.5.apk
           if-no-files-found: error
           retention-days: 14
