@@ -246,7 +246,11 @@ public class MainActivity extends FragmentActivity {
         private boolean biometricAuthenticatedThisLaunch = false;
 
         @JavascriptInterface public boolean isBiometricRequired() {
-            return isBiometricEnabled() && !biometricAuthenticatedThisLaunch;
+            if (!isBiometricEnabled()) return false;
+            // Authenticate once per Android boot, not every time the app process is reopened.
+            String savedBoot = getSharedPreferences("pgr_biometric", MODE_PRIVATE)
+                .getString("authenticated_boot", "");
+            return !currentBootKey().equals(savedBoot);
         }
 
         @JavascriptInterface public String getBiometricStatus() {
