@@ -532,8 +532,8 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
       if (msg) msg.textContent = 'Login screen is open, but setup reported an error. Please reload the page.';
     }
   }
-  window.addEventListener('error', function () { setTimeout(revealLogin, 0); });
-  window.addEventListener('unhandledrejection', function () { setTimeout(revealLogin, 0); });
+  /* Keep the branded splash visible for its intended 2.2 seconds.
+     A background script error must not instantly skip the splash screen. */
   setTimeout(revealLogin, 2200);
   setTimeout(revealLogin, 5000);
 })();
