@@ -1,4 +1,20 @@
-# Pak GSM Repair 7.1
+# Pak GSM Repair 8.1
+
+## Version 8.1 — release changes
+
+- Synchronized the active PWA, Android HTML updater, embedded WebView assets, update metadata, manifest, service-worker cache, Android package version, and APK artifact name to 8.1.
+- Fixed Android shop-photo selection by allowing WebView access to the content URIs returned by the native image picker; file access remains disabled.
+- Made calculator history expandable from its History heading. The full list opens in place and the small Clear history button appears below it.
+- Reduced calculator display and keypad sizing while retaining the existing layout and shop identity design.
+- Android package version: `versionName = "8.1"`, `versionCode = 810`; APK artifact: `Pak-GSM-Repair-8.1-APK`.
+
+## Verification status
+
+- Source files and release metadata are synchronized in the repository.
+- GitHub Actions must complete the Android APK build successfully before installing the update. The shop-photo picker and layout still require testing on the actual Android phone.
+
+---
+
 
 ## Version 7.1 — fingerprint authentication fix
 
