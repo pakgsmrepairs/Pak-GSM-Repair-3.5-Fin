@@ -80,7 +80,8 @@ public class MainActivity extends FragmentActivity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setAllowFileAccess(false);
-        webView.getSettings().setAllowContentAccess(false);
+        // Allow content:// URIs returned by Android's image picker to be read by the WebView file input.
+        webView.getSettings().setAllowContentAccess(true);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
                 if (pendingFileChooser != null) {
