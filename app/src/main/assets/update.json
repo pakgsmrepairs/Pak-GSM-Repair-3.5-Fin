@@ -1,4 +1,4 @@
 {
-  "version": "7.9",
-  "changelog": "Version 7.9: calculator width fix — expanded the existing calculator card and keypad to fill the available dashboard width; calculator layout, controls, and functionality are otherwise unchanged."
+  "version": "8.0",
+  "changelog": "Version 8.0: Android shop logo gallery picker and registered shop profile restoration fixes; reference-style splash/welcome and calculator width fix retained."
 }
