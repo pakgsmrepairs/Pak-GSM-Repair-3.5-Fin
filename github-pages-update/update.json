@@ -1,4 +1,4 @@
 {
-  "version": "7.9",
-  "changelog": "Version 7.9: calculator width fix — expanded the existing calculator card and keypad to fill the available dashboard width; calculator layout, controls, and functionality are otherwise unchanged."
+  "version": "8.0",
+  "changelog": "Version 8.0: reference-style green Pak GSM Repair splash screen and separate Welcome screen with Sign In, Login and Google sign-in entry points. Existing calculator width fix retained."
 }
