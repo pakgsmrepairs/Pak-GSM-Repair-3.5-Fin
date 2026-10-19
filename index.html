@@ -1661,4 +1661,7 @@ document.querySelectorAll('#dashboardBluetoothCard [data-audio-option]').forEach
 #calculatorPanel .calc-grid button{min-width:0!important;min-height:39px!important;padding:5px 2px!important;font-size:15px!important;line-height:1.1!important;border-radius:7px!important;box-sizing:border-box!important}
 #calculatorPanel #calcMessage{grid-area:message!important;font-size:9px!important;line-height:1.2!important;margin:0!important}
 @media(max-width:390px){#calculatorPanel .pgr-calc-topline{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)!important;gap:5px!important}#calculatorPanel .pgr-calc-history{padding:5px!important;max-height:92px!important}#calculatorPanel .calc-grid{gap:4px!important}#calculatorPanel .calc-grid button{min-height:36px!important;font-size:14px!important}}
+
+/* User-requested: hide the four dashboard summary cards while keeping their counters available to the app logic. */
+.stats{display:none!important}
 </style>
