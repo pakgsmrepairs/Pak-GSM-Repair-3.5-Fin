@@ -1,15 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Pak GSM Repair">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#073f35"/><stop offset="1" stop-color="#0c8068"/></linearGradient>
-    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25f0ad"/><stop offset="1" stop-color="#b6f542"/></linearGradient>
-  </defs>
-  <rect x="8" y="8" width="176" height="176" rx="32" fill="url(#bg)"/>
-  <path d="M28 75 C42 28, 117 14, 160 51 C178 68, 175 108, 150 130" fill="none" stroke="url(#ring)" stroke-width="10" stroke-linecap="round"/>
-  <path d="M32 122 C18 83, 45 54, 74 48" fill="none" stroke="#b6f542" stroke-width="7" stroke-linecap="round"/>
-  <rect x="51" y="44" width="88" height="108" rx="14" fill="#102e2b" stroke="#f2fff9" stroke-width="5" transform="rotate(-7 95 98)"/>
-  <rect x="61" y="55" width="68" height="84" rx="6" fill="#f7fffb" transform="rotate(-7 95 98)"/>
-  <path d="M80 112 L103 76 L116 84 L93 120 Z" fill="#0b6b57" transform="rotate(-7 98 98)"/>
-  <path d="M106 77 L120 71 L129 80 L123 94 L115 90 Z" fill="#20d99b"/>
-  <path d="M76 124 L88 120 L95 127 L90 139 L78 138 Z" fill="#0b6b57"/>
-  <circle cx="96" cy="160" r="4" fill="#e9fff6"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc"><title id="title">Pak GSM Repair</title><desc id="desc">Pakistani green and white mobile phone with crescent, star and repair tools.</desc><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#064b3d"/><stop offset="1" stop-color="#0b8a69"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2a8"/><stop offset="1" stop-color="#f2bd35"/></linearGradient></defs><rect x="12" y="12" width="488" height="488" rx="110" fill="url(#bg)"/><circle cx="256" cy="174" r="96" fill="#fff"/><circle cx="284" cy="151" r="77" fill="#08775d"/><path d="M323 91l13 27 30 4-22 21 5 30-26-14-27 14 6-30-22-21 30-4z" fill="url(#gold)"/><rect x="163" y="179" width="186" height="232" rx="29" fill="#f8fffc" stroke="#d9fff0" stroke-width="8"/><rect x="180" y="203" width="152" height="170" rx="12" fill="#0b6b57"/><rect x="223" y="190" width="65" height="6" rx="3" fill="#6c9889"/><circle cx="256" cy="392" r="8" fill="#0b6b57"/><path d="M203 274h107M203 297h72" stroke="#dffff1" stroke-width="10" stroke-linecap="round"/><path d="M219 247h24" stroke="#f4c43d" stroke-width="10" stroke-linecap="round"/><g transform="translate(105 240) rotate(-34)"><rect x="0" y="0" width="24" height="152" rx="12" fill="url(#gold)"/><path d="M-7 0l19-28L31 0" fill="#fff" stroke="#f2bd35" stroke-width="7" stroke-linejoin="round"/></g><g transform="translate(382 244) rotate(34)"><rect x="-10" y="0" width="24" height="152" rx="12" fill="#fff"/><path d="M-17 0L2-28 21 0" fill="#f2bd35" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></g><text x="256" y="454" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="900" letter-spacing="1.5" fill="#fff">PAK GSM REPAIR</text></svg>
