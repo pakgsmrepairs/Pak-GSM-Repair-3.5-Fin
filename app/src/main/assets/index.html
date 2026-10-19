@@ -1186,7 +1186,7 @@ function initLogin(){
     const loginButton=document.querySelector('#sendLoginOtp');
     if(loginButton){loginButton.disabled=true;loginButton.textContent='Please wait…';}
     await new Promise(resolve=>setTimeout(resolve,900));
-    const localIdentity=readIdentity(email);const identity={username:account.username||localIdentity.username||'',shopName:account.shopName||localIdentity.shopName||'',location:account.shopLocation||account.location||localIdentity.location||'',cover:localIdentity.cover||''};if(identity.shopName)applyShopIdentity(identity);unlock({email:email,name:account.name||email,username:identity.username,shopName:identity.shopName,sub:'email-password'});
+    const localIdentity=readIdentity(email);const identity={username:account.username||account.u||localIdentity.username||'',shopName:account.shopName||account.shop_name||account.registeredShopName||account.shop?.name||account.profile?.shopName||localIdentity.shopName||'',location:account.shopLocation||account.shop_location||account.location||account.profile?.location||localIdentity.location||'',cover:account.cover||account.shopCover||localIdentity.cover||''};saveIdentity(email,identity);applyShopIdentity(identity);unlock({email:email,name:account.name||account.displayName||email,username:identity.username,shopName:identity.shopName,sub:'email-password'});
     if(loginButton){loginButton.disabled=false;loginButton.textContent='Login';}
     return;
    }
@@ -1266,7 +1266,7 @@ function initLogin(){
     const passwordHash=await passwordDigest(document.querySelector('#loginPassword').value);
     const account=await otpServerCall('loginAccount',pendingOtpEmail,'',{passwordHash});
     if(!account||!account.ok)throw new Error(account?.error||'Email or password is incorrect.');
-    const localIdentity=readIdentity(pendingOtpEmail);const identity={username:account.username||localIdentity.username||'',shopName:account.shopName||localIdentity.shopName||'',location:account.shopLocation||account.location||localIdentity.location||'',cover:localIdentity.cover||''};if(identity.shopName)applyShopIdentity(identity);unlock({email:pendingOtpEmail,name:account.name||pendingOtpEmail,username:identity.username,shopName:identity.shopName,sub:'email-otp'});
+    const localIdentity=readIdentity(pendingOtpEmail);const identity={username:account.username||account.u||localIdentity.username||'',shopName:account.shopName||account.shop_name||account.registeredShopName||account.shop?.name||account.profile?.shopName||localIdentity.shopName||'',location:account.shopLocation||account.shop_location||account.location||account.profile?.location||localIdentity.location||'',cover:account.cover||account.shopCover||localIdentity.cover||''};saveIdentity(pendingOtpEmail,identity);applyShopIdentity(identity);unlock({email:pendingOtpEmail,name:account.name||account.displayName||pendingOtpEmail,username:identity.username,shopName:identity.shopName,sub:'email-otp'});
    }
   }catch(e){showAuthPopup(e.message,'Verification failed');msg.textContent='OTP verification failed: '+e.message}
   finally{b.disabled=false}
