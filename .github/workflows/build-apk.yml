@@ -85,6 +85,8 @@ jobs:
               raise SystemExit("APP_VERSION must be 8.1.")
           if 'id="toggleCalcHistory"' not in html[0] or 'pgr-v81-calculator-history-and-compact-keys' not in html[0]:
               raise SystemExit("Calculator history/compact sizing changes are missing.")
+          if 'aria-expanded="false">History ▾</button></div><div id="calcHistoryList">' not in html[0]:
+              raise SystemExit("Calculator history heading markup is malformed.")
           for p in ["update.json", "android-web-update/update.json", "github-pages-update/update.json", "app/src/main/assets/update.json"]:
               if json.loads(Path(p).read_text(encoding="utf-8")).get("version") != "8.1":
                   raise SystemExit(f"{p} does not advertise version 8.1.")
