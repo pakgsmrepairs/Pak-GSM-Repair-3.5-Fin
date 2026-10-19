@@ -65,6 +65,50 @@ jobs:
           print(f"Validated syntax for {checked} inline JavaScript blocks.")
           PY
 
+      - name: Validate 8.1 release synchronization
+        run: |
+          python3 - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          html_paths = [
+              "index.html",
+              "android-web-update/index.html",
+              "github-pages-update/index.html",
+              "app/src/main/assets/index.html",
+          ]
+          html = [Path(p).read_text(encoding="utf-8") for p in html_paths]
+          if len(set(html)) != 1:
+              raise SystemExit("Release HTML copies are not identical.")
+          if not re.search(r"const APP_VERSION=['\\"]8\\.1['\\"];", html[0]):
+              raise SystemExit("APP_VERSION must be 8.1.")
+          if 'id="toggleCalcHistory"' not in html[0] or 'pgr-v81-calculator-history-and-compact-keys' not in html[0]:
+              raise SystemExit("Calculator history/compact sizing changes are missing.")
+          for p in ["update.json", "android-web-update/update.json", "github-pages-update/update.json", "app/src/main/assets/update.json"]:
+              if json.loads(Path(p).read_text(encoding="utf-8")).get("version") != "8.1":
+                  raise SystemExit(f"{p} does not advertise version 8.1.")
+          for p in ["cloud-config.js", "app/src/main/assets/cloud-config.js", "github-pages-update/cloud-config.js"]:
+              if not re.search(r"PGR_APP_VERSION\\s*=\\s*['\\"]8\\.1['\\"]", Path(p).read_text(encoding="utf-8")):
+                  raise SystemExit(f"{p} has a stale app version.")
+          for p in ["manifest.json", "app/src/main/assets/manifest.json", "github-pages-update/manifest.json"]:
+              if "Pak GSM Repair 8.1" not in Path(p).read_text(encoding="utf-8"):
+                  raise SystemExit(f"{p} has stale manifest metadata.")
+          gradle = Path("app/build.gradle.kts").read_text(encoding="utf-8")
+          if 'versionName = "8.1"' not in gradle or "versionCode = 810" not in gradle:
+              raise SystemExit("Android package version must be 8.1 / 810.")
+          for p in ["sw.js", "app/src/main/assets/sw.js", "github-pages-update/sw.js"]:
+              if "pak-gsm-repair-v8.1-dashboard" not in Path(p).read_text(encoding="utf-8"):
+                  raise SystemExit(f"{p} has a stale service-worker cache version.")
+          java = Path("app/src/main/java/com/pakgsm/repair/MainActivity.java").read_text(encoding="utf-8")
+          if "setAllowContentAccess(true)" not in java:
+              raise SystemExit("Android WebView content URI access fix is missing.")
+          workflow = Path(".github/workflows/build-apk.yml").read_text(encoding="utf-8")
+          if "Pak-GSM-Repair-8.1-APK" not in workflow or "Pak-GSM-Repair-8.1.apk" not in workflow:
+              raise SystemExit("APK artifact naming is not synchronized to 8.1.")
+          print("Validated matching 8.1 HTML, update metadata, manifests, cache names, Android version and picker fix.")
+          PY
+
       - name: Set up Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
         with:
