@@ -17,6 +17,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -27,6 +28,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+import android.webkit.ValueCallback;
 import android.widget.Toast;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
@@ -44,6 +46,8 @@ import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends FragmentActivity {
     private WebView webView;
+    private ValueCallback<Uri[]> pendingFileChooser;
+    private static final int FILE_CHOOSER_REQUEST = 420;
     private BluetoothAdapter adapter;
     private BluetoothGatt activeGatt;
     private static final int BT_PERMISSION_REQUEST = 410;
@@ -77,7 +81,36 @@ public class MainActivity extends FragmentActivity {
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setAllowFileAccess(false);
         webView.getSettings().setAllowContentAccess(false);
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                if (pendingFileChooser != null) {
+                    pendingFileChooser.onReceiveValue(null);
+                    pendingFileChooser = null;
+                }
+                pendingFileChooser = filePathCallback;
+                Intent intent;
+                try {
+                    intent = fileChooserParams.createIntent();
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                    String[] acceptTypes = fileChooserParams.getAcceptTypes();
+                    if (acceptTypes != null && acceptTypes.length > 0) {
+                        for (String type : acceptTypes) {
+                            if (type != null && type.startsWith("image/")) {
+                                intent.setType("image/*");
+                                break;
+                            }
+                        }
+                    }
+                    startActivityForResult(intent, FILE_CHOOSER_REQUEST);
+                    return true;
+                } catch (Exception e) {
+                    pendingFileChooser = null;
+                    Toast.makeText(MainActivity.this, "Unable to open file picker", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        });
         assetLoader = new WebViewAssetLoader.Builder().addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this)).build();
         webView.setWebViewClient(new WebViewClientCompat() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -96,6 +129,25 @@ public class MainActivity extends FragmentActivity {
         registerDiscoveryReceiver();
         requestBluetoothPermissionsIfNeeded();
         refreshBluetoothProfiles();
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILE_CHOOSER_REQUEST) {
+            if (pendingFileChooser == null) return;
+            Uri[] results = null;
+            if (resultCode == RESULT_OK && data != null) {
+                Uri result = data.getData();
+                if (result != null) results = new Uri[] { result };
+                else if (data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount();
+                    results = new Uri[count];
+                    for (int i = 0; i < count; i++) results[i] = data.getClipData().getItemAt(i).getUri();
+                }
+            }
+            pendingFileChooser.onReceiveValue(results);
+            pendingFileChooser = null;
+        }
     }
 
     private WebResourceResponse updatedIndexResponse(android.net.Uri uri) {
