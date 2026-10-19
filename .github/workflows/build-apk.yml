@@ -81,7 +81,7 @@ jobs:
           html = [Path(p).read_text(encoding="utf-8") for p in html_paths]
           if len(set(html)) != 1:
               raise SystemExit("Release HTML copies are not identical.")
-          if not re.search(r"const APP_VERSION=['\\"]8\\.1['\\"];", html[0]):
+          if "const APP_VERSION='8.1';" not in html[0] and 'const APP_VERSION="8.1";' not in html[0]:
               raise SystemExit("APP_VERSION must be 8.1.")
           if 'id="toggleCalcHistory"' not in html[0] or 'pgr-v81-calculator-history-and-compact-keys' not in html[0]:
               raise SystemExit("Calculator history/compact sizing changes are missing.")
@@ -89,7 +89,8 @@ jobs:
               if json.loads(Path(p).read_text(encoding="utf-8")).get("version") != "8.1":
                   raise SystemExit(f"{p} does not advertise version 8.1.")
           for p in ["cloud-config.js", "app/src/main/assets/cloud-config.js", "github-pages-update/cloud-config.js"]:
-              if not re.search(r"PGR_APP_VERSION\\s*=\\s*['\\"]8\\.1['\\"]", Path(p).read_text(encoding="utf-8")):
+              config = Path(p).read_text(encoding="utf-8")
+              if "window.PGR_APP_VERSION = '8.1';" not in config and 'window.PGR_APP_VERSION = "8.1";' not in config:
                   raise SystemExit(f"{p} has a stale app version.")
           for p in ["manifest.json", "app/src/main/assets/manifest.json", "github-pages-update/manifest.json"]:
               if "Pak GSM Repair 8.1" not in Path(p).read_text(encoding="utf-8"):
