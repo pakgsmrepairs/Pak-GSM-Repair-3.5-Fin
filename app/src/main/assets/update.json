@@ -1,4 +1,4 @@
 {
-  "version": "8.0",
-  "changelog": "Version 8.0: Android shop logo gallery picker and registered shop profile restoration fixes; reference-style splash/welcome and calculator width fix retained."
+  "version": "8.1",
+  "changelog": "Version 8.1: Android shop-photo selection support, synchronized release metadata, compact calculator digits, expandable full history, and a small Clear history button."
 }
