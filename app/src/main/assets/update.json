@@ -1,4 +1,4 @@
 {
-  "version": "8.2",
-  "changelog": "Version 8.2: fixes shop-logo image selection and restores the latest published HTML release after app data is cleared."
+  "version": "8.3",
+  "changelog": "Version 8.3: fixes shop-logo image selection and restores the latest published HTML release after app data is cleared; fixes calculator keypad taps and shop-logo selection."
 }
