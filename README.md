@@ -2,8 +2,8 @@
 
 ## Version 8.2 — release changes
 
-- Synchronized the active PWA, Android HTML updater, embedded WebView assets, update metadata, manifest, service-worker cache, Android package version, and APK artifact name to 8.2.
-- Fixed Android shop-photo selection by allowing WebView access to the content URIs returned by the native image picker; file access remains disabled.
+- Synchronized the PWA, Android HTML updater, embedded WebView assets, update metadata, manifests, service-worker cache, Android package version, and APK artifact name to 8.2.
+- Fixed shop-logo selection and added recovery of the latest published HTML when app data is cleared. A stale saved HTML update can no longer override a newer APK's bundled release.
 - Made calculator history expandable from its History heading. The full list opens in place and the small Clear history button appears below it.
 - Reduced calculator display and keypad sizing while retaining the existing layout and shop identity design.
 - Android package version: `versionName = "8.2"`, `versionCode = 820`; APK artifact: `Pak-GSM-Repair-8.2-APK`.
