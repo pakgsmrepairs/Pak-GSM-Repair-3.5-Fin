@@ -1,12 +1,12 @@
-# Pak GSM Repair 8.2
+# Pak GSM Repair 8.3
 
-## Version 8.2 — release changes
+## Version 8.3 — release changes
 
-- Synchronized the PWA, Android HTML updater, embedded WebView assets, update metadata, manifests, service-worker cache, Android package version, and APK artifact name to 8.2.
-- Fixed shop-logo selection and added recovery of the latest published HTML when app data is cleared. A stale saved HTML update can no longer override a newer APK's bundled release.
+- Synchronized the PWA, Android HTML updater, embedded WebView assets, update metadata, manifests, service-worker cache, Android package version, and APK artifact name to 8.3.
+- Fixed shop-logo selection and calculator keypad click handling. Android startup checks the published release and replaces stale saved HTML instead of leaving the app stuck on 7.9/8.0 after updates or data clears.
 - Made calculator history expandable from its History heading. The full list opens in place and the small Clear history button appears below it.
 - Reduced calculator display and keypad sizing while retaining the existing layout and shop identity design.
-- Android package version: `versionName = "8.2"`, `versionCode = 820`; APK artifact: `Pak-GSM-Repair-8.2-APK`.
+- Android package version: `versionName = "8.3"`, `versionCode = 820`; APK artifact: `Pak-GSM-Repair-8.3-APK`.
 
 ## Verification status
 
