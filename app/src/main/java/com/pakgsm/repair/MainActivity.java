@@ -147,6 +147,17 @@ public class MainActivity extends FragmentActivity {
         final String localUrl = "https://appassets.androidplatform.net/assets/index.html";
         File updateDir = new File(getFilesDir(), "pgr-web-update");
         File saved = new File(updateDir, "index.html");
+        if (saved.isFile()) {
+            try (java.io.FileInputStream savedInput = new java.io.FileInputStream(saved);
+                 java.io.InputStream packagedInput = getAssets().open("index.html")) {
+                String savedVersion = extractHtmlVersion(readInputText(savedInput));
+                String packagedVersion = extractHtmlVersion(readInputText(packagedInput));
+                if (isVersionOlder(savedVersion, packagedVersion)) saved.delete();
+            } catch (Exception ignored) {
+                // An unreadable or malformed saved update must not override the APK shell.
+                saved.delete();
+            }
+        }
         webView.loadUrl(localUrl);
         if (saved.isFile()) return;
 
@@ -200,13 +211,42 @@ public class MainActivity extends FragmentActivity {
     }
 
     private String readConnectionText(HttpURLConnection connection) throws Exception {
-        try (java.io.InputStream input = connection.getInputStream();
-             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+        return readInputText(connection.getInputStream());
+    }
+
+    private String readInputText(java.io.InputStream input) throws Exception {
+        try (java.io.InputStream source = input; ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[8192];
             int count;
-            while ((count = input.read(buffer)) != -1) output.write(buffer, 0, count);
+            while ((count = source.read(buffer)) != -1) output.write(buffer, 0, count);
             return output.toString("UTF-8");
         }
+    }
+
+    private String extractHtmlVersion(String html) {
+        if (html == null) return "";
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+            .compile("const\\s+APP_VERSION\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]")
+            .matcher(html);
+        return matcher.find() ? matcher.group(1) : "";
+    }
+
+    private boolean isVersionOlder(String candidate, String reference) {
+        if (candidate == null || candidate.isEmpty()) return true;
+        if (reference == null || reference.isEmpty()) return false;
+        String[] a = candidate.split("\\.");
+        String[] b = reference.split("\\.");
+        for (int i = 0; i < Math.max(a.length, b.length); i++) {
+            int av = i < a.length ? parseVersionPart(a[i]) : 0;
+            int bv = i < b.length ? parseVersionPart(b[i]) : 0;
+            if (av != bv) return av < bv;
+        }
+        return false;
+    }
+
+    private int parseVersionPart(String value) {
+        try { return Integer.parseInt(value.replaceAll("[^0-9].*$", "")); }
+        catch (Exception ignored) { return 0; }
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
