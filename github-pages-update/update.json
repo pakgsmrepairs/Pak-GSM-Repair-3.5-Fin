@@ -1,4 +1,4 @@
 {
-  "version": "8.1",
-  "changelog": "Version 8.1: Android shop-photo selection support, synchronized release metadata, compact calculator digits, expandable full history, and a small Clear history button."
+  "version": "8.2",
+  "changelog": "Version 8.2: fixes shop-logo image selection and restores the latest published HTML release after app data is cleared."
 }
