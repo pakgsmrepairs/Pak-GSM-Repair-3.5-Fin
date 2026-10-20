@@ -96,16 +96,11 @@ public class MainActivity extends FragmentActivity {
                 try {
                     intent = fileChooserParams.createIntent();
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("*/*");
+                    intent.setType("image/*");
                     String[] acceptTypes = fileChooserParams.getAcceptTypes();
-                    if (acceptTypes != null && acceptTypes.length > 0) {
-                        for (String type : acceptTypes) {
-                            if (type != null && type.startsWith("image/")) {
-                                intent.setType("image/*");
-                                break;
-                            }
-                        }
-                    }
+                    boolean imageOnly = false;
+                    if (acceptTypes != null) for (String type : acceptTypes) if (type != null && type.startsWith("image/")) imageOnly = true;
+                    intent.setType(imageOnly ? "image/*" : "*/*");
                     startActivityForResult(intent, FILE_CHOOSER_REQUEST);
                     return true;
                 } catch (Exception e) {
@@ -159,7 +154,6 @@ public class MainActivity extends FragmentActivity {
             }
         }
         webView.loadUrl(localUrl);
-        if (saved.isFile()) return;
 
         Thread recovery = new Thread(() -> {
             HttpURLConnection metaConnection = null;
@@ -185,6 +179,18 @@ public class MainActivity extends FragmentActivity {
                     .compile("const\\s+APP_VERSION\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]")
                     .matcher(html);
                 if (!versionMatcher.find() || !publishedVersion.equals(versionMatcher.group(1))) return;
+                String bundledVersion = "";
+                try (java.io.InputStream bundledInput = getAssets().open("index.html")) {
+                    bundledVersion = extractHtmlVersion(readInputText(bundledInput));
+                } catch (Exception ignored) { }
+                String savedVersion = "";
+                if (saved.isFile()) {
+                    try (java.io.FileInputStream savedInput = new java.io.FileInputStream(saved)) {
+                        savedVersion = extractHtmlVersion(readInputText(savedInput));
+                    } catch (Exception ignored) { savedVersion = ""; }
+                }
+                String currentVersion = isVersionOlder(savedVersion, bundledVersion) ? bundledVersion : savedVersion;
+                if (!currentVersion.isEmpty() && !isVersionOlder(currentVersion, publishedVersion)) return;
 
                 if (!updateDir.exists() && !updateDir.mkdirs()) return;
                 File temp = new File(updateDir, "index.html.bootstrap.tmp");
