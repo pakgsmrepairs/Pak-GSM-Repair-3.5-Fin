@@ -171,7 +171,7 @@ public class MainActivity extends FragmentActivity {
                 if (htmlConnection.getResponseCode() != 200) return;
                 String html = readConnectionText(htmlConnection);
                 java.util.regex.Matcher versionMatcher = java.util.regex.Pattern
-                    .compile("const\\\\s+APP_VERSION\\\\s*=\\\\s*['\\\"]([^'\\\"]+)['\\\"]")
+                    .compile("const\\s+APP_VERSION\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]")
                     .matcher(html);
                 if (!versionMatcher.find() || !publishedVersion.equals(versionMatcher.group(1))) return;
 
