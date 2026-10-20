@@ -1,1 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc"><title id="title">Pak GSM Repair</title><desc id="desc">Pakistani green and white mobile phone with crescent, star and repair tools.</desc><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#064b3d"/><stop offset="1" stop-color="#0b8a69"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2a8"/><stop offset="1" stop-color="#f2bd35"/></linearGradient></defs><rect x="12" y="12" width="488" height="488" rx="110" fill="url(#bg)"/><circle cx="256" cy="174" r="96" fill="#fff"/><circle cx="284" cy="151" r="77" fill="#08775d"/><path d="M323 91l13 27 30 4-22 21 5 30-26-14-27 14 6-30-22-21 30-4z" fill="url(#gold)"/><rect x="163" y="179" width="186" height="232" rx="29" fill="#f8fffc" stroke="#d9fff0" stroke-width="8"/><rect x="180" y="203" width="152" height="170" rx="12" fill="#0b6b57"/><rect x="223" y="190" width="65" height="6" rx="3" fill="#6c9889"/><circle cx="256" cy="392" r="8" fill="#0b6b57"/><path d="M203 274h107M203 297h72" stroke="#dffff1" stroke-width="10" stroke-linecap="round"/><path d="M219 247h24" stroke="#f4c43d" stroke-width="10" stroke-linecap="round"/><g transform="translate(105 240) rotate(-34)"><rect x="0" y="0" width="24" height="152" rx="12" fill="url(#gold)"/><path d="M-7 0l19-28L31 0" fill="#fff" stroke="#f2bd35" stroke-width="7" stroke-linejoin="round"/></g><g transform="translate(382 244) rotate(34)"><rect x="-10" y="0" width="24" height="152" rx="12" fill="#fff"/><path d="M-17 0L2-28 21 0" fill="#f2bd35" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></g><text x="256" y="454" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="900" letter-spacing="1.5" fill="#fff">PAK GSM REPAIR</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title id="title">Pak GSM Repair</title><desc id="desc">Green circular mobile phone repair emblem with a white wrench and gear.</desc>
+<defs>
+ <radialGradient id="green" cx="36%" cy="28%" r="78%"><stop offset="0" stop-color="#12a85e"/><stop offset=".55" stop-color="#00683f"/><stop offset="1" stop-color="#003d2a"/></radialGradient>
+ <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#21d16e"/><stop offset="1" stop-color="#006d3f"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<circle cx="256" cy="256" r="244" fill="#005333"/>
+<circle cx="256" cy="256" r="222" fill="#fff"/>
+<circle cx="256" cy="256" r="210" fill="#003f2c"/>
+<circle cx="256" cy="256" r="198" fill="url(#green)"/>
+<path d="M104 224A154 154 0 0 1 330 105L170 369A154 154 0 0 1 104 224Z" fill="#19c96b" opacity=".95"/>
+<path d="M145 125h222a32 32 0 0 1 32 32v210a32 32 0 0 1-32 32H145a32 32 0 0 1-32-32V157a32 32 0 0 1 32-32Z" fill="#071c1a" opacity=".3" transform="translate(5 7)" filter="url(#shadow)"/>
+<rect x="132" y="111" width="248" height="290" rx="42" fill="#f8faf9" stroke="#101d1c" stroke-width="9"/>
+<rect x="150" y="132" width="212" height="248" rx="9" fill="#102a28"/>
+<path d="M150 148a16 16 0 0 1 16-16h180L150 328Z" fill="url(#screen)"/>
+<path d="M150 328 334 132h12L150 352Z" fill="#00b75d" opacity=".65"/>
+<rect x="223" y="143" width="66" height="10" rx="5" fill="#f7faf9"/>
+<circle cx="256" cy="372" r="13" fill="#f8faf9"/>
+<!-- crossed repair wrench -->
+<g transform="rotate(-37 245 258)">
+ <path d="M218 196c-23-18-55-15-74 4l30 26-4 24-25 7-27-30c-14 27-5 62 21 78 19 12 43 11 61-2l103 101c12 12 31 12 43 0s12-31 0-43L245 259c13-19 13-44 0-63-7-10-16-17-27-21Z" fill="#f8faf9" stroke="#06251b" stroke-width="8" stroke-linejoin="round"/>
+ <path d="M178 245 302 369" stroke="#142d29" stroke-width="10" stroke-linecap="round"/>
+ <circle cx="154" cy="272" r="14" fill="#00613b" stroke="#f8faf9" stroke-width="5"/>
+</g>
+<!-- gear -->
+<g transform="translate(321 310)">
+ <path d="M-14-61h28l5 17 14 6 15-9 20 20-9 15 6 14 17 5v28l-17 5-6 14 9 15-20 20-15-9-14 6-5 17h-28l-5-17-14-6-15 9-20-20 9-15-6-14-17-5v-28l17-5 6-14-9-15 20-20 15 9 14-6Z" fill="#f8faf9" stroke="#06251b" stroke-width="7" stroke-linejoin="round"/>
+ <circle r="34" fill="#006b42" stroke="#f8faf9" stroke-width="7"/>
+ <circle r="22" fill="none" stroke="#20d17b" stroke-width="7"/>
+</g>
+</svg>
