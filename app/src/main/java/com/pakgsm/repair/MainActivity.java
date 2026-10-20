@@ -43,6 +43,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.ByteArrayOutputStream;
 
 public class MainActivity extends FragmentActivity {
     private WebView webView;
@@ -126,10 +129,84 @@ public class MainActivity extends FragmentActivity {
         });
         webView.addJavascriptInterface(new NativeBluetoothBridge(), "PGRNativeBluetooth");
         setContentView(webView);
-        webView.loadUrl("https://appassets.androidplatform.net/assets/index.html");
+        loadSavedOrBootstrapLatestRelease();
         registerDiscoveryReceiver();
         requestBluetoothPermissionsIfNeeded();
         refreshBluetoothProfiles();
+    }
+
+
+    /*
+     * Recovery path for "Clear data": Android removes the saved HTML update when
+     * app data is cleared. Load the packaged shell immediately, then restore the
+     * latest published and version-matched HTML release from GitHub Pages.
+     * The downloaded page is kept in filesDir (not cacheDir), so Clear cache
+     * does not discard the approved update.
+     */
+    private void loadSavedOrBootstrapLatestRelease() {
+        final String localUrl = "https://appassets.androidplatform.net/assets/index.html";
+        File updateDir = new File(getFilesDir(), "pgr-web-update");
+        File saved = new File(updateDir, "index.html");
+        webView.loadUrl(localUrl);
+        if (saved.isFile()) return;
+
+        Thread recovery = new Thread(() -> {
+            HttpURLConnection metaConnection = null;
+            HttpURLConnection htmlConnection = null;
+            try {
+                String base = "https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/android-web-update/";
+                metaConnection = (HttpURLConnection) new URL(base + "update.json?bootstrap=" + System.currentTimeMillis()).openConnection();
+                metaConnection.setConnectTimeout(5000);
+                metaConnection.setReadTimeout(5000);
+                metaConnection.setUseCaches(false);
+                if (metaConnection.getResponseCode() != 200) return;
+                String metaText = readConnectionText(metaConnection);
+                String publishedVersion = new JSONObject(metaText).optString("version", "");
+                if (publishedVersion.isEmpty()) return;
+
+                htmlConnection = (HttpURLConnection) new URL(base + "index.html?bootstrap=" + System.currentTimeMillis()).openConnection();
+                htmlConnection.setConnectTimeout(7000);
+                htmlConnection.setReadTimeout(7000);
+                htmlConnection.setUseCaches(false);
+                if (htmlConnection.getResponseCode() != 200) return;
+                String html = readConnectionText(htmlConnection);
+                java.util.regex.Matcher versionMatcher = java.util.regex.Pattern
+                    .compile("const\\\\s+APP_VERSION\\\\s*=\\\\s*['\\\"]([^'\\\"]+)['\\\"]")
+                    .matcher(html);
+                if (!versionMatcher.find() || !publishedVersion.equals(versionMatcher.group(1))) return;
+
+                if (!updateDir.exists() && !updateDir.mkdirs()) return;
+                File temp = new File(updateDir, "index.html.bootstrap.tmp");
+                try (FileOutputStream out = new FileOutputStream(temp)) {
+                    out.write(html.getBytes(StandardCharsets.UTF_8));
+                    out.flush();
+                    out.getFD().sync();
+                }
+                if (saved.exists() && !saved.delete()) { temp.delete(); return; }
+                if (!temp.renameTo(saved)) { temp.delete(); return; }
+
+                runOnUiThread(() -> {
+                    if (webView != null) webView.loadUrl(localUrl + "?bootstrap=" + System.currentTimeMillis());
+                });
+            } catch (Exception ignored) {
+                // Offline or an incomplete publication: retain the packaged shell.
+            } finally {
+                if (metaConnection != null) metaConnection.disconnect();
+                if (htmlConnection != null) htmlConnection.disconnect();
+            }
+        }, "pgr-release-recovery");
+        recovery.setDaemon(true);
+        recovery.start();
+    }
+
+    private String readConnectionText(HttpURLConnection connection) throws Exception {
+        try (java.io.InputStream input = connection.getInputStream();
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = input.read(buffer)) != -1) output.write(buffer, 0, count);
+            return output.toString("UTF-8");
+        }
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
