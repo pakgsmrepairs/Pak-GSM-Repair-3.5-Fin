@@ -108,7 +108,7 @@ jobs:
           if 'android:icon="@mipmap/ic_launcher"' not in android_manifest or not Path("app/src/main/res/mipmap-mdpi/ic_launcher.png").is_file():
               raise SystemExit("Android launcher icon resource is not configured.")
           gradle = Path("app/build.gradle.kts").read_text(encoding="utf-8")
-          if 'versionName = "8.5"' not in gradle or "versionCode = 850" not in gradle:
+          if 'versionName = "8.5"' not in gradle or "versionCode = 851" not in gradle:
               raise SystemExit("Android package version must be 8.5 / 850.")
           for p in ["sw.js", "app/src/main/assets/sw.js", "github-pages-update/sw.js"]:
               if "pak-gsm-repair-v8.5-dashboard" not in Path(p).read_text(encoding="utf-8"):
