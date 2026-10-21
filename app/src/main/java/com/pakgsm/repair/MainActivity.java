@@ -94,14 +94,16 @@ public class MainActivity extends FragmentActivity {
                 pendingFileChooser = filePathCallback;
                 Intent intent;
                 try {
-                    intent = fileChooserParams.createIntent();
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
                     String[] acceptTypes = fileChooserParams.getAcceptTypes();
                     boolean imageOnly = false;
                     if (acceptTypes != null) for (String type : acceptTypes) if (type != null && type.startsWith("image/")) imageOnly = true;
+                    // Use a fresh content picker intent: WebView's generated intent can retain
+                    // an incompatible MIME extra on some Android gallery providers.
+                    intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType(imageOnly ? "image/*" : "*/*");
-                    startActivityForResult(intent, FILE_CHOOSER_REQUEST);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivityForResult(Intent.createChooser(intent, imageOnly ? "Select shop logo" : "Select file"), FILE_CHOOSER_REQUEST);
                     return true;
                 } catch (Exception e) {
                     pendingFileChooser = null;
