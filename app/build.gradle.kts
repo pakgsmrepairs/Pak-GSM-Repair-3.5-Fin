@@ -9,6 +9,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 850
+        // 8.5 release validation: status picture and shop-logo picker fixes
         versionName = "8.5"
     }
 
