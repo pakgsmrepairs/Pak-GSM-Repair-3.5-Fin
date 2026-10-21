@@ -9,7 +9,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 861
-        // 8.6 release: Android in-app updates now apply saved logo/icon assets
+        // 8.6 release: install over 8.5 without uninstall; in-app updater saves HTML and logo/icon assets
         versionName = "8.6"
     }
 
