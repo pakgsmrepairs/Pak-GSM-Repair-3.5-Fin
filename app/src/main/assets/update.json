@@ -1,4 +1,4 @@
 {
   "version": "8.5",
-  "changelog": "Version 8.5: adds animated running status bar directly below shop logo; aligns release version across app files; retains shop logo and calculator fixes."
+  "changelog": "Version 8.5: fixes Status Bar panel navigation, synchronizes displayed and exported version, and retains the existing shop logo and launcher icon."
 }
