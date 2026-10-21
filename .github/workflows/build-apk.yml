@@ -122,6 +122,31 @@ jobs:
           print("Validated matching 8.5 HTML, update metadata, manifests, cache names, Android version and picker fix.")
           PY
 
+      - name: Sync uploaded Pak GSM Repair icon into Android launcher resources
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          source = Path("app/src/main/assets/icons/icon-512.png")
+          if not source.is_file():
+              raise SystemExit("Uploaded launcher icon app/src/main/assets/icons/icon-512.png is missing.")
+          sizes = {
+              "mipmap-mdpi": 48,
+              "mipmap-hdpi": 72,
+              "mipmap-xhdpi": 96,
+              "mipmap-xxhdpi": 144,
+              "mipmap-xxxhdpi": 192,
+          }
+          with Image.open(source) as original:
+              original = original.convert("RGBA")
+              for folder, size in sizes.items():
+                  target = Path("app/src/main/res") / folder / "ic_launcher.png"
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  original.resize((size, size), Image.Resampling.LANCZOS).save(target, format="PNG")
+                  print(f"Synced launcher icon: {target} ({size}x{size})")
+          PY
+
       - name: Set up Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
         with:
