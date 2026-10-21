@@ -307,9 +307,12 @@ public class MainActivity extends FragmentActivity {
                 try (FileInputStream input = new FileInputStream(saved)) { savedHtml = readInputText(input); }
                 String savedVersion = extractHtmlVersion(savedHtml);
                 String packagedVersion = "";
-                try { packagedVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; }
-                catch (Exception ignored) {}
-                if (!isVersionOlder(packagedVersion, savedVersion)) return null;
+                try (java.io.InputStream packagedInput = getAssets().open("index.html")) {
+                    packagedVersion = extractHtmlVersion(readInputText(packagedInput));
+                } catch (Exception ignored) {}
+                // Prefer the saved HTML when its release is equal to or newer than the packaged HTML.
+                // Android package versionName is not a reliable comparator for in-app web releases.
+                if (isVersionOlder(savedVersion, packagedVersion)) return null;
                 return new WebResourceResponse("text/html", "UTF-8",
                     new java.io.ByteArrayInputStream(savedHtml.getBytes(StandardCharsets.UTF_8)));
             } catch (Exception ignored) { return null; }
