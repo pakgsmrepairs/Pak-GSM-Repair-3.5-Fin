@@ -1,5 +1,6 @@
 
 name: Build Pak GSM Repair 8.10 Android APK
+# 8.10 release source synchronized
 
 on:
   workflow_dispatch:
