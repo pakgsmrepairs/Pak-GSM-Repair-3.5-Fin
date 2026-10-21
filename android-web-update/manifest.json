@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Pak GSM Repair 8.8",
+  "name": "Pak GSM Repair 8.9",
   "short_name": "Pak GSM Repair",
-  "description": "Pak GSM Repair 8.8 dashboard, customers, repairs, file vault, products, sales, settings and Bluetooth diagnostics.",
+  "description": "Pak GSM Repair 8.9 dashboard, customers, repairs, file vault, products, sales, settings and Bluetooth diagnostics.",
   "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
