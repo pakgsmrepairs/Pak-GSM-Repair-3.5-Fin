@@ -280,8 +280,24 @@ public class MainActivity extends FragmentActivity {
         if (uri == null || !"/assets/index.html".equals(uri.getPath())) return null;
         File saved = new File(new File(getFilesDir(), "pgr-web-update"), "index.html");
         if (!saved.isFile()) return null;
-        try { return new WebResourceResponse("text/html", "UTF-8", new FileInputStream(saved)); }
-        catch (Exception ignored) { return null; }
+        try {
+            byte[] bytes = new byte[(int) saved.length()];
+            FileInputStream input = new FileInputStream(saved);
+            int length = input.read(bytes);
+            input.close();
+            String savedHtml = new String(bytes, 0, Math.max(0, length), StandardCharsets.UTF_8);
+            java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("const\\s+APP_VERSION\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]")
+                .matcher(savedHtml);
+            String savedVersion = matcher.find() ? matcher.group(1) : "";
+            String packagedVersion = "";
+            try { packagedVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; }
+            catch (Exception ignored) {}
+            // Never let an older (or same-version stale) downloaded HTML override newer APK assets.
+            if (!isVersionOlder(packagedVersion, savedVersion)) return null;
+            return new WebResourceResponse("text/html", "UTF-8",
+                new java.io.ByteArrayInputStream(savedHtml.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception ignored) { return null; }
     }
 
     private void requestBluetoothPermissionsIfNeeded() {
