@@ -8,7 +8,7 @@ android {
         applicationId = "com.pakgsm.repair"
         minSdk = 26
         targetSdk = 35
-        versionCode = 850
+        versionCode = 851
         // 8.5 release validation: status picture and shop-logo picker fixes
         versionName = "8.5"
     }
