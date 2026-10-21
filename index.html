@@ -1532,11 +1532,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   list.querySelectorAll('[data-remove-status]').forEach(b=>b.addEventListener('click',()=>{const a=get();a.splice(Number(b.dataset.removeStatus),1);localStorage.setItem(key,JSON.stringify(a));render()}));
  }
  add.addEventListener('click',()=>{
-  const value=text.value.trim();if(!value){text.focus();return}
-  const save=data=>{const items=get();items.unshift({text:value,image:data||'',emoji:'📢'});try{localStorage.setItem(key,JSON.stringify(items));text.value='';image.value='';render()}catch(e){alert('Storage is full. Please use a smaller image.')}};
-  const file=image.files&&image.files[0];if(!file){save('');return}
+  const value=text.value.trim(),file=image.files&&image.files[0];
+  if(!value&&!file){text.focus();return}
+  const save=data=>{const items=get();items.unshift({text:value||'Shop update',image:data||'',emoji:'📢'});try{localStorage.setItem(key,JSON.stringify(items));text.value='';image.value='';render()}catch(e){alert('Could not save status. Please use a smaller image or remove old status items.')}};
+  if(!file){save('');return}
   if(file.type&&!file.type.startsWith('image/')){alert('Please select an image file.');return}
-  const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');const scale=Math.min(1,480/Math.max(img.width,img.height));canvas.width=Math.max(1,img.width*scale);canvas.height=Math.max(1,img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);save(canvas.toDataURL('image/jpeg',.72))};img.onerror=()=>save('');img.src=reader.result};reader.onerror=()=>alert('Could not read the selected image. Please choose another picture.');reader.readAsDataURL(file)
+  const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{try{const canvas=document.createElement('canvas');const scale=Math.min(1,320/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));canvas.width=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));canvas.height=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);save(canvas.toDataURL('image/jpeg',.5))}catch(e){alert('Could not process image. Please choose another.')}};img.onerror=()=>alert('Could not open image. Please choose another.');img.src=reader.result};reader.onerror=()=>alert('Could not read image. Please choose another.');reader.readAsDataURL(file)
  });
  clear.addEventListener('click',()=>{if(confirm('Remove all custom status announcements?')){localStorage.removeItem(key);render()}});
  render();
