@@ -8,6 +8,10 @@ on:
       - main
     paths:
       - 'app/**'
+      - 'index.html'
+      - 'android-web-update/**'
+      - 'github-pages-update/**'
+      - 'icons/**'
       - '*.gradle'
       - '*.gradle.kts'
       - 'settings.gradle*'
