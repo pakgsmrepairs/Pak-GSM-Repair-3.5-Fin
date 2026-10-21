@@ -87,6 +87,10 @@ jobs:
               raise SystemExit("Calculator history/compact sizing changes are missing.")
           if 'aria-expanded="false">History ▾</button></div><div id="calcHistoryList">' not in html[0]:
               raise SystemExit("Calculator history heading markup is malformed.")
+          if "statusBarPanel','soundPanel'" not in html[0]:
+              raise SystemExit("Status Bar panel is not connected to settings navigation.")
+          if 'id="pgrAddStatusItem"' not in html[0] or "shopLogoFile.addEventListener('change'" not in html[0]:
+              raise SystemExit("Status Bar or shop-logo controls are missing their handlers.")
           for p in ["update.json", "android-web-update/update.json", "github-pages-update/update.json", "app/src/main/assets/update.json"]:
               if json.loads(Path(p).read_text(encoding="utf-8")).get("version") != "8.5":
                   raise SystemExit(f"{p} does not advertise version 8.5.")
@@ -94,9 +98,15 @@ jobs:
               config = Path(p).read_text(encoding="utf-8")
               if "window.PGR_APP_VERSION = '8.5';" not in config and 'window.PGR_APP_VERSION = "8.5";' not in config:
                   raise SystemExit(f"{p} has a stale app version.")
-          for p in ["manifest.json", "app/src/main/assets/manifest.json", "github-pages-update/manifest.json"]:
+          for p in ["manifest.json", "android-web-update/manifest.json", "app/src/main/assets/manifest.json", "github-pages-update/manifest.json"]:
               if "Pak GSM Repair 8.5" not in Path(p).read_text(encoding="utf-8"):
                   raise SystemExit(f"{p} has stale manifest metadata.")
+          for p in ["app/src/main/assets/icons/pgr-logo.svg", "android-web-update/icons/pgr-logo.svg", "github-pages-update/icons/pgr-logo.svg"]:
+              if not Path(p).is_file():
+                  raise SystemExit(f"{p} is missing; app logo path will fail.")
+          android_manifest = Path("app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+          if 'android:icon="@mipmap/ic_launcher"' not in android_manifest or not Path("app/src/main/res/mipmap-mdpi/ic_launcher.png").is_file():
+              raise SystemExit("Android launcher icon resource is not configured.")
           gradle = Path("app/build.gradle.kts").read_text(encoding="utf-8")
           if 'versionName = "8.5"' not in gradle or "versionCode = 850" not in gradle:
               raise SystemExit("Android package version must be 8.5 / 850.")
