@@ -8,9 +8,9 @@ android {
         applicationId = "com.pakgsm.repair"
         minSdk = 26
         targetSdk = 35
-        versionCode = 861
-        // 8.6 release: install over 8.5 without uninstall; in-app updater saves HTML and logo/icon assets
-        versionName = "8.6"
+        versionCode = 871
+        // 8.7 release: install over 8.5 without uninstall; in-app updater saves HTML and logo/icon assets
+        versionName = "8.7"
     }
 
     compileOptions {
