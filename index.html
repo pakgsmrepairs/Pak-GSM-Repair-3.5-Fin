@@ -724,44 +724,51 @@ async function downloadAndApplyUpdate(statusTarget,downloadButton,checkButton){
  const say=(text,kind='')=>{if(statusTarget){statusTarget.textContent=text;statusTarget.dataset.kind=kind;if(statusTarget.id==='updateStatus'){statusTarget.style.background=kind==='error'?'#fff0ee':kind==='success'?'#e5f6eb':'#fff4d6';statusTarget.style.color=kind==='error'?'#842018':kind==='success'?'#124b27':'#563900';}}};
  say('Downloading and verifying update files…');
  try{
-  // Native Android: save the latest published HTML in app-private storage. Future HTML-only UI updates do not need a new APK.
   if(window.PGRNativeBluetooth && typeof window.PGRNativeBluetooth.applyWebUpdate==='function'){
-   const response=await fetch(PGR_ANDROID_RELEASE_BASE+'index.html?release='+encodeURIComponent(version)+'&t='+Date.now(),{cache:'no-store'});
+   const base=PGR_ANDROID_RELEASE_BASE;
+   const response=await fetch(base+'index.html?release='+encodeURIComponent(version)+'&t='+Date.now(),{cache:'no-store'});
    if(!response.ok)throw new Error('Could not download Android app files (HTTP '+response.status+').');
    const remoteHtml=await response.text();
-   const versionPattern=new RegExp('const\\s+APP_VERSION\\s*=\\s*["\\\']'+String(version)+'["\\\']');
-   if(!/^\d+(?:\.\d+)*$/.test(String(version))||!versionPattern.test(remoteHtml)||remoteHtml.length<50000)throw new Error('Downloaded HTML is incomplete or its version does not match '+version+'.');
+   const versionPattern=new RegExp('const\\s+APP_VERSION\\s*=\\s*["\\']'+String(version)+'["\\']');
+   if(!/^\\d+(?:\\.\\d+)*$/.test(String(version))||!versionPattern.test(remoteHtml)||remoteHtml.length<50000)throw new Error('Downloaded HTML is incomplete or its version does not match '+version+'.');
+   const assetNames=['icon-192.png','icon-512.png','icon-512-maskable.png','pgr-logo.svg'];
+   if(typeof window.PGRNativeBluetooth.applyWebAssetUpdate==='function'){
+    for(const name of assetNames){
+     const assetResponse=await fetch(base+'icons/'+name+'?release='+encodeURIComponent(version)+'&t='+Date.now(),{cache:'no-store'});
+     if(!assetResponse.ok)throw new Error('Could not download updated logo asset '+name+' (HTTP '+assetResponse.status+').');
+     const bytes=new Uint8Array(await assetResponse.arrayBuffer());let binary='';
+     for(let offset=0;offset<bytes.length;offset+=0x8000)binary+=String.fromCharCode(...bytes.subarray(offset,Math.min(offset+0x8000,bytes.length)));
+     const savedAsset=window.PGRNativeBluetooth.applyWebAssetUpdate(name,btoa(binary));
+     if(savedAsset!=='OK')throw new Error('Could not apply logo asset '+name+': '+String(savedAsset||'unknown error'));
+    }
+   }
    const result=window.PGRNativeBluetooth.applyWebUpdate(remoteHtml,String(version));
    if(result!=='OK')throw new Error(String(result||'Android could not save the update.'));
-   say('Update v'+version+' saved. Restarting app view…','success');
-   window.PGRNativeBluetooth.reloadWebApp();
-   return;
+   say('Update v'+version+' files saved. Restarting app view…','success');
+   window.PGRNativeBluetooth.reloadWebApp();return;
   }
   if(!('caches' in window))throw new Error('This browser does not support offline update storage. Open the HTTPS app in Chrome.');
-  const files=['./index.html','./manifest.json','./sw.js','./cloud-config.js','./update.json','./icons/icon-512.png','./icons/icon-512.png','./icons/icon-512-maskable.png','./icons/icon-512.png'];
+  const files=['./index.html','./manifest.json','./sw.js','./cloud-config.js','./update.json','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-512-maskable.png','./icons/pgr-logo.svg'];
   await caches.delete('pgr-update-download-temp');const temp=await caches.open('pgr-update-download-temp');
   for(const file of files){
    const url=new URL(file,PGR_RELEASE_BASE);url.searchParams.set('release',String(version));url.searchParams.set('download',String(Date.now())+'-'+Math.random().toString(36).slice(2));
-   // The query parameters plus the updated worker's network-bypass branch prevent cache-first responses.
    const response=await fetch(url.toString(),{cache:'no-store',credentials:'same-origin'});
    if(!response.ok)throw new Error('Could not download '+file+' (HTTP '+response.status+').');
-   const finalUrl=new URL(file,location.href).toString();await temp.put(new Request(finalUrl),response.clone());
+   await temp.put(new Request(new URL(file,location.href).toString()),response.clone());
   }
   const stagedIndex=await temp.match(new URL('./index.html',location.href).toString());if(!stagedIndex)throw new Error('Downloaded package is incomplete: index.html is missing.');
   const stagedText=await stagedIndex.clone().text();
-  if(!/^\d+(?:\.\d+)*$/.test(String(version)))throw new Error('Published update version has an invalid format.');
-  const versionPattern = new RegExp('const\\s+APP_VERSION\\s*=\\s*[\"\']'+String(version)+'[\"\']');
+  if(!/^\\d+(?:\\.\\d+)*$/.test(String(version)))throw new Error('Published update version has an invalid format.');
+  const versionPattern=new RegExp('const\\s+APP_VERSION\\s*=\\s*["\\']'+String(version)+'["\\']');
   if(!versionPattern.test(stagedText))throw new Error('Downloaded index.html APP_VERSION does not match '+version+'. GitHub Pages may be serving a stale or mixed release.');
-  const stagedMeta=await temp.match(new URL('./update.json',location.href).toString());
-  if(!stagedMeta)throw new Error('Downloaded package is incomplete: update.json was not staged in the app cache. Please retry with internet access.');
-  const metaData=await stagedMeta.clone().json();
-  if(String(metaData.version)!==String(version))throw new Error('Downloaded update.json version does not match '+version+'.');
+  const stagedMeta=await temp.match(new URL('./update.json',location.href).toString());if(!stagedMeta)throw new Error('Downloaded package is incomplete: update.json is missing.');
+  const metaData=await stagedMeta.clone().json();if(String(metaData.version)!==String(version))throw new Error('Downloaded update.json version does not match '+version+'.');
   await caches.delete('pgr-update-staging');const stage=await caches.open('pgr-update-staging');
-  for(const request of await temp.keys()){const response=await temp.match(request);if(response)await stage.put(request,response);}
+  for(const request of await temp.keys()){const stagedResponse=await temp.match(request);if(stagedResponse)await stage.put(request,stagedResponse);}
   await stage.put(new URL('./__update_approved',location.href).toString(),new Response(String(version),{headers:{'Content-Type':'text/plain'}}));
   await caches.delete('pgr-update-download-temp');say('Download complete. Restarting into v'+version+'…','success');
   setTimeout(()=>location.replace(new URL('./index.html?updated='+encodeURIComponent(version)+'&t='+Date.now(),location.href).toString()),350);
- }catch(e){await caches.delete('pgr-update-download-temp');say('Update failed: '+e.message,'error');downloadButton.disabled=false;if(checkButton)checkButton.disabled=false;}
+ }catch(e){say('Update failed: '+e.message,'error');downloadButton.disabled=false;if(checkButton)checkButton.disabled=false;}
 }
 downloadUpdateButton.addEventListener('click',()=>downloadAndApplyUpdate(updateStatus,downloadUpdateButton,checkUpdateButton));
 const refreshAppButton=document.querySelector('#refreshApp');
