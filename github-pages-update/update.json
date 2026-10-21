@@ -1,4 +1,4 @@
 {
-  "version": "8.7",
-  "changelog": "Version 8.7: calculator history displays the expression as digits/operators are entered, saves completed calculations, and uses a safe arithmetic parser compatible with Android WebView."
+  "version": "8.8",
+  "changelog": "Version 8.8: fixes inconsistent version labels and makes Android load saved HTML updates at the same release version; after Clear Data, the latest published HTML can be restored when internet is available."
 }
