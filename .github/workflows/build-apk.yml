@@ -1,5 +1,5 @@
 
-name: Build Pak GSM Repair 8.3 Android APK
+name: Build Pak GSM Repair 8.4 Android APK
 
 on:
   workflow_dispatch:
@@ -65,7 +65,7 @@ jobs:
           print(f"Validated syntax for {checked} inline JavaScript blocks.")
           PY
 
-      - name: Validate 8.3 release synchronization
+      - name: Validate 8.4 release synchronization
         run: |
           python3 - <<'PY'
           import json
@@ -81,35 +81,35 @@ jobs:
           html = [Path(p).read_text(encoding="utf-8") for p in html_paths]
           if len(set(html)) != 1:
               raise SystemExit("Release HTML copies are not identical.")
-          if "const APP_VERSION='8.3';" not in html[0] and 'const APP_VERSION="8.3";' not in html[0]:
-              raise SystemExit("APP_VERSION must be 8.3.")
+          if "const APP_VERSION='8.4';" not in html[0] and 'const APP_VERSION="8.4";' not in html[0]:
+              raise SystemExit("APP_VERSION must be 8.4.")
           if 'id="toggleCalcHistory"' not in html[0] or 'pgr-v81-calculator-history-and-compact-keys' not in html[0]:
               raise SystemExit("Calculator history/compact sizing changes are missing.")
           if 'aria-expanded="false">History ▾</button></div><div id="calcHistoryList">' not in html[0]:
               raise SystemExit("Calculator history heading markup is malformed.")
           for p in ["update.json", "android-web-update/update.json", "github-pages-update/update.json", "app/src/main/assets/update.json"]:
-              if json.loads(Path(p).read_text(encoding="utf-8")).get("version") != "8.3":
-                  raise SystemExit(f"{p} does not advertise version 8.3.")
+              if json.loads(Path(p).read_text(encoding="utf-8")).get("version") != "8.4":
+                  raise SystemExit(f"{p} does not advertise version 8.4.")
           for p in ["cloud-config.js", "app/src/main/assets/cloud-config.js", "github-pages-update/cloud-config.js"]:
               config = Path(p).read_text(encoding="utf-8")
-              if "window.PGR_APP_VERSION = '8.3';" not in config and 'window.PGR_APP_VERSION = "8.3";' not in config:
+              if "window.PGR_APP_VERSION = '8.4';" not in config and 'window.PGR_APP_VERSION = "8.4";' not in config:
                   raise SystemExit(f"{p} has a stale app version.")
           for p in ["manifest.json", "app/src/main/assets/manifest.json", "github-pages-update/manifest.json"]:
-              if "Pak GSM Repair 8.3" not in Path(p).read_text(encoding="utf-8"):
+              if "Pak GSM Repair 8.4" not in Path(p).read_text(encoding="utf-8"):
                   raise SystemExit(f"{p} has stale manifest metadata.")
           gradle = Path("app/build.gradle.kts").read_text(encoding="utf-8")
-          if 'versionName = "8.3"' not in gradle or "versionCode = 830" not in gradle:
-              raise SystemExit("Android package version must be 8.3 / 830.")
+          if 'versionName = "8.4"' not in gradle or "versionCode = 840" not in gradle:
+              raise SystemExit("Android package version must be 8.4 / 840.")
           for p in ["sw.js", "app/src/main/assets/sw.js", "github-pages-update/sw.js"]:
-              if "pak-gsm-repair-v8.3-dashboard" not in Path(p).read_text(encoding="utf-8"):
+              if "pak-gsm-repair-v8.4-dashboard" not in Path(p).read_text(encoding="utf-8"):
                   raise SystemExit(f"{p} has a stale service-worker cache version.")
           java = Path("app/src/main/java/com/pakgsm/repair/MainActivity.java").read_text(encoding="utf-8")
           if "setAllowContentAccess(true)" not in java:
               raise SystemExit("Android WebView content URI access fix is missing.")
           workflow = Path(".github/workflows/build-apk.yml").read_text(encoding="utf-8")
-          if "Pak-GSM-Repair-8.3-APK" not in workflow or "Pak-GSM-Repair-8.3.apk" not in workflow:
-              raise SystemExit("APK artifact naming is not synchronized to 8.3.")
-          print("Validated matching 8.3 HTML, update metadata, manifests, cache names, Android version and picker fix.")
+          if "Pak-GSM-Repair-8.4-APK" not in workflow or "Pak-GSM-Repair-8.4.apk" not in workflow:
+              raise SystemExit("APK artifact naming is not synchronized to 8.4.")
+          print("Validated matching 8.4 HTML, update metadata, manifests, cache names, Android version and picker fix.")
           PY
 
       - name: Set up Gradle 8.9
@@ -117,16 +117,16 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Build pak gsm 8.3 APK
+      - name: Build pak gsm 8.4 APK
         run: gradle --no-daemon assembleDebug
 
       - name: Rename APK for release
-        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Pak-GSM-Repair-8.3.apk
+        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Pak-GSM-Repair-8.4.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-8.3-APK
-          path: app/build/outputs/apk/debug/Pak-GSM-Repair-8.3.apk
+          name: Pak-GSM-Repair-8.4-APK
+          path: app/build/outputs/apk/debug/Pak-GSM-Repair-8.4.apk
           if-no-files-found: error
           retention-days: 14
