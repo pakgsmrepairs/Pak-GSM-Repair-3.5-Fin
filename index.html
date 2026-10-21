@@ -176,6 +176,9 @@ body.large-text{font-size:17px}
 .pgr-reference-header .pgr-bell-button{font-size:28px!important}
 .pgr-reference-header .pgr-bell-dot{position:absolute;width:9px;height:9px;border-radius:50%;background:#ff5252;right:5px;top:5px;border:1px solid #0a6959}
 @media(max-width:600px){.pgr-reference-header{padding:6px 10px!important;gap:6px!important}.pgr-reference-header .pgr-brand-wrap{gap:8px!important}.pgr-reference-header .pgr-shop-photo{width:60px;height:60px;flex-basis:60px}.pgr-reference-header .pgr-shop-name-display{font-size:17px!important}.pgr-reference-header .pgr-app-name{font-size:10px!important}.pgr-reference-header .pgr-shop-subtitle{font-size:10px!important}.pgr-reference-header .pgr-bell-button,.pgr-reference-header .pgr-settings-button{width:34px!important;min-width:34px!important;height:38px!important;min-height:38px!important;font-size:24px!important}.pgr-reference-header .header-actions{gap:3px!important}}
+
+/* 8.9 navigation request: use the bottom navigation only. */
+.pgr-desktop-tabs{display:none!important}
 </style><style>
 /* v8.1 compact visual pass for user review */
 .pgr-modern-header{padding:5px 9px!important;min-height:0!important;gap:6px!important;background:linear-gradient(110deg,#063b35 0%,#087f72 58%,#0b6a79 100%)!important;box-shadow:0 3px 12px #063b3520!important}
@@ -407,6 +410,7 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
     <div class="auth-field"><label for="loginPassword">Password *</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password"></div>
     <button type="button" id="sendLoginOtp" style="width:100%;margin-top:12px">Login</button>
     <button type="button" id="openRegisterPage" class="secondary" style="width:100%;margin-top:8px">Register New Account</button>
+    <button id="guestView" type="button" class="guest-view-btn">Guest View</button>
    </div>
    <div id="otpStep" class="otp-step hidden">
     <h3 style="margin:8px 0">Verify your email</h3>
@@ -419,7 +423,6 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
   </div>
   <button id="loginBiometricButton" type="button" class="secondary pgr-biometric-login">🔒 Sign in with Fingerprint</button>
   <p id="loginBiometricHint" class="auth-help pgr-biometric-hint">Use fingerprint after signing in once on this phone.</p>
-  <button id="guestView" type="button" class="guest-view-btn">View with Guest Account</button>
   <div id="googleButtonWrap"><div id="googleButton"></div><button id="googleFallback" type="button" class="google-btn"><span class="google-mark">G</span> Sign in with Gmail</button></div>
   <p id="loginMsg" class="hidden" role="status">Login first, or tap Register New Account to create an account.</p>
  </div>
@@ -1622,7 +1625,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  render();
 })();
 </script>
-<nav class="pgr-bottom-nav" id="pgrBottomNav" aria-label="Primary navigation"><button type="button" class="active" data-pgr-dest="dashboard"><span class="pgr-nav-icon">⌂</span><span>Home</span></button><button type="button" data-pgr-dest="customers"><span class="pgr-nav-icon">♙</span><span>Customers</span></button><button type="button" data-pgr-dest="tools"><span class="pgr-nav-icon">⚒</span><span>Services</span></button><button type="button" data-pgr-dest="customers" data-pgr-payments="true"><span class="pgr-nav-icon">▣</span><span>Payments</span></button><button type="button" data-pgr-more="true"><span class="pgr-nav-icon">•••</span><span>More</span></button></nav>
+<nav class="pgr-bottom-nav" id="pgrBottomNav" aria-label="Primary navigation"><button type="button" class="active" data-pgr-dest="dashboard"><span class="pgr-nav-icon">⌂</span><span>Home</span></button><button type="button" data-pgr-dest="customers"><span class="pgr-nav-icon">♙</span><span>Customers</span></button><button type="button" data-pgr-dest="tools"><span class="pgr-nav-icon">⚒</span><span>Parts Availability</span></button><button type="button" data-pgr-dest="customers" data-pgr-payments="true"><span class="pgr-nav-icon">▣</span><span>Payments</span></button><button type="button" data-pgr-more="true"><span class="pgr-nav-icon">•••</span><span>More</span></button></nav>
 <script id="pgrBottomNavigationScript">(function(){var nav=document.getElementById('pgrBottomNav');if(!nav)return;nav.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-pgr-more')){if(typeof openSettingsDrawer==='function')openSettingsDrawer();else if(typeof tab==='function')tab('backup');return;}var dest=b.getAttribute('data-pgr-dest');if(dest&&typeof tab==='function'){tab(dest);nav.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b);});}});var oldTab=window.tab;window.tab=function(t){if(typeof oldTab==='function')oldTab(t);if(nav){nav.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-pgr-dest')===t&&!x.hasAttribute('data-pgr-payments'));});}};})();</script>
 </body></html><style id="pgr-compact-bluetooth-final-review">
 /* Focused compact Bluetooth layout: keep controls functional, remove excess vertical stacking */
