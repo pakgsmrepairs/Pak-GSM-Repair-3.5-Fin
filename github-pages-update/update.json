@@ -1,4 +1,4 @@
 {
-  "version": "8.9",
-  "changelog": "Version 8.9: fixes inconsistent version labels and makes Android load saved HTML updates at the same release version; after Clear Data, the latest published HTML can be restored when internet is available."
+  "version": "8.10",
+  "changelog": "Version 8.10: fixes inconsistent version labels and makes Android load saved HTML updates at the same release version; after Clear Data, the latest published HTML can be restored when internet is available."
 }
