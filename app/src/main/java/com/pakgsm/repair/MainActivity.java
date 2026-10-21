@@ -134,12 +134,12 @@ public class MainActivity extends FragmentActivity {
         assetLoader = new WebViewAssetLoader.Builder().addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this)).build();
         webView.setWebViewClient(new WebViewClientCompat() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                WebResourceResponse updated = updatedIndexResponse(request.getUrl());
+                WebResourceResponse updated = updatedAssetResponse(request.getUrl());
                 return updated != null ? updated : assetLoader.shouldInterceptRequest(request.getUrl());
             }
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 android.net.Uri uri = android.net.Uri.parse(url);
-                WebResourceResponse updated = updatedIndexResponse(uri);
+                WebResourceResponse updated = updatedAssetResponse(uri);
                 return updated != null ? updated : assetLoader.shouldInterceptRequest(uri);
             }
         });
@@ -295,27 +295,34 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    private WebResourceResponse updatedIndexResponse(android.net.Uri uri) {
-        if (uri == null || !"/assets/index.html".equals(uri.getPath())) return null;
-        File saved = new File(new File(getFilesDir(), "pgr-web-update"), "index.html");
-        if (!saved.isFile()) return null;
+    private WebResourceResponse updatedAssetResponse(android.net.Uri uri) {
+        if (uri == null) return null;
+        String path = uri.getPath();
+        File updateDir = new File(getFilesDir(), "pgr-web-update");
+        if ("/assets/index.html".equals(path)) {
+            File saved = new File(updateDir, "index.html");
+            if (!saved.isFile()) return null;
+            try {
+                String savedHtml;
+                try (FileInputStream input = new FileInputStream(saved)) { savedHtml = readInputText(input); }
+                String savedVersion = extractHtmlVersion(savedHtml);
+                String packagedVersion = "";
+                try { packagedVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; }
+                catch (Exception ignored) {}
+                if (!isVersionOlder(packagedVersion, savedVersion)) return null;
+                return new WebResourceResponse("text/html", "UTF-8",
+                    new java.io.ByteArrayInputStream(savedHtml.getBytes(StandardCharsets.UTF_8)));
+            } catch (Exception ignored) { return null; }
+        }
+        if (!path.startsWith("/assets/icons/")) return null;
+        String name = path.substring("/assets/icons/".length());
+        if (!("icon-192.png".equals(name) || "icon-512.png".equals(name)
+                || "icon-512-maskable.png".equals(name) || "pgr-logo.svg".equals(name))) return null;
+        File savedAsset = new File(new File(updateDir, "icons"), name);
+        if (!savedAsset.isFile()) return null;
         try {
-            byte[] bytes = new byte[(int) saved.length()];
-            FileInputStream input = new FileInputStream(saved);
-            int length = input.read(bytes);
-            input.close();
-            String savedHtml = new String(bytes, 0, Math.max(0, length), StandardCharsets.UTF_8);
-            java.util.regex.Matcher matcher = java.util.regex.Pattern
-                .compile("const\\s+APP_VERSION\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]")
-                .matcher(savedHtml);
-            String savedVersion = matcher.find() ? matcher.group(1) : "";
-            String packagedVersion = "";
-            try { packagedVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; }
-            catch (Exception ignored) {}
-            // Never let an older (or same-version stale) downloaded HTML override newer APK assets.
-            if (!isVersionOlder(packagedVersion, savedVersion)) return null;
-            return new WebResourceResponse("text/html", "UTF-8",
-                new java.io.ByteArrayInputStream(savedHtml.getBytes(StandardCharsets.UTF_8)));
+            String mime = name.endsWith(".svg") ? "image/svg+xml" : "image/png";
+            return new WebResourceResponse(mime, null, new FileInputStream(savedAsset));
         } catch (Exception ignored) { return null; }
     }
 
@@ -618,6 +625,25 @@ public class MainActivity extends FragmentActivity {
                 getSharedPreferences("pgr_web_update", MODE_PRIVATE).edit().putString("version", version).apply();
                 return "OK";
             } catch (Exception e) { return "Update could not be saved: " + e.getMessage(); }
+        }
+        @JavascriptInterface public String applyWebAssetUpdate(String name, String base64Data) {
+            try {
+                if (name == null || base64Data == null) return "Asset name or data is missing.";
+                if (!("icon-192.png".equals(name) || "icon-512.png".equals(name)
+                        || "icon-512-maskable.png".equals(name) || "pgr-logo.svg".equals(name))) return "This asset is not allowed to update.";
+                if (base64Data.length() < 20 || base64Data.length() > 1200000) return "Downloaded asset size is invalid.";
+                byte[] bytes = java.util.Base64.getDecoder().decode(base64Data);
+                if (bytes.length == 0 || bytes.length > 900000) return "Decoded asset size is invalid.";
+                if (name.endsWith(".png") && (bytes.length < 8 || bytes[0] != (byte)0x89 || bytes[1] != 0x50 || bytes[2] != 0x4e || bytes[3] != 0x47)) return "Downloaded PNG is invalid.";
+                if (name.endsWith(".svg") && !new String(bytes, StandardCharsets.UTF_8).contains("<svg")) return "Downloaded SVG is invalid.";
+                File dir = new File(new File(getFilesDir(), "pgr-web-update"), "icons");
+                if (!dir.exists() && !dir.mkdirs()) return "Could not create app asset folder.";
+                File tmp = new File(dir, name + ".tmp"), saved = new File(dir, name);
+                try (FileOutputStream out = new FileOutputStream(tmp)) { out.write(bytes); out.flush(); out.getFD().sync(); }
+                if (saved.exists() && !saved.delete()) { tmp.delete(); return "Could not replace previous asset."; }
+                if (!tmp.renameTo(saved)) { tmp.delete(); return "Could not activate downloaded asset."; }
+                return "OK";
+            } catch (Exception e) { return "Asset update failed: " + e.getMessage(); }
         }
         @JavascriptInterface public void reloadWebApp() {
             runOnUiThread(() -> { if (webView != null) webView.loadUrl("https://appassets.androidplatform.net/assets/index.html?updated=" + System.currentTimeMillis()); });
