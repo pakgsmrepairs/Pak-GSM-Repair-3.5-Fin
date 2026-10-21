@@ -730,7 +730,7 @@ async function downloadAndApplyUpdate(statusTarget,downloadButton,checkButton){
    if(!response.ok)throw new Error('Could not download Android app files (HTTP '+response.status+').');
    const remoteHtml=await response.text();
    const versionPattern=new RegExp('const\\s+APP_VERSION\\s*=\\s*["\\']'+String(version)+'["\\']');
-   if(!/^\\d+(?:\\.\\d+)*$/.test(String(version))||!versionPattern.test(remoteHtml)||remoteHtml.length<50000)throw new Error('Downloaded HTML is incomplete or its version does not match '+version+'.');
+   if(!/^\d+(?:\.\d+)*$/.test(String(version))||!versionPattern.test(remoteHtml)||remoteHtml.length<50000)throw new Error('Downloaded HTML is incomplete or its version does not match '+version+'.');
    const assetNames=['icon-192.png','icon-512.png','icon-512-maskable.png','pgr-logo.svg'];
    if(typeof window.PGRNativeBluetooth.applyWebAssetUpdate==='function'){
     for(const name of assetNames){
@@ -758,7 +758,7 @@ async function downloadAndApplyUpdate(statusTarget,downloadButton,checkButton){
   }
   const stagedIndex=await temp.match(new URL('./index.html',location.href).toString());if(!stagedIndex)throw new Error('Downloaded package is incomplete: index.html is missing.');
   const stagedText=await stagedIndex.clone().text();
-  if(!/^\\d+(?:\\.\\d+)*$/.test(String(version)))throw new Error('Published update version has an invalid format.');
+  if(!/^\d+(?:\.\d+)*$/.test(String(version)))throw new Error('Published update version has an invalid format.');
   const versionPattern=new RegExp('const\\s+APP_VERSION\\s*=\\s*["\\']'+String(version)+'["\\']');
   if(!versionPattern.test(stagedText))throw new Error('Downloaded index.html APP_VERSION does not match '+version+'. GitHub Pages may be serving a stale or mixed release.');
   const stagedMeta=await temp.match(new URL('./update.json',location.href).toString());if(!stagedMeta)throw new Error('Downloaded package is incomplete: update.json is missing.');
