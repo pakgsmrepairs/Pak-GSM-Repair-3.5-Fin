@@ -601,7 +601,7 @@ let currentTab='customers';
  const addHistory=(expression,result)=>{records.unshift({expression,result,at:Date.now()});records=records.slice(0,12);saveHistory()};
  // Parse arithmetic without eval/Function so calculations also work under restrictive WebView CSP.
  const calculate=(source)=>{
-  const tokens=source.match(/\d*\.?\d+|[()+\-*/]|\s+/g);
+  const tokens=source.match(/\d*\.?\d+|[()+\-*\/]|\s+/g);
   if(!tokens)throw Error('Enter a valid calculation');
   const compact=tokens.filter(t=>!/^\s+$/.test(t)).join('');
   if(compact!==source.replace(/\s+/g,''))throw Error('Enter a valid calculation');
