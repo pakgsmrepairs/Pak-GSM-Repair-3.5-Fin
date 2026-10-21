@@ -1,4 +1,4 @@
 {
-  "version": "8.6",
-  "changelog": "Version 8.6: fixes status-bar picture visibility and applies downloaded in-app logo/icon assets on Android. HTML updates apply in-app; native Android code and the launcher icon require an APK update."
+  "version": "8.7",
+  "changelog": "Version 8.7: calculator history displays the expression as digits/operators are entered, saves completed calculations, and uses a safe arithmetic parser compatible with Android WebView."
 }
