@@ -1,4 +1,4 @@
 {
-  "version": "8.5",
-  "changelog": "Version 8.5: fixes Status Bar panel navigation, synchronizes displayed and exported version, and retains the existing shop logo and launcher icon."
+  "version": "8.6",
+  "changelog": "Version 8.6: fixes status-bar picture visibility and applies downloaded in-app logo/icon assets on Android. HTML updates apply in-app; native Android code and the launcher icon require an APK update."
 }
