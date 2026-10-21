@@ -1,4 +1,4 @@
 {
   "version": "8.7",
-  "changelog": "Version 8.7: calculator history now shows entered digits and operators immediately, saves completed calculations, and uses an Android WebView-compatible arithmetic parser."
+  "changelog": "Version 8.7: calculator history now shows entered digits and operators immediately, saves completed calculations, and uses an Android WebView-compatible arithmetic parser. History fix validated for release."
 }
