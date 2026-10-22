@@ -462,6 +462,31 @@ public class MainActivity extends FragmentActivity {
     public class NativeBluetoothBridge {
         private static final int BIOMETRIC_AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK;
 
+        // Hide Android's bottom navigation/gesture bar only on the branded splash screen.
+        @JavascriptInterface public void setSplashNavigationHidden(boolean hidden) {
+            runOnUiThread(() -> {
+                android.view.Window window = getWindow();
+                if (Build.VERSION.SDK_INT >= 30) {
+                    android.view.WindowInsetsController controller = window.getInsetsController();
+                    if (controller != null) {
+                        if (hidden) {
+                            controller.hide(android.view.WindowInsets.Type.navigationBars());
+                            controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                        } else {
+                            controller.show(android.view.WindowInsets.Type.navigationBars());
+                        }
+                    }
+                } else {
+                    int flags = android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+                    if (hidden) {
+                        flags |= android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+                    }
+                    window.getDecorView().setSystemUiVisibility(flags);
+                }
+            });
+        }
+
         @JavascriptInterface public boolean isBiometricEnabled() {
             return getSharedPreferences("pgr_biometric", MODE_PRIVATE).getBoolean("enabled", false);
         }
