@@ -697,12 +697,17 @@ public class MainActivity extends FragmentActivity {
                         output.getFD().sync();
                     }
                     if (total < 1024L * 1024L) throw new Exception("Downloaded APK is too small or incomplete.");
+                    int signingFlags = Build.VERSION.SDK_INT >= 28
+                        ? android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
+                        : android.content.pm.PackageManager.GET_SIGNATURES;
                     android.content.pm.PackageInfo candidate = getPackageManager().getPackageArchiveInfo(
-                        apk.getAbsolutePath(), android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES);
+                        apk.getAbsolutePath(), signingFlags);
                     if (candidate == null || !"com.pakgsm.repair".equals(candidate.packageName))
                         throw new Exception("Downloaded file is not the official Pak GSM Repair APK.");
                     long newCode = Build.VERSION.SDK_INT >= 28 ? candidate.getLongVersionCode() : candidate.versionCode;
-                    android.content.pm.PackageInfo installed = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    android.content.pm.PackageInfo installed = getPackageManager().getPackageInfo(getPackageName(), signingFlags);
+                    if (!hasMatchingAppSignature(installed, candidate))
+                        throw new Exception("This APK is signed with a different key. Back up your records before the one-time manual reinstall; after installing from the stable release, future in-app updates can work.");
                     long oldCode = Build.VERSION.SDK_INT >= 28 ? installed.getLongVersionCode() : installed.versionCode;
                     if (!expectedVersion.equals(candidate.versionName))
                         throw new Exception("APK version does not match release metadata (expected " + expectedVersion + ").");
@@ -744,6 +749,27 @@ public class MainActivity extends FragmentActivity {
             installer.setDaemon(true);
             installer.start();
             return "APK download started.";
+        }
+
+        private boolean hasMatchingAppSignature(android.content.pm.PackageInfo installed, android.content.pm.PackageInfo candidate) {
+            try {
+                android.content.pm.Signature[] currentSignatures;
+                android.content.pm.Signature[] newSignatures;
+                if (Build.VERSION.SDK_INT >= 28) {
+                    currentSignatures = installed.signingInfo == null ? null : installed.signingInfo.getApkContentsSigners();
+                    newSignatures = candidate.signingInfo == null ? null : candidate.signingInfo.getApkContentsSigners();
+                } else {
+                    currentSignatures = installed.signatures;
+                    newSignatures = candidate.signatures;
+                }
+                if (currentSignatures == null || newSignatures == null || currentSignatures.length == 0 || newSignatures.length == 0) return false;
+                for (android.content.pm.Signature current : currentSignatures) {
+                    for (android.content.pm.Signature incoming : newSignatures) {
+                        if (current.equals(incoming)) return true;
+                    }
+                }
+            } catch (Exception ignored) {}
+            return false;
         }
 
         private void emitNativeApkUpdateStatus(String message, boolean success) {
