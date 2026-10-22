@@ -186,6 +186,10 @@ jobs:
         if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         run: gradle --no-daemon assembleRelease
 
+      - name: Name stable APK download
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        run: cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/Pak-GSM-Repair.apk
+
       - name: Publish signed APK to GitHub Releases
         if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         uses: softprops/action-gh-release@v2
@@ -193,7 +197,7 @@ jobs:
           tag_name: v9.0
           name: Pak GSM Repair 9.0
           body: "Pak GSM Repair Android release 9.0. APK downloaded from the in-app updater is signed with the configured stable keystore."
-          files: app/build/outputs/apk/release/app-release.apk
+          files: app/build/outputs/apk/release/Pak-GSM-Repair.apk
           make_latest: true
           overwrite_files: true
 
