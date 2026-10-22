@@ -1,6 +1,6 @@
 {
-  "version": "9.0",
-  "apkVersion": "9.0",
+  "version": "9.1",
+  "apkVersion": "9.1",
   "apkUrl": "https://github.com/pakgsmrepairs/Pak-GSM-Repair-3.5-Fin/releases/latest/download/Pak-GSM-Repair.apk",
-  "changelog": "Version 9.0: Android in-app APK download and installer handoff; web updates remain supported."
+  "changelog": "Version 9.1: Payments opens a customer-wise pending balances list with each customer's total due and per-repair outstanding amounts."
 }
