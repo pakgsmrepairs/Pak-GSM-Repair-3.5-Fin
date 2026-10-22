@@ -648,6 +648,116 @@ public class MainActivity extends FragmentActivity {
             } catch (Exception ignored) {}
         }
 
+        @JavascriptInterface public String getInstalledApkVersion() {
+            try {
+                android.content.pm.PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+                return info.versionName == null ? "" : info.versionName;
+            } catch (Exception e) { return ""; }
+        }
+
+        @JavascriptInterface public String downloadAndInstallApk(String apkUrl, String expectedVersion) {
+            if (apkUrl == null || expectedVersion == null || !expectedVersion.matches("\\d+(\\.\\d+)*"))
+                return "APK update details are invalid.";
+            try {
+                URL parsed = new URL(apkUrl);
+                if (!"https".equalsIgnoreCase(parsed.getProtocol()) || !"github.com".equalsIgnoreCase(parsed.getHost())
+                        || !parsed.getPath().startsWith("/pakgsmrepairs/Pak-GSM-Repair-3.5-Fin/releases/"))
+                    return "APK download source is not trusted.";
+            } catch (Exception e) { return "APK download URL is invalid."; }
+            Thread installer = new Thread(() -> {
+                File apk = null;
+                HttpURLConnection connection = null;
+                try {
+                    URL url = new URL(apkUrl);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(15000);
+                    connection.setReadTimeout(30000);
+                    connection.setInstanceFollowRedirects(true);
+                    connection.setRequestProperty("Accept", "application/vnd.android.package-archive");
+                    int code = connection.getResponseCode();
+                    if (code != 200) throw new Exception("APK download failed (HTTP " + code + ").");
+                    String disposition = connection.getHeaderField("Content-Disposition");
+                    String contentType = connection.getContentType();
+                    if (contentType != null && contentType.toLowerCase(java.util.Locale.ROOT).contains("text/html"))
+                        throw new Exception("The release did not return an APK file.");
+                    File dir = new File(getFilesDir(), "apk-updates");
+                    if (!dir.exists() && !dir.mkdirs()) throw new Exception("Cannot create APK download folder.");
+                    apk = new File(dir, "Pak-GSM-Repair-update.apk.tmp");
+                    long total = 0;
+                    try (java.io.InputStream input = connection.getInputStream();
+                         FileOutputStream output = new FileOutputStream(apk)) {
+                        byte[] buffer = new byte[16384];
+                        int count;
+                        while ((count = input.read(buffer)) != -1) {
+                            total += count;
+                            if (total > 150L * 1024L * 1024L) throw new Exception("APK is larger than the allowed 150 MB.");
+                            output.write(buffer, 0, count);
+                        }
+                        output.flush();
+                        output.getFD().sync();
+                    }
+                    if (total < 1024L * 1024L) throw new Exception("Downloaded APK is too small or incomplete.");
+                    android.content.pm.PackageInfo candidate = getPackageManager().getPackageArchiveInfo(
+                        apk.getAbsolutePath(), android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES);
+                    if (candidate == null || !"com.pakgsm.repair".equals(candidate.packageName))
+                        throw new Exception("Downloaded file is not the official Pak GSM Repair APK.");
+                    long newCode = Build.VERSION.SDK_INT >= 28 ? candidate.getLongVersionCode() : candidate.versionCode;
+                    android.content.pm.PackageInfo installed = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    long oldCode = Build.VERSION.SDK_INT >= 28 ? installed.getLongVersionCode() : installed.versionCode;
+                    if (!expectedVersion.equals(candidate.versionName))
+                        throw new Exception("APK version does not match release metadata (expected " + expectedVersion + ").");
+                    if (newCode <= oldCode)
+                        throw new Exception("Downloaded APK version code (" + newCode + ") is not newer than installed version (" + oldCode + ").");
+                    File finalApk = new File(dir, "Pak-GSM-Repair-update.apk");
+                    if (finalApk.exists() && !finalApk.delete()) throw new Exception("Cannot replace the previous downloaded APK.");
+                    if (!apk.renameTo(finalApk)) throw new Exception("Could not save the downloaded APK.");
+                    apk = finalApk;
+                    Uri contentUri = androidx.core.content.FileProvider.getUriForFile(
+                        MainActivity.this, getPackageName() + ".fileprovider", finalApk);
+                    final Uri installUri = contentUri;
+                    runOnUiThread(() -> {
+                        try {
+                            if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+                                Intent settings = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                                    Uri.parse("package:" + getPackageName()));
+                                settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(settings);
+                                emitNativeApkUpdateStatus("APK downloaded and checked. Allow installs for Pak GSM Repair in Android settings, return to the app, then tap Update App again.", false);
+                                return;
+                            }
+                            Intent install = new Intent(Intent.ACTION_VIEW);
+                            install.setDataAndType(installUri, "application/vnd.android.package-archive");
+                            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(install);
+                            emitNativeApkUpdateStatus("APK downloaded and checked. Confirm Install in Android's installer. If Android reports a signature conflict, the installed APK was signed with a different key.", true);
+                        } catch (Exception e) {
+                            emitNativeApkUpdateStatus("APK downloaded, but Android installer could not open: " + e.getMessage(), false);
+                        }
+                    });
+                } catch (Exception e) {
+                    if (apk != null && apk.exists()) apk.delete();
+                    emitNativeApkUpdateStatus("APK update failed: " + e.getMessage(), false);
+                } finally {
+                    if (connection != null) connection.disconnect();
+                }
+            }, "pgr-apk-updater");
+            installer.setDaemon(true);
+            installer.start();
+            return "APK download started.";
+        }
+
+        private void emitNativeApkUpdateStatus(String message, boolean success) {
+            try {
+                JSONObject payload = new JSONObject();
+                payload.put("message", message == null ? "" : message);
+                payload.put("success", success);
+                runOnUiThread(() -> {
+                    if (webView != null) webView.evaluateJavascript(
+                        "window.onNativeApkUpdateStatus && window.onNativeApkUpdateStatus(" + payload.toString() + ")", null);
+                });
+            } catch (Exception ignored) {}
+        }
+
         @JavascriptInterface public String applyWebUpdate(String html, String version) {
             try {
                 if (html == null || html.length() < 50000 || html.length() > 1500000) return "Downloaded HTML size is invalid.";
