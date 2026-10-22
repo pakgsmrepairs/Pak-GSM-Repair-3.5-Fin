@@ -114,7 +114,7 @@ jobs:
               raise SystemExit("Android launcher icon resource is not configured.")
           gradle = Path("app/build.gradle.kts").read_text(encoding="utf-8")
           if 'versionName = "9.0"' not in gradle or "versionCode = 9000" not in gradle:
-              raise SystemExit("Android package version must be 9.0 / 891.")
+              raise SystemExit("Android package version must be 9.0 / 9000.")
           for p in ["sw.js", "app/src/main/assets/sw.js", "github-pages-update/sw.js"]:
               if "pak-gsm-repair-v9.0-dashboard" not in Path(p).read_text(encoding="utf-8"):
                   raise SystemExit(f"{p} has a stale service-worker cache version.")
@@ -152,10 +152,10 @@ jobs:
                   print(f"Synced launcher icon: {target} ({size}x{size})")
           PY
 
-      - name: Set up Gradle 9.0
+      - name: Set up Gradle 8.10
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '9.0'
+          gradle-version: '8.10'
 
       - name: Build pak gsm 9.0 APK
         run: gradle --no-daemon assembleDebug
