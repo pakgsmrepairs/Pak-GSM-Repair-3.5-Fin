@@ -13,6 +13,24 @@ android {
         versionName = "9.0"
     }
 
+
+    val releaseKeystorePath = System.getenv("PGR_KEYSTORE_PATH")
+    if (!releaseKeystorePath.isNullOrBlank()) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(releaseKeystorePath)
+                storePassword = System.getenv("PGR_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("PGR_KEY_ALIAS")
+                keyPassword = System.getenv("PGR_KEY_PASSWORD")
+            }
+        }
+        buildTypes {
+            getByName("release") {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
