@@ -70,6 +70,33 @@ public class MainActivity extends FragmentActivity {
         }
     };
 
+    private void applySplashNavigationVisibility() {
+        android.view.Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= 30) {
+            android.view.WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                if (splashNavigationHidden) {
+                    controller.hide(android.view.WindowInsets.Type.navigationBars());
+                    controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                } else {
+                    controller.show(android.view.WindowInsets.Type.navigationBars());
+                }
+            }
+        } else {
+            int flags = android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            if (splashNavigationHidden) {
+                flags |= android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            }
+            window.getDecorView().setSystemUiVisibility(flags);
+        }
+    }
+
+    @Override public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && splashNavigationHidden) applySplashNavigationVisibility();
+    }
+
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Keep Android system bars visible and prevent WebView content from drawing behind them.
@@ -466,25 +493,8 @@ public class MainActivity extends FragmentActivity {
         // Hide Android's bottom navigation/gesture bar only on the branded splash screen.
         @JavascriptInterface public void setSplashNavigationHidden(boolean hidden) {
             runOnUiThread(() -> {
-                android.view.Window window = getWindow();
-                if (Build.VERSION.SDK_INT >= 30) {
-                    android.view.WindowInsetsController controller = window.getInsetsController();
-                    if (controller != null) {
-                        if (hidden) {
-                            controller.hide(android.view.WindowInsets.Type.navigationBars());
-                            controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-                        } else {
-                            controller.show(android.view.WindowInsets.Type.navigationBars());
-                        }
-                    }
-                } else {
-                    int flags = android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-                    if (hidden) {
-                        flags |= android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-                    }
-                    window.getDecorView().setSystemUiVisibility(flags);
-                }
+                splashNavigationHidden = hidden;
+                applySplashNavigationVisibility();
             });
         }
 
