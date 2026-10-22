@@ -754,9 +754,9 @@ const PGR_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/'
 const PGR_ANDROID_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/android-web-update/';
 // Native APK updates compare Android package version, not only the embedded web version.
 function installedNativeVersion(){try{return window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.getInstalledApkVersion==='function'?String(window.PGRNativeBluetooth.getInstalledApkVersion()||''):''}catch(e){return''}}
-function isNativeApkUpdate(data){return !!(window.PGRNativeBluetooth&&data&&data.apkUrl&&data.apkVersion&&installedNativeVersion())}
+function isNativeApkUpdate(data){return !!(window.PGRNativeBluetooth&&data&&data.apkUrl&&data.apkVersion)}
 function updateTargetVersion(data){return isNativeApkUpdate(data)?String(data.apkVersion):String(data.version)}
-function updateCurrentVersion(data){return isNativeApkUpdate(data)?installedNativeVersion():APP_VERSION}
+function updateCurrentVersion(data){return isNativeApkUpdate(data)?(installedNativeVersion()||'0'):APP_VERSION}
 function showUpdateMessage(target,message,kind){if(!target)return;target.textContent=message;target.dataset.kind=kind||'';if(target.id==='updateStatus'){target.style.background=kind==='error'?'#fff0ee':kind==='success'?'#e5f6eb':'#fff4d6';target.style.color=kind==='error'?'#842018':kind==='success'?'#124b27':'#563900'}}
 window.onNativeApkUpdateStatus=function(payload){const message=payload&&payload.message?payload.message:'APK update status unavailable.';showUpdateMessage(document.querySelector('#updateStatus'),message,payload&&payload.success?'success':'error');showUpdateMessage(document.querySelector('#loginUpdateStatus'),message,payload&&payload.success?'success':'error');const dl=document.querySelector('#downloadUpdate'),loginDl=document.querySelector('#loginDownloadUpdate');if(dl)dl.disabled=false;if(loginDl)loginDl.disabled=false};
 (function initLoginUpdateCheck(){
@@ -803,6 +803,7 @@ async function downloadAndApplyUpdate(statusTarget,downloadButton,checkButton){
  const version=pendingUpdate.version;
  const say=(text,kind='')=>showUpdateMessage(statusTarget,text,kind);
  try{
+  if(isNativeApkUpdate(pendingUpdate)&&typeof window.PGRNativeBluetooth.downloadAndInstallApk!=='function'){say('This installed APK is too old for in-app APK installation. A one-time manual APK update is required; after that, future APK updates can be started here.','error');return;}
   if(isNativeApkUpdate(pendingUpdate)&&typeof window.PGRNativeBluetooth.downloadAndInstallApk==='function'){
    const target=String(pendingUpdate.apkVersion);
    say('Downloading and checking Pak GSM Repair APK v'+target+'…');
