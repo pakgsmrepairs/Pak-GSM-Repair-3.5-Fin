@@ -752,7 +752,13 @@ const PGR_V84_RELEASE_NOTES="Version 9.0: adds reference-style five-button botto
 (function showReleaseNotesForNewVersion(){try{const key='pgr_release_notes_seen';if(localStorage.getItem(key)===APP_VERSION)return;window.addEventListener('load',()=>{const ok=document.querySelector('#pgrNoticeOk');if(!ok)return;showAuthPopup(PGR_V84_RELEASE_NOTES,'Pak GSM Repair v'+APP_VERSION+' — What’s New');const markSeen=()=>{try{localStorage.setItem(key,APP_VERSION)}catch(e){};ok.removeEventListener('click',markSeen)};ok.addEventListener('click',markSeen,{once:true})},{once:true})}catch(e){}})();
 const PGR_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/';
 const PGR_ANDROID_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/android-web-update/';
-// Login-page update check. It now exposes Download & Apply directly on the login page.
+// Native APK updates compare Android package version, not only the embedded web version.
+function installedNativeVersion(){try{return window.PGRNativeBluetooth&&typeof window.PGRNativeBluetooth.getInstalledApkVersion==='function'?String(window.PGRNativeBluetooth.getInstalledApkVersion()||''):''}catch(e){return''}}
+function isNativeApkUpdate(data){return !!(window.PGRNativeBluetooth&&data&&data.apkUrl&&data.apkVersion&&installedNativeVersion())}
+function updateTargetVersion(data){return isNativeApkUpdate(data)?String(data.apkVersion):String(data.version)}
+function updateCurrentVersion(data){return isNativeApkUpdate(data)?installedNativeVersion():APP_VERSION}
+function showUpdateMessage(target,message,kind){if(!target)return;target.textContent=message;target.dataset.kind=kind||'';if(target.id==='updateStatus'){target.style.background=kind==='error'?'#fff0ee':kind==='success'?'#e5f6eb':'#fff4d6';target.style.color=kind==='error'?'#842018':kind==='success'?'#124b27':'#563900'}}
+window.onNativeApkUpdateStatus=function(payload){const message=payload&&payload.message?payload.message:'APK update status unavailable.';showUpdateMessage(document.querySelector('#updateStatus'),message,payload&&payload.success?'success':'error');showUpdateMessage(document.querySelector('#loginUpdateStatus'),message,payload&&payload.success?'success':'error');const dl=document.querySelector('#downloadUpdate'),loginDl=document.querySelector('#loginDownloadUpdate');if(dl)dl.disabled=false;if(loginDl)loginDl.disabled=false};
 (function initLoginUpdateCheck(){
  const btn=document.getElementById('loginCheckUpdate'),dl=document.getElementById('loginDownloadUpdate'),out=document.getElementById('loginUpdateStatus');
  if(!btn||!dl||!out)return;
@@ -763,10 +769,10 @@ const PGR_ANDROID_RELEASE_BASE='https://pakgsmrepairs.github.io/Pak-GSM-Repair-3
    const response=await fetch(url.toString(),{cache:'no-store'});
    if(!response.ok)throw new Error('Update file could not be reached (HTTP '+response.status+').');
    const data=await response.json();if(!data.version)throw new Error('Published update file has no version number.');
-   const comparison=compareVersions(data.version,APP_VERSION);
-   if(comparison>0){pendingUpdate=data;dl.classList.remove('hidden');dl.textContent='⬇️ Download & Apply v'+data.version;out.dataset.kind='';out.textContent='Update available: v'+data.version+'. Tap “Download & Apply” to install it.';}
-   else if(comparison===0){pendingUpdate=null;out.dataset.kind='success';out.textContent='This app and the published update are both v'+APP_VERSION+'. No update is available.';}
-   else{pendingUpdate=null;out.dataset.kind='error';out.textContent='This app reports v'+APP_VERSION+', but GitHub Pages reports older v'+data.version+'. The website files need to be published together from the repository root.';}
+   const target=updateTargetVersion(data),current=updateCurrentVersion(data),comparison=compareVersions(target,current);
+   if(comparison>0){pendingUpdate=data;dl.classList.remove('hidden');dl.textContent=isNativeApkUpdate(data)?'⬇️ Download & Install APK v'+target:'⬇️ Download & Apply v'+data.version;out.dataset.kind='';out.textContent='Update available: v'+target+'. Tap the button to continue.';}
+   else if(comparison===0){pendingUpdate=null;out.dataset.kind='success';out.textContent='Installed version '+current+' is up to date.';}
+   else{pendingUpdate=null;out.dataset.kind='error';out.textContent='Installed version is '+current+', but the published version is older ('+target+').';}
   }catch(error){out.dataset.kind='error';out.textContent='Update check failed: '+error.message;}
   finally{btn.disabled=false;}
  });
@@ -777,27 +783,34 @@ function versionParts(v){return String(v||'0').replace(/^v/i,'').split('.').map(
 function compareVersions(a,b){let x=versionParts(a),y=versionParts(b);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)?1:-1}return 0}
 const updateStatus=document.querySelector('#updateStatus'),checkUpdateButton=document.querySelector('#checkUpdate'),downloadUpdateButton=document.querySelector('#downloadUpdate');
 checkUpdateButton.addEventListener('click',async()=>{
- checkUpdateButton.disabled=true;downloadUpdateButton.disabled=true;pendingUpdate=null;updateStatus.textContent='🔎 Checking GitHub Pages for a newer version…';updateStatus.style.background='#e8f1ff';updateStatus.style.color='#17365f';
+ checkUpdateButton.disabled=true;downloadUpdateButton.disabled=true;pendingUpdate=null;updateStatus.textContent='🔎 Checking the published version…';updateStatus.style.background='#e8f1ff';updateStatus.style.color='#17365f';
  try{
   const updateBase=window.PGRNativeBluetooth?PGR_ANDROID_RELEASE_BASE:PGR_RELEASE_BASE;
   const res=await fetch(updateBase+'update.json?check='+Date.now(),{cache:'no-store'});
-  if(!res.ok)throw new Error('update.json could not be reached (HTTP '+res.status+'). Upload update.json beside index.html in the repository root.');
+  if(!res.ok)throw new Error('update.json could not be reached (HTTP '+res.status+').');
   const data=await res.json();if(!data.version)throw new Error('update.json has no version field.');
-  const cmp=compareVersions(data.version,APP_VERSION);
-  if(cmp>0){pendingUpdate=data;downloadUpdateButton.disabled=false;downloadUpdateButton.textContent='⬆️ Update App to v'+data.version;updateStatus.textContent='🟡 Update available: v'+data.version+'. Tap “Update App” to download the files and restart automatically.';updateStatus.style.background='#fff4d6';updateStatus.style.color='#563900';}
-  else if(cmp===0){downloadUpdateButton.textContent='⬆️ Update App';updateStatus.textContent='✅ You already have the latest version (v'+APP_VERSION+'). No download is needed.';updateStatus.style.background='#e8f1ff';updateStatus.style.color='#17365f';}
-  else{updateStatus.textContent='⚠️ This app is v'+APP_VERSION+', but GitHub reports v'+data.version+'. Check that all release files were uploaded together.';updateStatus.style.background='#fff4d6';updateStatus.style.color='#563900';}
+  const target=updateTargetVersion(data),current=updateCurrentVersion(data),cmp=compareVersions(target,current);
+  if(cmp>0){pendingUpdate=data;downloadUpdateButton.disabled=false;downloadUpdateButton.textContent=isNativeApkUpdate(data)?'⬇️ Download & Install APK v'+target:'⬆️ Update App to v'+data.version;showUpdateMessage(updateStatus,'🟡 Update available: v'+target+'. Tap Update App to continue.','');}
+  else if(cmp===0){downloadUpdateButton.textContent='⬆️ Update App';showUpdateMessage(updateStatus,'✅ Installed version '+current+' is up to date.','success');}
+  else{showUpdateMessage(updateStatus,'⚠️ Installed version is '+current+', but the published version is older ('+target+').','error');}
   if(data.changelog)updateStatus.textContent+=' Release notes: '+data.changelog;
- }catch(e){updateStatus.textContent='❌ Update check failed: '+e.message;updateStatus.style.background='#fff0ee';updateStatus.style.color='#842018';}
+ }catch(e){showUpdateMessage(updateStatus,'❌ Update check failed: '+e.message,'error');}
  finally{checkUpdateButton.disabled=false;}
 });
 async function downloadAndApplyUpdate(statusTarget,downloadButton,checkButton){
  if(!pendingUpdate)return;
  downloadButton.disabled=true;if(checkButton)checkButton.disabled=true;
  const version=pendingUpdate.version;
- const say=(text,kind='')=>{if(statusTarget){statusTarget.textContent=text;statusTarget.dataset.kind=kind;if(statusTarget.id==='updateStatus'){statusTarget.style.background=kind==='error'?'#fff0ee':kind==='success'?'#e5f6eb':'#fff4d6';statusTarget.style.color=kind==='error'?'#842018':kind==='success'?'#124b27':'#563900';}}};
- say('Downloading and verifying update files…');
+ const say=(text,kind='')=>showUpdateMessage(statusTarget,text,kind);
  try{
+  if(isNativeApkUpdate(pendingUpdate)&&typeof window.PGRNativeBluetooth.downloadAndInstallApk==='function'){
+   const target=String(pendingUpdate.apkVersion);
+   say('Downloading and checking Pak GSM Repair APK v'+target+'…');
+   const result=window.PGRNativeBluetooth.downloadAndInstallApk(String(pendingUpdate.apkUrl),target);
+   if(!result||!String(result).includes('started'))throw new Error(String(result||'Android could not start the APK download.'));
+   say('APK download started. Keep the app open while the file is downloaded.','');
+   return;
+  }
   if(window.PGRNativeBluetooth && typeof window.PGRNativeBluetooth.applyWebUpdate==='function'){
    const base=PGR_ANDROID_RELEASE_BASE;
    const response=await fetch(base+'index.html?release='+encodeURIComponent(version)+'&t='+Date.now(),{cache:'no-store'});
