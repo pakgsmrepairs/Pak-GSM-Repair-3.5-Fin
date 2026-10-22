@@ -2,7 +2,6 @@ package com.pakgsm.repair;
 
 import android.Manifest;
 import androidx.fragment.app.FragmentActivity;
-import android.os.SystemClock;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
@@ -502,16 +501,12 @@ public class MainActivity extends FragmentActivity {
             return getSharedPreferences("pgr_biometric", MODE_PRIVATE).getBoolean("enabled", false);
         }
 
-        // Require biometric verification once each time the native app process starts.
-        // Do not trust a previous boot's cached session to unlock the dashboard silently.
+        // A saved email session must be verified by fingerprint for every fresh app launch.
+        // Successful authentication only unlocks this launch; never persist an unlocked boot session.
         private boolean biometricAuthenticatedThisLaunch = false;
 
         @JavascriptInterface public boolean isBiometricRequired() {
-            if (!isBiometricEnabled()) return false;
-            // Authenticate once per Android boot, not every time the app process is reopened.
-            String savedBoot = getSharedPreferences("pgr_biometric", MODE_PRIVATE)
-                .getString("authenticated_boot", "");
-            return !currentBootKey().equals(savedBoot);
+            return isBiometricEnabled() && !biometricAuthenticatedThisLaunch;
         }
 
         @JavascriptInterface public String getBiometricStatus() {
@@ -598,8 +593,6 @@ public class MainActivity extends FragmentActivity {
                         new BiometricPrompt.AuthenticationCallback() {
                             @Override public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                                 biometricAuthenticatedThisLaunch = true;
-                                getSharedPreferences("pgr_biometric", MODE_PRIVATE).edit()
-                                    .putString("authenticated_boot", currentBootKey()).apply();
                                 emitBiometricResult(true, "Fingerprint verified.");
                             }
                             @Override public void onAuthenticationFailed() {
@@ -621,10 +614,6 @@ public class MainActivity extends FragmentActivity {
                     emitBiometricResult(false, "Fingerprint sign-in could not start: " + (e.getMessage() == null ? "Use your email and password." : e.getMessage()));
                 }
             });
-        }
-        private String currentBootKey() {
-            long bootEstimate = System.currentTimeMillis() - SystemClock.elapsedRealtime();
-            return String.valueOf(Math.round(bootEstimate / 10000.0) * 10000L);
         }
         private void emitBiometricAttemptFailed(String message) {
             try {

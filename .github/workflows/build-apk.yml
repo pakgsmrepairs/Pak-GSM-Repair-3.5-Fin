@@ -1,6 +1,6 @@
 
-name: Build Pak GSM Repair 9.1 Android APK
-# 9.1 release source synchronized
+name: Build Pak GSM Repair 9.2 Android APK
+# 9.2 release source synchronized
 
 on:
   workflow_dispatch:
@@ -72,7 +72,7 @@ jobs:
           print(f"Validated syntax for {checked} inline JavaScript blocks.")
           PY
 
-      - name: Validate 9.1 release synchronization
+      - name: Validate 9.2 release synchronization
         run: |
           python3 - <<'PY'
           import json
@@ -88,8 +88,8 @@ jobs:
           html = [Path(p).read_text(encoding="utf-8") for p in html_paths]
           if len(set(html)) != 1:
               raise SystemExit("Release HTML copies are not identical.")
-          if "const APP_VERSION='9.1';" not in html[0] and 'const APP_VERSION="9.1";' not in html[0]:
-              raise SystemExit("APP_VERSION must be 9.1.")
+          if "const APP_VERSION='9.2';" not in html[0] and 'const APP_VERSION="9.2";' not in html[0]:
+              raise SystemExit("APP_VERSION must be 9.2.")
           if 'id="toggleCalcHistory"' not in html[0] or 'pgr-v81-calculator-history-and-compact-keys' not in html[0]:
               raise SystemExit("Calculator history/compact sizing changes are missing.")
           if 'aria-expanded="false">History ▾</button></div><div id="calcHistoryList">' not in html[0]:
@@ -99,14 +99,14 @@ jobs:
           if 'id="pgrAddStatusItem"' not in html[0] or "shopLogoFile.addEventListener('change'" not in html[0]:
               raise SystemExit("Status Bar or shop-logo controls are missing their handlers.")
           for p in ["update.json", "android-web-update/update.json", "github-pages-update/update.json", "app/src/main/assets/update.json"]:
-              if json.loads(Path(p).read_text(encoding="utf-8")).get("version") != "9.1":
-                  raise SystemExit(f"{p} does not advertise version 9.1.")
+              if json.loads(Path(p).read_text(encoding="utf-8")).get("version") != "9.2":
+                  raise SystemExit(f"{p} does not advertise version 9.2.")
           for p in ["cloud-config.js", "app/src/main/assets/cloud-config.js", "github-pages-update/cloud-config.js"]:
               config = Path(p).read_text(encoding="utf-8")
-              if "window.PGR_APP_VERSION = '9.1';" not in config and 'window.PGR_APP_VERSION = "9.1";' not in config:
+              if "window.PGR_APP_VERSION = '9.2';" not in config and 'window.PGR_APP_VERSION = "9.2";' not in config:
                   raise SystemExit(f"{p} has a stale app version.")
           for p in ["manifest.json", "android-web-update/manifest.json", "app/src/main/assets/manifest.json", "github-pages-update/manifest.json"]:
-              if "Pak GSM Repair 9.1" not in Path(p).read_text(encoding="utf-8"):
+              if "Pak GSM Repair 9.2" not in Path(p).read_text(encoding="utf-8"):
                   raise SystemExit(f"{p} has stale manifest metadata.")
           for p in ["app/src/main/assets/icons/pgr-logo.svg", "android-web-update/icons/pgr-logo.svg", "github-pages-update/icons/pgr-logo.svg"]:
               if not Path(p).is_file():
@@ -115,18 +115,18 @@ jobs:
           if 'android:icon="@mipmap/ic_launcher"' not in android_manifest or not Path("app/src/main/res/mipmap-mdpi/ic_launcher.png").is_file():
               raise SystemExit("Android launcher icon resource is not configured.")
           gradle = Path("app/build.gradle.kts").read_text(encoding="utf-8")
-          if 'versionName = "9.1"' not in gradle or "versionCode = 9100" not in gradle:
-              raise SystemExit("Android package version must be 9.1 / 9100.")
+          if 'versionName = "9.2"' not in gradle or "versionCode = 9200" not in gradle:
+              raise SystemExit("Android package version must be 9.2 / 9100.")
           for p in ["sw.js", "app/src/main/assets/sw.js", "github-pages-update/sw.js"]:
-              if "pak-gsm-repair-v9.1-dashboard" not in Path(p).read_text(encoding="utf-8"):
+              if "pak-gsm-repair-v9.2-dashboard" not in Path(p).read_text(encoding="utf-8"):
                   raise SystemExit(f"{p} has a stale service-worker cache version.")
           java = Path("app/src/main/java/com/pakgsm/repair/MainActivity.java").read_text(encoding="utf-8")
           if "setAllowContentAccess(true)" not in java:
               raise SystemExit("Android WebView content URI access fix is missing.")
           workflow = Path(".github/workflows/build-apk.yml").read_text(encoding="utf-8")
-          if "Pak-GSM-Repair-9.1-APK" not in workflow or "Pak-GSM-Repair-9.1.apk" not in workflow:
-              raise SystemExit("APK artifact naming is not synchronized to 9.1.")
-          print("Validated matching 9.1 HTML, update metadata, manifests, cache names, Android version and picker fix.")
+          if "Pak-GSM-Repair-9.2-APK" not in workflow or "Pak-GSM-Repair-9.2.apk" not in workflow:
+              raise SystemExit("APK artifact naming is not synchronized to 9.2.")
+          print("Validated matching 9.2 HTML, update metadata, manifests, cache names, Android version and picker fix.")
           PY
 
       - name: Sync uploaded Pak GSM Repair icon into Android launcher resources
@@ -159,11 +159,11 @@ jobs:
         with:
           gradle-version: '8.10'
 
-      - name: Build pak gsm 9.1 APK
+      - name: Build pak gsm 9.2 APK
         run: gradle --no-daemon assembleDebug
 
       - name: Rename APK for release
-        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Pak-GSM-Repair-9.1.apk
+        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Pak-GSM-Repair-9.2.apk
 
 
       - name: Prepare stable release signing key
@@ -196,9 +196,9 @@ jobs:
         if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v9.1
-          name: Pak GSM Repair 9.1
-          body: "Pak GSM Repair Android release 9.1. APK downloaded from the in-app updater is signed with the configured stable keystore."
+          tag_name: v9.2
+          name: Pak GSM Repair 9.2
+          body: "Pak GSM Repair Android release 9.2. APK downloaded from the in-app updater is signed with the configured stable keystore."
           files: app/build/outputs/apk/release/Pak-GSM-Repair.apk
           make_latest: true
           overwrite_files: true
@@ -206,7 +206,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-9.1-APK
-          path: app/build/outputs/apk/debug/Pak-GSM-Repair-9.1.apk
+          name: Pak-GSM-Repair-9.2-APK
+          path: app/build/outputs/apk/debug/Pak-GSM-Repair-9.2.apk
           if-no-files-found: error
           retention-days: 14

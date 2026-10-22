@@ -1,6 +1,6 @@
 {
-  "version": "9.1",
-  "apkVersion": "9.1",
+  "version": "9.2",
+  "apkVersion": "9.2",
   "apkUrl": "https://github.com/pakgsmrepairs/Pak-GSM-Repair-3.5-Fin/releases/latest/download/Pak-GSM-Repair.apk",
-  "changelog": "Version 9.1: Payments opens a customer-wise pending balances list with each customer's total due and per-repair outstanding amounts."
+  "changelog": "Version 9.2: fixes Android fingerprint sign-in so saved users are prompted to authenticate each time the app is reopened."
 }

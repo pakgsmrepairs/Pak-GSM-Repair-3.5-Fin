@@ -8,9 +8,9 @@ android {
         applicationId = "com.pakgsm.repair"
         minSdk = 26
         targetSdk = 35
-        versionCode = 9100
-        // 9.1 release: reference-style bottom navigation; existing features preserved
-        versionName = "9.1"
+        versionCode = 9200
+        // 9.2 release: reference-style bottom navigation; existing features preserved
+        versionName = "9.2"
     }
 
 
