@@ -48,6 +48,7 @@ import java.net.URL;
 import java.io.ByteArrayOutputStream;
 
 public class MainActivity extends FragmentActivity {
+    private volatile boolean splashNavigationHidden = false;
     private WebView webView;
     private ValueCallback<Uri[]> pendingFileChooser;
     private static final int FILE_CHOOSER_REQUEST = 420;
