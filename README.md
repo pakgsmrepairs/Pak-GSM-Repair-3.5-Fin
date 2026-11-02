@@ -1,3 +1,22 @@
+## Version 9.3 — Client App preparation for Master Admin
+
+- Removed the Add Product, Edit Product, and Record Sale controls from the Client App. Parts Availability is now a read-only product catalogue; product publishing is reserved for the separate Master Admin App.
+- Removed the Repair Status selector from Client-side repair entry. New locally created jobs receive the default `Received` state; future status changes are intended to be made by Master Admin after the shared backend is deployed.
+- Added a Master Admin connection placeholder in Client Settings. The actual Master App URL will be inserted only after its separate GitHub repository and deployment URL exist; no placeholder/broken link is published.
+- Synchronized all four Client HTML copies, update metadata, cloud config, PWA manifests, Android package version (`9.3`, versionCode `9300`), and APK workflow artifact naming.
+- Existing customer, repair, product, and sales data is retained locally; this release does not migrate data to a shared cloud database yet.
+
+## 9.3 verification required
+
+1. Confirm all four Client HTML files are identical.
+2. Confirm Parts Availability has no Add/Edit/Sale controls.
+3. Confirm the Customer + Repair form has no Repair Status selector and new local jobs default to `Received`.
+4. Confirm existing local records remain visible and exportable.
+5. Run the Android 9.3 build and test the APK on the target phone before release.
+6. Create the separate `Pak-GSM-Repair-Master` repository, then deploy the secure shared backend before enabling Master App links or claiming live sync.
+
+---
+
 # Pak GSM Repair 8.4
 
 ## Version 8.4 — release changes
