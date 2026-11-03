@@ -48,6 +48,17 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Require stable release signing secrets
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then echo "Required stable signing secret is missing: $name"; exit 1; fi
+          done
+
       - name: Validate embedded JavaScript syntax
         run: |
           python3 - <<'PY'
@@ -117,7 +128,7 @@ jobs:
               raise SystemExit("Android launcher icon resource is not configured.")
           gradle = Path("app/build.gradle.kts").read_text(encoding="utf-8")
           if 'versionName = "9.4"' not in gradle or "versionCode = 9400" not in gradle:
-              raise SystemExit("Android package version must be 9.4 / 9100.")
+              raise SystemExit("Android package version must be 9.4 / 9400.")
           for p in ["sw.js", "app/src/main/assets/sw.js", "github-pages-update/sw.js"]:
               if "pak-gsm-repair-v9.4-dashboard" not in Path(p).read_text(encoding="utf-8"):
                   raise SystemExit(f"{p} has a stale service-worker cache version.")
@@ -160,54 +171,53 @@ jobs:
         with:
           gradle-version: '8.10'
 
-      - name: Build pak gsm 9.4 APK
-        run: gradle --no-daemon assembleDebug
-
-      - name: Rename APK for release
-        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Pak-GSM-Repair-9.4.apk
-
-
       - name: Prepare stable release signing key
-        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          if [ -z "$ANDROID_KEYSTORE_PASSWORD" ] || [ -z "$ANDROID_KEY_ALIAS" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
-            echo "Signing keystore exists but one or more signing secrets are missing."
-            exit 1
-          fi
           echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pgr-release.jks"
           echo "PGR_KEYSTORE_PATH=$RUNNER_TEMP/pgr-release.jks" >> "$GITHUB_ENV"
           echo "PGR_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
           echo "PGR_KEY_ALIAS=$ANDROID_KEY_ALIAS" >> "$GITHUB_ENV"
           echo "PGR_KEY_PASSWORD=$ANDROID_KEY_PASSWORD" >> "$GITHUB_ENV"
 
-      - name: Build signed release APK for in-app updates
-        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
+      - name: Build the one official signed APK
         run: gradle --no-daemon assembleRelease
 
-      - name: Name stable APK download
-        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
-        run: cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/Pak-GSM-Repair.apk
+      - name: Verify release APK and derive release identity
+        id: release
+        run: |
+          APK="app/build/outputs/apk/release/app-release.apk"
+          test -s "$APK"
+          VERSION=$(grep -E 'versionName = "' app/build.gradle.kts | head -1 | sed -E 's/.*versionName = "([^"]+)".*/\1/')
+          CODE=$(grep -E 'versionCode = ' app/build.gradle.kts | head -1 | sed -E 's/.*versionCode = ([0-9]+).*/\1/')
+          test -n "$VERSION" && test -n "$CODE"
+          BADGING=$(find "$ANDROID_HOME/build-tools" -name aapt -type f | sort -V | tail -1)
+          "$BADGING" dump badging "$APK" | grep -F "package: name='com.pakgsm.repair' versionCode='$CODE' versionName='$VERSION'"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_code=$CODE" >> "$GITHUB_OUTPUT"
+          cp "$APK" app/build/outputs/apk/release/Pak-GSM-Repair.apk
+          sha256sum app/build/outputs/apk/release/Pak-GSM-Repair.apk | tee app/build/outputs/apk/release/Pak-GSM-Repair.apk.sha256
 
-      - name: Publish signed APK to GitHub Releases
-        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
+      - name: Publish the exact verified APK
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v9.4
-          name: Pak GSM Repair 9.4
-          body: "Pak GSM Repair Android release 9.4. APK downloaded from the in-app updater is signed with the configured stable keystore."
-          files: app/build/outputs/apk/release/Pak-GSM-Repair.apk
+          tag_name: v${{ steps.release.outputs.version }}
+          name: Pak GSM Repair ${{ steps.release.outputs.version }}
+          body: "Official signed Pak GSM Repair Android APK. This exact verified APK is used by the in-app updater."
+          files: |
+            app/build/outputs/apk/release/Pak-GSM-Repair.apk
+            app/build/outputs/apk/release/Pak-GSM-Repair.apk.sha256
           make_latest: true
           overwrite_files: true
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Pak-GSM-Repair-9.4-APK
-          path: app/build/outputs/apk/debug/Pak-GSM-Repair-9.4.apk
+          name: Pak-GSM-Repair-Official-Signed-APK
+          path: app/build/outputs/apk/release/Pak-GSM-Repair.apk
           if-no-files-found: error
           retention-days: 14
