@@ -1331,6 +1331,7 @@ function initLogin(){
    if(!signup){
     const account=await otpServerCall('loginAccount',email,'',{passwordHash});
     if(!account||!account.ok)throw new Error(account?.error||'Login failed. Please try again.');
+    if(typeof window.pgrEnsureFirebaseCustomer==='function'){await window.pgrEnsureFirebaseCustomer(email,password,{name:account.name||account.displayName||email,phone:account.phone||'',shopName:account.shopName||account.shop_name||account.registeredShopName||'',shopLocation:account.shopLocation||account.shop_location||account.location||''});}
     // Regular login uses email + password only. Never send an OTP during login.
     if(msg)msg.textContent='Welcome to Pak GSM Repair! Opening your dashboard…';
     const loginButton=document.querySelector('#sendLoginOtp');
@@ -1411,11 +1412,13 @@ function initLogin(){
     const signupName=document.querySelector('#authName').value.trim(),signupUsername=document.querySelector('#authUsername').value.trim(),signupShopName=document.querySelector('#authShopName').value.trim();
     const saved=await otpServerCall('registerAccount',pendingOtpEmail,'',{name:signupName,username:signupUsername,shopName:signupShopName,shopLocation:document.querySelector('#authShopLocation')?.value.trim()||'',phone:document.querySelector('#authPhone').value.trim(),passwordHash});
     if(!saved||!saved.ok)throw new Error(saved?.error||'Account could not be saved.');
+    if(typeof window.pgrEnsureFirebaseCustomer==='function'){await window.pgrEnsureFirebaseCustomer(pendingOtpEmail,document.querySelector('#authPassword').value,{name:signupName,phone:document.querySelector('#authPhone').value.trim(),shopName:signupShopName,shopLocation:document.querySelector('#authShopLocation')?.value.trim()||''});}
     saveIdentity(pendingOtpEmail,{username:signupUsername,shopName:signupShopName,location:document.querySelector('#authShopLocation')?.value.trim()||'',cover:''});applyShopIdentity({shopName:signupShopName,location:document.querySelector('#authShopLocation')?.value.trim()||''});unlock({email:pendingOtpEmail,name:saved.name||signupName,username:saved.username||signupUsername,shopName:saved.shopName||signupShopName,sub:'email-otp'});
    }else{
     const passwordHash=await passwordDigest(document.querySelector('#loginPassword').value);
     const account=await otpServerCall('loginAccount',pendingOtpEmail,'',{passwordHash});
     if(!account||!account.ok)throw new Error(account?.error||'Email or password is incorrect.');
+    if(typeof window.pgrEnsureFirebaseCustomer==='function'){await window.pgrEnsureFirebaseCustomer(pendingOtpEmail,document.querySelector('#loginPassword').value,{name:account.name||account.displayName||pendingOtpEmail,phone:account.phone||'',shopName:account.shopName||account.shop_name||account.registeredShopName||'',shopLocation:account.shopLocation||account.shop_location||account.location||''});}
     const localIdentity=readIdentity(pendingOtpEmail);const identity={username:account.username||account.u||localIdentity.username||'',shopName:account.shopName||account.shop_name||account.registeredShopName||account.shop?.name||account.profile?.shopName||localIdentity.shopName||'',location:account.shopLocation||account.shop_location||account.location||account.profile?.location||localIdentity.location||'',cover:account.cover||account.shopCover||localIdentity.cover||''};saveIdentity(pendingOtpEmail,identity);applyShopIdentity(identity);unlock({email:pendingOtpEmail,name:account.name||account.displayName||pendingOtpEmail,username:identity.username,shopName:identity.shopName,registeredShopName:identity.shopName,shopLocation:identity.location,sub:'email-otp'});
    }
   }catch(e){showAuthPopup(e.message,'Verification failed');msg.textContent='OTP verification failed: '+e.message}
