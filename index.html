@@ -508,7 +508,22 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
   <div id="fileList"></div>
  </div>
 </section>
-<section id="tools" class="page hidden"><div class="panel"><div class="row"><div><h2 style="margin:0">Parts Availability</h2><p class="muted">Products published by Pak GSM Repair Master Admin</p></div><span id="masterCatalogStatus" class="muted" role="status">Connecting…</span></div><div id="masterProductsGrid" class="product-grid"><div class="empty">Loading published products…</div></div></div></section>
+<section id="tools" class="page hidden">
+ <div class="panel" id="pgrAdminOrdersPanel">
+  <div class="row"><div><h2 style="margin:0">📦 Master Admin — Customer Orders</h2><p class="muted">صرف Master Admin کے لیے آرڈرز اور اسٹیٹس مینجمنٹ</p></div><span id="pgrAdminAuthState" class="muted">Sign in required</span></div>
+  <div id="pgrAdminLoginBox" style="margin-top:12px">
+   <label for="pgrAdminEmail">Master Admin Email</label><input id="pgrAdminEmail" type="email" value="Pakgsmrepairs@gmail.com" readonly autocomplete="username">
+   <label for="pgrAdminPassword">Firebase Password</label><input id="pgrAdminPassword" type="password" autocomplete="current-password" placeholder="Enter Master Admin Firebase password">
+   <button id="pgrAdminSignIn" type="button" style="width:100%;margin-top:10px">🔐 Master Admin Sign In</button>
+   <p id="pgrAdminAuthMessage" class="muted" role="status" aria-live="polite">Customer accounts cannot access this order list.</p>
+  </div>
+  <div id="pgrAdminOrdersArea" class="hidden">
+   <div class="row" style="margin:10px 0"><b id="pgrAdminOrdersCount">Orders</b><button id="pgrAdminSignOut" class="secondary" type="button">Sign out from Orders</button></div>
+   <div id="pgrAdminOrdersList"><div class="empty">Loading orders…</div></div>
+  </div>
+ </div>
+ <div class="panel"><div class="row"><div><h2 style="margin:0">Parts Availability</h2><p class="muted">Products published by Pak GSM Repair Master Admin</p></div><span id="masterCatalogStatus" class="muted" role="status">Connecting…</span></div><div id="masterProductsGrid" class="product-grid"><div class="empty">Loading published products…</div></div></div>
+</section>
 
 
 
@@ -1674,15 +1689,15 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script id="pgrBottomNavigationScript">(function(){var nav=document.getElementById('pgrBottomNav');if(!nav)return;nav.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-pgr-more')){if(typeof openSettingsDrawer==='function')openSettingsDrawer();else if(typeof tab==='function')tab('backup');return;}var dest=b.getAttribute('data-pgr-dest');if(dest&&typeof tab==='function'){tab(dest);nav.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b);});}});var oldTab=window.tab;window.tab=function(t){if(typeof oldTab==='function')oldTab(t);if(nav){nav.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-pgr-dest')===t&&!x.hasAttribute('data-pgr-payments'));});}};})();</script>
 <script type="module" id="pgrMasterCatalogSync">
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore, collection, query, where, onSnapshot, doc, getDoc, setDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, getDoc, setDoc, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 const statusEl=document.getElementById("masterCatalogStatus"),grid=document.getElementById("masterProductsGrid"),track=document.getElementById("pgrRunningStatusTrack");
 const escapeHtml=value=>String(value??"").replace(/[&<>"\']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[ch]));
 const money=value=>"Rs "+Number(value||0).toLocaleString("en-PK");
 const firebaseConfig={apiKey:"AIzaSyDzWYK3M_Wpdh-wKYPBfZkhhlhLsISKf4g",authDomain:"pak-gsm-repair-master.firebaseapp.com",projectId:"pak-gsm-repair-master",storageBucket:"pak-gsm-repair-master.firebasestorage.app",messagingSenderId:"606031116062",appId:"1:606031116062:web:c19d8711c784315ee5fb0f"};
 const app=getApps().find(x=>x.name==="pgr-public-catalog")||initializeApp(firebaseConfig,"pgr-public-catalog"),db=getFirestore(app),auth=getAuth(app);
 window.pgrEnsureFirebaseCustomer=async function(email,password,profile={}){
- email=String(email||"").trim().toLowerCase();if(!email||!password||password.length<6)throw new Error("Firebase account setup requires the registered email and a password of at least 6 characters. Please use Forgot Password or update your password.");
+ email=String(email||"").trim().toLowerCase();if(email==="pakgsmrepairs@gmail.com")throw new Error("Master Admin Firebase account is reserved for the secure Admin Orders sign-in.");if(!email||!password||password.length<6)throw new Error("Firebase account setup requires the registered email and a password of at least 6 characters. Please use Forgot Password or update your password.");
  let credential;try{credential=await signInWithEmailAndPassword(auth,email,password)}catch(e){if(e.code==="auth/user-not-found"||e.code==="auth/invalid-credential"||e.code==="auth/invalid-login-credentials"){try{credential=await createUserWithEmailAndPassword(auth,email,password)}catch(createError){if(createError.code==="auth/email-already-in-use")credential=await signInWithEmailAndPassword(auth,email,password);else throw createError}}else throw e}
  const user=credential.user,memberRef=doc(db,"shops","pak-gsm-repair-bhakkar","members",user.uid),existing=await getDoc(memberRef);const memberData={uid:user.uid,email:user.email,displayName:String(profile.name||user.displayName||email),phone:String(profile.phone||""),shopName:String(profile.shopName||""),shopLocation:String(profile.shopLocation||""),updatedAt:serverTimestamp()};if(!existing.exists())Object.assign(memberData,{role:"client",active:true,createdAt:serverTimestamp()});await setDoc(memberRef,memberData,{merge:true});return user;
 };
@@ -1693,8 +1708,50 @@ window.pgrSubmitProductOrder=async function(product,quantity){
  const memberRef=doc(db,"shops","pak-gsm-repair-bhakkar","members",user.uid);
  const memberSnap=await getDoc(memberRef);if(!memberSnap.exists()||memberSnap.data().active!==true||memberSnap.data().role!=="client")throw new Error("Customer profile is not active. Please sign in again.");
  const profile=memberSnap.data(),total=price*q;
- await addDoc(collection(db,"shops","pak-gsm-repair-bhakkar","orders"),{customerUid:user.uid,customerEmail:user.email,customerName:String(profile.displayName||user.displayName||user.email),customerPhone:String(profile.phone||""),items:[{productId:String(product.id),name:String(product.name||"Product"),quantity:q,unitPrice:price,lineTotal:total}],total,status:"Pending",createdAt:serverTimestamp(),updatedAt:serverTimestamp()});return true;
+ await addDoc(collection(db,"shops","pak-gsm-repair-bhakkar","orders"),{customerUid:user.uid,customerEmail:user.email,customerName:String(profile.displayName||user.displayName||user.email),customerPhone:String(profile.phone||""),customerShopName:String(profile.shopName||""),customerShopLocation:String(profile.shopLocation||""),items:[{productId:String(product.id),name:String(product.name||"Product"),quantity:q,unitPrice:price,lineTotal:total}],total,status:"Pending",createdAt:serverTimestamp(),updatedAt:serverTimestamp()});return true;
 };
+const ADMIN_EMAIL="Pakgsmrepairs@gmail.com".toLowerCase();
+const adminLoginBox=document.getElementById("pgrAdminLoginBox"),adminOrdersArea=document.getElementById("pgrAdminOrdersArea"),adminAuthState=document.getElementById("pgrAdminAuthState"),adminAuthMessage=document.getElementById("pgrAdminAuthMessage"),adminOrdersList=document.getElementById("pgrAdminOrdersList"),adminOrdersCount=document.getElementById("pgrAdminOrdersCount");
+let adminOrdersUnsubscribe=null;
+const adminStatusLabel=status=>({Pending:"Pending",Confirmed:"Confirmed",Rejected:"Rejected"}[String(status||"Pending")]||String(status||"Pending"));
+const renderAdminOrders=snapshot=>{
+ const docs=snapshot.docs||[];
+ if(adminOrdersCount)adminOrdersCount.textContent=docs.length+" order(s)";
+ if(!adminOrdersList)return;
+ if(!docs.length){adminOrdersList.innerHTML='<div class="empty">ابھی کوئی آرڈر موصول نہیں ہوا۔</div>';return}
+ adminOrdersList.innerHTML=docs.map(d=>{
+  const o=d.data()||{},items=Array.isArray(o.items)?o.items:[];
+  const itemHtml=items.map(it=>'<div style="padding:7px 0;border-top:1px solid var(--line)"><b>'+escapeHtml(it.name||"Product")+'</b><div class="muted">Qty: '+Number(it.quantity||0)+' × '+money(it.unitPrice||0)+'</div></div>').join("");
+  const created=o.createdAt?.toDate?o.createdAt.toDate().toLocaleString("en-PK"):"Date unavailable";
+  const status=adminStatusLabel(o.status);
+  return '<article class="panel" style="margin:10px 0;padding:12px;border:1px solid var(--line)"><div class="row" style="justify-content:space-between"><b>Order #'+escapeHtml(d.id.slice(-7))+'</b><b>'+escapeHtml(status)+'</b></div><div style="margin-top:8px"><b>Customer:</b> '+escapeHtml(o.customerName||"—")+'<br><b>Shop:</b> '+escapeHtml(o.customerShopName||"—")+'<br><b>Mobile:</b> '+escapeHtml(o.customerPhone||"—")+'<br><b>Email:</b> '+escapeHtml(o.customerEmail||"—")+'<br><b>Location:</b> '+escapeHtml(o.customerShopLocation||"—")+'<br><b>Date:</b> '+escapeHtml(created)+'</div><div style="margin-top:8px">'+itemHtml+'</div><div style="font-size:18px;font-weight:800;margin:10px 0">Total: '+money(o.total)+'</div><div class="row" style="gap:7px;flex-wrap:wrap"><button type="button" data-order-status="Confirmed" data-order-id="'+escapeHtml(d.id)+'">✓ Confirm</button><button type="button" class="danger" data-order-status="Rejected" data-order-id="'+escapeHtml(d.id)+'">✕ Reject</button><button type="button" class="secondary" data-order-status="Pending" data-order-id="'+escapeHtml(d.id)+'">↻ Pending</button></div></article>';
+ }).join("");
+ adminOrdersList.querySelectorAll("[data-order-status]").forEach(button=>button.addEventListener("click",async()=>{
+  const id=button.dataset.orderId,status=button.dataset.orderStatus;
+  adminOrdersList.querySelectorAll("[data-order-id='"+CSS.escape(id)+"']").forEach(x=>x.disabled=true);
+  try{await updateDoc(doc(db,"shops","pak-gsm-repair-bhakkar","orders",id),{status,updatedAt:serverTimestamp()});if(adminAuthMessage)adminAuthMessage.textContent="Order status updated: "+status}
+  catch(e){if(adminAuthMessage)adminAuthMessage.textContent="Could not update order. Check Firestore security rules: "+(e.message||e)}
+  finally{adminOrdersList.querySelectorAll("[data-order-id='"+CSS.escape(id)+"']").forEach(x=>x.disabled=false)}
+ }));
+};
+const stopAdminOrders=()=>{if(adminOrdersUnsubscribe){adminOrdersUnsubscribe();adminOrdersUnsubscribe=null}if(adminOrdersArea)adminOrdersArea.classList.add("hidden");if(adminLoginBox)adminLoginBox.classList.remove("hidden");if(adminAuthState)adminAuthState.textContent="Sign in required"};
+document.getElementById("pgrAdminSignIn")?.addEventListener("click",async()=>{
+ const email=String(document.getElementById("pgrAdminEmail")?.value||"").trim().toLowerCase(),password=document.getElementById("pgrAdminPassword")?.value||"",button=document.getElementById("pgrAdminSignIn");
+ if(email!==ADMIN_EMAIL){if(adminAuthMessage)adminAuthMessage.textContent="This email is not authorized as Master Admin.";return}
+ if(!password){if(adminAuthMessage)adminAuthMessage.textContent="Enter the Master Admin Firebase password.";return}
+ button.disabled=true;if(adminAuthMessage)adminAuthMessage.textContent="Signing in securely…";
+ try{
+  const credential=await signInWithEmailAndPassword(auth,email,password);
+  if(String(credential.user.email||"").toLowerCase()!==ADMIN_EMAIL){throw new Error("Firebase account does not match the authorized Master Admin email.")}
+  if(adminLoginBox)adminLoginBox.classList.add("hidden");if(adminOrdersArea)adminOrdersArea.classList.remove("hidden");if(adminAuthState)adminAuthState.textContent="Master Admin signed in";
+  if(adminAuthMessage)adminAuthMessage.textContent="Connected. Loading customer orders…";
+  const ordersQuery=query(collection(db,"shops","pak-gsm-repair-bhakkar","orders"),orderBy("createdAt","desc"));
+  adminOrdersUnsubscribe=onSnapshot(ordersQuery,renderAdminOrders,error=>{if(adminOrdersList)adminOrdersList.innerHTML='<div class="empty">Orders could not be read: '+escapeHtml(error.message||error)+'. Please publish the Master Admin Firestore rules.</div>';if(adminAuthMessage)adminAuthMessage.textContent="Firestore access denied or unavailable."});
+ }catch(e){stopAdminOrders();if(adminAuthMessage)adminAuthMessage.textContent="Admin sign-in failed: "+(e.message||e)}
+ finally{button.disabled=false}
+});
+document.getElementById("pgrAdminSignOut")?.addEventListener("click",async()=>{stopAdminOrders();try{await signOut(auth)}catch(e){}if(adminAuthMessage)adminAuthMessage.textContent="Signed out from Master Admin Orders."});
+document.getElementById("pgrAdminPassword")?.addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("pgrAdminSignIn")?.click()});
 const catalogQuery=query(collection(db,"shops","pak-gsm-repair-bhakkar","products"),where("isPublished","==",true));
 onSnapshot(catalogQuery,snapshot=>{
  const products=snapshot.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{const time=x=>x.updatedAt?.toMillis?.()||x.createdAt?.toMillis?.()||0;return time(b)-time(a)});
