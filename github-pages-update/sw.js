@@ -1,7 +1,7 @@
 
 /* Pak GSM Repair PWA worker.
    App shell cache is versioned so older app caches can be replaced. */
-const CACHE_NAME = 'pak-gsm-repair-v9.6-dashboard';
+const CACHE_NAME = 'pak-gsm-repair-v9.7-dashboard';
 const STAGING_CACHE = 'pgr-update-staging';
 
 const APP_SHELL = [
@@ -10,10 +10,10 @@ const APP_SHELL = [
   './manifest.json',
   './update.json',
   './cloud-config.js',
-  './icon/icon-192.png',
-  './icon/icon-512.png',
-  './icon/icon-512-maskable.png',
-  './icon/pgr-logo.svg'
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-512-maskable.png',
+  './icons/pgr-logo.svg'
 ];
 
 const absolute = path =>
