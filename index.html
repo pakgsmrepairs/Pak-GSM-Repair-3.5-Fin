@@ -1675,7 +1675,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script type="module" id="pgrMasterCatalogSync">
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore, collection, query, where, onSnapshot, doc, setDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, onSnapshot, doc, getDoc, setDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 const statusEl=document.getElementById("masterCatalogStatus"),grid=document.getElementById("masterProductsGrid"),track=document.getElementById("pgrRunningStatusTrack");
 const escapeHtml=value=>String(value??"").replace(/[&<>"\']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[ch]));
 const money=value=>"Rs "+Number(value||0).toLocaleString("en-PK");
@@ -1684,14 +1684,14 @@ const app=getApps().find(x=>x.name==="pgr-public-catalog")||initializeApp(fireba
 window.pgrEnsureFirebaseCustomer=async function(email,password,profile={}){
  email=String(email||"").trim().toLowerCase();if(!email||!password||password.length<6)throw new Error("Firebase account setup requires the registered email and a password of at least 6 characters. Please use Forgot Password or update your password.");
  let credential;try{credential=await signInWithEmailAndPassword(auth,email,password)}catch(e){if(e.code==="auth/user-not-found"||e.code==="auth/invalid-credential"||e.code==="auth/invalid-login-credentials"){try{credential=await createUserWithEmailAndPassword(auth,email,password)}catch(createError){if(createError.code==="auth/email-already-in-use")credential=await signInWithEmailAndPassword(auth,email,password);else throw createError}}else throw e}
- const user=credential.user,memberRef=doc(db,"shops","pak-gsm-repair-bhakkar","members",user.uid);await setDoc(memberRef,{uid:user.uid,email:user.email,displayName:String(profile.name||user.displayName||email),phone:String(profile.phone||""),shopName:String(profile.shopName||""),shopLocation:String(profile.shopLocation||""),role:"client",active:true,updatedAt:serverTimestamp(),createdAt:serverTimestamp()},{merge:true});return user;
+ const user=credential.user,memberRef=doc(db,"shops","pak-gsm-repair-bhakkar","members",user.uid),existing=await getDoc(memberRef);const memberData={uid:user.uid,email:user.email,displayName:String(profile.name||user.displayName||email),phone:String(profile.phone||""),shopName:String(profile.shopName||""),shopLocation:String(profile.shopLocation||""),updatedAt:serverTimestamp()};if(!existing.exists())Object.assign(memberData,{role:"client",active:true,createdAt:serverTimestamp()});await setDoc(memberRef,memberData,{merge:true});return user;
 };
 window.pgrSubmitProductOrder=async function(product,quantity){
  const user=auth.currentUser;if(!user)throw new Error("Please sign in with your customer email and password before placing an order.");
  const q=Math.floor(Number(quantity));if(!Number.isFinite(q)||q<1||q>Number(product.stock||0))throw new Error("Selected quantity is not available in stock.");
  const price=Number(product.price);if(!Number.isFinite(price)||price<0)throw new Error("This product has an invalid price.");
  const memberRef=doc(db,"shops","pak-gsm-repair-bhakkar","members",user.uid);
- const {getDoc}=await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");const memberSnap=await getDoc(memberRef);if(!memberSnap.exists()||memberSnap.data().active!==true||memberSnap.data().role!=="client")throw new Error("Customer profile is not active. Please sign in again.");
+ const memberSnap=await getDoc(memberRef);if(!memberSnap.exists()||memberSnap.data().active!==true||memberSnap.data().role!=="client")throw new Error("Customer profile is not active. Please sign in again.");
  const profile=memberSnap.data(),total=price*q;
  await addDoc(collection(db,"shops","pak-gsm-repair-bhakkar","orders"),{customerUid:user.uid,customerEmail:user.email,customerName:String(profile.displayName||user.displayName||user.email),customerPhone:String(profile.phone||""),items:[{productId:String(product.id),name:String(product.name||"Product"),quantity:q,unitPrice:price,lineTotal:total}],total,status:"Pending",createdAt:serverTimestamp(),updatedAt:serverTimestamp()});return true;
 };
