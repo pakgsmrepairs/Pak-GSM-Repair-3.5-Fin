@@ -68,7 +68,7 @@ function doGet(e) {
     } else if (action === 'checkEmail') {
       result = checkEmailAvailability_(params.email);
     } else if (action === 'registerAccount') {
-      result = registerAccount_(params.email, params.name, params.phone, params.passwordHash);
+      result = registerAccount_(params.email, params.name, params.phone, params.passwordHash, params.shopName, params.shopLocation);
     } else if (action === 'loginAccount') {
       result = loginAccount_(params.email, params.passwordHash);
     } else if (action === 'ping') {
@@ -267,8 +267,8 @@ function checkEmailAvailability_(email) {
   return { ok: true, email: email, exists: exists, registered: exists, available: !exists };
 }
 
-function registerAccount_(email, name, phone, passwordHash) {
-  email=String(email||'').trim().toLowerCase(); name=String(name||'').trim().slice(0,100); phone=String(phone||'').trim().slice(0,25); passwordHash=String(passwordHash||'').trim();
+function registerAccount_(email, name, phone, passwordHash, shopName, shopLocation) {
+  email=String(email||'').trim().toLowerCase(); name=String(name||'').trim().slice(0,100); phone=String(phone||'').trim().slice(0,25); passwordHash=String(passwordHash||'').trim(); shopName=String(shopName||'').trim().slice(0,100); shopLocation=String(shopLocation||'').trim().slice(0,160);
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return {ok:false,error:'Enter a valid email address.'};
   if(!name||!phone)return {ok:false,error:'Full name and mobile number are required.'};
   if(!/^[a-f0-9]{64}$/i.test(passwordHash))return {ok:false,error:'Invalid password format. Please try again.'};
@@ -279,7 +279,7 @@ function registerAccount_(email, name, phone, passwordHash) {
   const lock=LockService.getScriptLock();lock.waitLock(10000);
   try { if(accountRecord_(email))return {ok:false,error:'An account already exists for this email. Please use Login.'};
     const salt=Utilities.getUuid()+Utilities.getUuid();
-    const rec={email:email,name:name,phone:phone,salt:salt,passwordHash:accountPasswordHash_(passwordHash,salt),createdAt:new Date().toISOString(),verified:true};
+    const rec={email:email,name:name,phone:phone,shopName:shopName,shopLocation:shopLocation,salt:salt,passwordHash:accountPasswordHash_(passwordHash,salt),createdAt:new Date().toISOString(),verified:true};
     writeJsonFile_('account_'+accountFileKey_(email)+'.json',rec);return {ok:true,email:email,name:name,message:'Account registered.'};
   } finally {lock.releaseLock();}
 }
@@ -301,7 +301,7 @@ function loginAccount_(email, passwordHash) {
   if (accountPasswordHash_(passwordHash, rec.salt) !== rec.passwordHash) {
     return { ok: false, code: 'WRONG_PASSWORD', error: 'Wrong password. Please try again.' };
   }
-  return { ok: true, email: rec.email, name: rec.name, phone: rec.phone };
+  return { ok: true, email: rec.email, name: rec.name, phone: rec.phone, shopName: rec.shopName || '', shopLocation: rec.shopLocation || '' };
 }
 
 /**
