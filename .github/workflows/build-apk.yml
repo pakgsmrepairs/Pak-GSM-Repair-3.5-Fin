@@ -136,7 +136,7 @@ jobs:
           if "setAllowContentAccess(true)" not in java:
               raise SystemExit("Android WebView content URI access fix is missing.")
           workflow = Path(".github/workflows/build-apk.yml").read_text(encoding="utf-8")
-          if "Pak-GSM-Repair-9.6-APK" not in workflow or "Pak-GSM-Repair-9.6.apk" not in workflow:
+          if "Pak-GSM-Repair-Official-Signed-APK" not in workflow or "Pak-GSM-Repair.apk" not in workflow:
               raise SystemExit("APK artifact naming is not synchronized to 9.6.")
           print("Validated matching 9.6 HTML, update metadata, manifests, cache names, Android version and picker fix.")
           PY
