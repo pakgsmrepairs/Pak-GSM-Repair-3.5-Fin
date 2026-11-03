@@ -1,0 +1,44 @@
+PAK GSM REPAIR — MASTER ADMIN ORDER ACCESS RULES
+=================================================
+
+Master Admin Firebase account:
+pakgsmrepairs@gmail.com
+
+IMPORTANT:
+- Do not make the orders collection publicly readable.
+- Do not replace your entire existing Firestore rules with this snippet.
+- In Firebase Console > Firestore Database > Rules, merge these matches inside your existing:
+  match /databases/{database}/documents { ... }
+- Review existing rules first. Firestore rules are not deployed by GitHub Pages or the Android APK workflow.
+
+Add this match block inside the existing documents match:
+
+match /shops/pak-gsm-repair-bhakkar/orders/{orderId} {
+  function isMasterAdmin() {
+    return request.auth != null
+      && request.auth.token.email != null
+      && request.auth.token.email.lower() == "pakgsmrepairs@gmail.com";
+  }
+
+  allow create: if request.auth != null
+    && request.resource.data.customerUid == request.auth.uid
+    && request.resource.data.status == "Pending";
+
+  allow read: if isMasterAdmin()
+    || (request.auth != null && resource.data.customerUid == request.auth.uid);
+
+  allow update: if isMasterAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys()
+      .hasOnly(["status", "updatedAt"])
+    && request.resource.data.status in ["Pending", "Confirmed", "Rejected"];
+
+  allow delete: if false;
+}
+
+This permits:
+- A signed-in customer to create their own Pending order.
+- A customer to read only their own order.
+- Only pakgsmrepairs@gmail.com to read all orders and change status.
+- No client-side deletion of orders.
+
+After publishing the merged rules, sign in to the app's Parts Availability page using the Master Admin Firebase email/password. Never share the password in chat.
