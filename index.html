@@ -523,6 +523,7 @@ body.dark-theme #btInlineConnectedDevices .bt-inline-device.is-selected{backgrou
   </div>
  </div>
  <div class="panel"><div class="row"><div><h2 style="margin:0">Parts Availability</h2><p class="muted">Products published by Pak GSM Repair Master Admin</p></div><span id="masterCatalogStatus" class="muted" role="status">Connecting…</span></div><div id="masterProductsGrid" class="product-grid"><div class="empty">Loading published products…</div></div></div>
+ <div class="panel" id="pgrCustomerOrdersPanel"><div class="row"><div><h2 style="margin:0">📦 میرے آرڈرز</h2><p class="muted">آپ کے آرڈر کی تصدیق اور موجودہ صورتحال یہاں نظر آئے گی۔</p></div><span id="pgrCustomerOrdersCount" class="muted">—</span></div><div id="pgrCustomerOrdersList"><div class="empty">آرڈرز دیکھنے کے لیے کسٹمر اکاؤنٹ میں سائن اِن کریں۔</div></div></div>
 </section>
 
 
@@ -1689,11 +1690,42 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script id="pgrBottomNavigationScript">(function(){var nav=document.getElementById('pgrBottomNav');if(!nav)return;nav.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-pgr-more')){if(typeof openSettingsDrawer==='function')openSettingsDrawer();else if(typeof tab==='function')tab('backup');return;}var dest=b.getAttribute('data-pgr-dest');if(dest&&typeof tab==='function'){tab(dest);nav.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b);});}});var oldTab=window.tab;window.tab=function(t){if(typeof oldTab==='function')oldTab(t);if(nav){nav.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-pgr-dest')===t&&!x.hasAttribute('data-pgr-payments'));});}};})();</script>
 <script type="module" id="pgrMasterCatalogSync">
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, getDoc, setDoc, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, getDoc, setDoc, addDoc, updateDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 const statusEl=document.getElementById("masterCatalogStatus"),grid=document.getElementById("masterProductsGrid"),track=document.getElementById("pgrRunningStatusTrack");
 const escapeHtml=value=>String(value??"").replace(/[&<>"\']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[ch]));
 const money=value=>"Rs "+Number(value||0).toLocaleString("en-PK");
+const updateOrderStatusSafely=async(orderId,nextStatus)=>{
+ await runTransaction(db,async tx=>{
+  const orderRef=doc(db,"shops","pak-gsm-repair-bhakkar","orders",orderId),orderSnap=await tx.get(orderRef);
+  if(!orderSnap.exists())throw new Error("Order no longer exists.");
+  const order=orderSnap.data()||{},deducted=order.stockDeducted===true;
+  const shouldDeduct=nextStatus==="Confirmed"&&!deducted;
+  const shouldRestore=["Pending","Rejected","Cancelled"].includes(nextStatus)&&deducted;
+  const quantities=new Map();
+  if(shouldDeduct||shouldRestore){
+   for(const item of (Array.isArray(order.items)?order.items:[])){
+    const productId=String(item.productId||"").trim(),quantity=Math.floor(Number(item.quantity||0));
+    if(!productId||!Number.isFinite(quantity)||quantity<1)throw new Error("Order item is missing a valid product ID or quantity.");
+    quantities.set(productId,(quantities.get(productId)||0)+quantity);
+   }
+   if(!quantities.size)throw new Error("This order has no stock-linked items; stock cannot be adjusted.");
+   const entries=[];
+   for(const [productId] of quantities){const productRef=doc(db,"shops","pak-gsm-repair-bhakkar","products",productId);entries.push({productId,productRef,snap:await tx.get(productRef)});}
+   for(const entry of entries){
+    if(!entry.snap.exists())throw new Error("Product not found for stock update: "+entry.productId);
+    const current=Math.max(0,Math.floor(Number(entry.snap.data().stock||0))),change=quantities.get(entry.productId);
+    if(shouldDeduct&&current<change)throw new Error("Insufficient stock for "+(entry.snap.data().name||entry.productId)+". Available: "+current+", required: "+change);
+    tx.update(entry.productRef,{stock:shouldDeduct?current-change:current+change,updatedAt:serverTimestamp()});
+   }
+  }
+  const patch={status:nextStatus,updatedAt:serverTimestamp()};
+  if(shouldDeduct){patch.stockDeducted=true;patch.stockDeductedAt=serverTimestamp();}
+  else if(shouldRestore){patch.stockDeducted=false;patch.stockRestoredAt=serverTimestamp();}
+  tx.update(orderRef,patch);
+ });
+};
+
 const firebaseConfig={apiKey:"AIzaSyDzWYK3M_Wpdh-wKYPBfZkhhlhLsISKf4g",authDomain:"pak-gsm-repair-master.firebaseapp.com",projectId:"pak-gsm-repair-master",storageBucket:"pak-gsm-repair-master.firebasestorage.app",messagingSenderId:"606031116062",appId:"1:606031116062:web:c19d8711c784315ee5fb0f"};
 const app=getApps().find(x=>x.name==="pgr-public-catalog")||initializeApp(firebaseConfig,"pgr-public-catalog"),db=getFirestore(app),auth=getAuth(app);
 window.pgrEnsureFirebaseCustomer=async function(email,password,profile={}){
@@ -1729,7 +1761,7 @@ const renderAdminOrders=snapshot=>{
  adminOrdersList.querySelectorAll("[data-order-status]").forEach(button=>button.addEventListener("click",async()=>{
   const id=button.dataset.orderId,status=button.dataset.orderStatus;
   adminOrdersList.querySelectorAll("[data-order-id='"+CSS.escape(id)+"']").forEach(x=>x.disabled=true);
-  try{await updateDoc(doc(db,"shops","pak-gsm-repair-bhakkar","orders",id),{status,updatedAt:serverTimestamp()});if(adminAuthMessage)adminAuthMessage.textContent="Order status updated: "+status}
+  try{await updateOrderStatusSafely(id,status);if(adminAuthMessage)adminAuthMessage.textContent="Order status and stock updated: "+status}
   catch(e){if(adminAuthMessage)adminAuthMessage.textContent="Could not update order. Check Firestore security rules: "+(e.message||e)}
   finally{adminOrdersList.querySelectorAll("[data-order-id='"+CSS.escape(id)+"']").forEach(x=>x.disabled=false)}
  }));
@@ -1762,6 +1794,35 @@ onSnapshot(catalogQuery,snapshot=>{
  grid?.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",async()=>{const i=Number(b.dataset.buy),p=products[i],el=document.getElementById("pgrQty"+i),msg=document.getElementById("pgrBuyMsg"+i);b.disabled=true;if(msg)msg.textContent="Submitting order…";try{await window.pgrSubmitProductOrder(p,el.value);if(msg)msg.textContent="Order sent to Master Admin. Status: Pending."}catch(e){if(msg)msg.textContent=e.message||"Order could not be submitted."}finally{b.disabled=false}}));
  if(track){const items=products.slice(0,12).map(p=>'<span class="pgr-status-item"><span class="pgr-status-dot"></span><strong>New Stock: '+escapeHtml(p.name)+'</strong><span>'+money(p.price)+' · Stock '+Number(p.stock||0)+'</span></span>');if(items.length){const marker='<span class="pgr-status-item">📢 <strong>Pak GSM Repair</strong><span>Latest shop products</span></span>';const local=(()=>{try{return JSON.parse(localStorage.getItem("pgr_running_status_items_v1")||"[]")}catch(e){return []}})().filter(x=>x&&x.text).map(x=>'<span class="pgr-status-item">'+(x.image?'<img src="'+escapeHtml(x.image)+'" alt="">':'📢')+'<strong>'+escapeHtml(x.text)+'</strong></span>');const content=[...items,...local,marker].join('<span class="pgr-status-item" aria-hidden="true"> • </span>');track.innerHTML=content+content;track.style.animation="none";void track.offsetWidth;track.style.animation=""}}
 },error=>{console.error("Master product catalog:",error);if(statusEl)statusEl.textContent="Catalog unavailable";if(grid)grid.innerHTML='<div class="empty">Shop products could not be loaded. Please check your internet connection.</div>'});
+
+let customerOrdersUnsubscribe=null;
+const customerOrdersList=document.getElementById("pgrCustomerOrdersList"),customerOrdersCount=document.getElementById("pgrCustomerOrdersCount");
+const renderCustomerOrders=docs=>{
+ const sorted=[...docs].sort((a,b)=>(b.data()?.createdAt?.toMillis?.()||0)-(a.data()?.createdAt?.toMillis?.()||0));
+ if(customerOrdersCount)customerOrdersCount.textContent=sorted.length+" آرڈر";
+ if(!customerOrdersList)return;
+ if(!sorted.length){customerOrdersList.innerHTML='<div class="empty">ابھی آپ نے کوئی آرڈر نہیں دیا۔</div>';return}
+ const labels={Pending:"زیرِ تصدیق",Confirmed:"کنفرم ہو گیا",Rejected:"مسترد",Processing:"تیاری جاری",Ready:"تیار ہے",Completed:"مکمل",Cancelled:"منسوخ"};
+ customerOrdersList.innerHTML=sorted.map(snap=>{
+  const o=snap.data()||{},status=String(o.status||"Pending"),items=Array.isArray(o.items)?o.items:[];
+  const tone=status==="Confirmed"||status==="Completed"||status==="Ready"?"#087443":status==="Rejected"||status==="Cancelled"?"#b42318":"#8a5b00";
+  const when=o.updatedAt?.toDate?o.updatedAt.toDate().toLocaleString("en-PK"):(o.createdAt?.toDate?o.createdAt.toDate().toLocaleString("en-PK"):"—");
+  const detail=items.map(it=>'<div style="padding:6px 0;border-top:1px solid var(--line)"><b>'+escapeHtml(it.name||"Product")+'</b><div class="muted">تعداد: '+Number(it.quantity||0)+' × '+money(it.unitPrice||0)+'</div></div>').join("");
+  const message=status==="Confirmed"?"آپ کا آرڈر دکان کی طرف سے کنفرم کر دیا گیا ہے۔":status==="Rejected"?"معذرت، آپ کا آرڈر دکان کی طرف سے مسترد کر دیا گیا ہے۔":status==="Pending"?"آپ کا آرڈر موصول ہو گیا ہے، دکان کی تصدیق کا انتظار ہے۔":"آپ کے آرڈر کی تازہ صورتحال نیچے درج ہے۔";
+  return '<article class="panel" style="margin:9px 0;padding:12px;border:1px solid var(--line)"><div class="row" style="justify-content:space-between;align-items:center"><b>آرڈر #'+escapeHtml(snap.id.slice(-7))+'</b><b style="color:'+tone+'">'+escapeHtml(labels[status]||status)+'</b></div><p style="margin:7px 0;font-size:13px">'+message+'</p>'+detail+'<div style="font-weight:800;margin-top:8px">کل رقم: '+money(o.total)+'</div><div class="muted" style="margin-top:4px">آخری اپ ڈیٹ: '+escapeHtml(when)+'</div></article>';
+ }).join("");
+};
+onAuthStateChanged(auth,async user=>{
+ if(customerOrdersUnsubscribe){customerOrdersUnsubscribe();customerOrdersUnsubscribe=null}
+ if(!customerOrdersList)return;
+ if(!user||String(user.email||"").toLowerCase()===ADMIN_EMAIL){if(customerOrdersCount)customerOrdersCount.textContent="—";customerOrdersList.innerHTML='<div class="empty">آرڈر کی تفصیل دیکھنے کے لیے اپنے کسٹمر اکاؤنٹ میں سائن اِن کریں۔</div>';return}
+ try{
+  const memberSnap=await getDoc(doc(db,"shops","pak-gsm-repair-bhakkar","members",user.uid));
+  if(!memberSnap.exists()||memberSnap.data().role!=="client"||memberSnap.data().active!==true){customerOrdersList.innerHTML='<div class="empty">کسٹمر اکاؤنٹ کی تصدیق نہیں ہو سکی۔ دوبارہ سائن اِن کریں۔</div>';return}
+  const customerQuery=query(collection(db,"shops","pak-gsm-repair-bhakkar","orders"),where("customerUid","==",user.uid));
+  customerOrdersUnsubscribe=onSnapshot(customerQuery,snapshot=>renderCustomerOrders(snapshot.docs),error=>{customerOrdersList.innerHTML='<div class="empty">آرڈر لوڈ نہیں ہو سکے: '+escapeHtml(error.message||error)+'</div>'});
+ }catch(error){customerOrdersList.innerHTML='<div class="empty">آرڈر لوڈ نہیں ہو سکے: '+escapeHtml(error.message||error)+'</div>'}
+});
 </script>
 </body></html><style id="pgr-compact-bluetooth-final-review">
 /* Focused compact Bluetooth layout: keep controls functional, remove excess vertical stacking */
