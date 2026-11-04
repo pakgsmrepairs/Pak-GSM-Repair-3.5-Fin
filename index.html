@@ -1676,6 +1676,17 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 <div id="pgrMandatoryUpdate" role="dialog" aria-modal="true" aria-labelledby="pgrMandatoryUpdateTitle"><div class="pgr-update-card"><div style="font-size:42px">⬆️</div><h2 id="pgrMandatoryUpdateTitle">Pak GSM Repair Update Required</h2><p id="pgrMandatoryUpdateText">A new official version is available. Please update before using the app.</p><button id="pgrMandatoryUpdateButton" type="button">Download &amp; Install Update</button><p id="pgrMandatoryUpdateStatus" aria-live="polite">Checking the latest version…</p><button id="pgrMandatoryUpdateRetry" type="button" style="display:none;background:transparent;color:#fff;border:1px solid #ffffff80">Retry Check</button></div></div>
 <nav class="pgr-bottom-nav" id="pgrBottomNav" aria-label="Primary navigation"><button type="button" class="active" data-pgr-dest="dashboard"><span class="pgr-nav-icon">⌂</span><span>Home</span></button><button type="button" data-pgr-dest="customers"><span class="pgr-nav-icon">♙</span><span>Customers</span></button><button type="button" data-pgr-dest="tools"><span class="pgr-nav-icon">⚒</span><span>Parts Availability</span></button><button type="button" data-pgr-dest="payments"><span class="pgr-nav-icon">▣</span><span>Payments</span></button><button type="button" data-pgr-more="true"><span class="pgr-nav-icon">•••</span><span>More</span></button></nav>
+<script id="pgrNavigationVisibilityGuard">(function(){
+ const nav=document.getElementById('pgrBottomNav');
+ const splash=document.getElementById('pgrSplash');
+ const login=document.getElementById('loginGate');
+ if(!nav)return;
+ function sync(){const blocked=(splash&&!splash.classList.contains('hidden'))||(login&&!login.classList.contains('hidden'));document.body.classList.toggle('pgr-app-unlocked',!blocked);}
+ sync();
+ const observer=new MutationObserver(sync);
+ [splash,login].filter(Boolean).forEach(el=>observer.observe(el,{attributes:true,attributeFilter:['class','style']}));
+ document.addEventListener('DOMContentLoaded',sync,{once:true});
+})();</script>
 <script id="pgrBottomNavigationScript">(function(){var nav=document.getElementById('pgrBottomNav');if(!nav)return;nav.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-pgr-more')){if(typeof openSettingsDrawer==='function')openSettingsDrawer();else if(typeof tab==='function')tab('backup');return;}var dest=b.getAttribute('data-pgr-dest');if(dest&&typeof tab==='function'){tab(dest);nav.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b);});}});var oldTab=window.tab;window.tab=function(t){if(typeof oldTab==='function')oldTab(t);if(nav){nav.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-pgr-dest')===t&&!x.hasAttribute('data-pgr-payments'));});}};})();</script>
 <script type="module" id="pgrMasterCatalogSync">
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
@@ -1995,8 +2006,10 @@ document.querySelectorAll('#dashboardBluetoothCard [data-audio-option]').forEach
 #loginGate:not(.hidden) ~ .pgr-bottom-nav,body:has(#loginGate:not(.hidden)) .pgr-bottom-nav,body:has(#pgrWelcomeOptions:not(.hidden)) .pgr-bottom-nav{display:none!important}#guestView{display:none!important}body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 @media(min-width:900px){.pgr-bottom-nav{max-width:560px;left:50%;right:auto;width:100%;transform:translateX(-50%);border:1px solid #dce8e3;border-bottom:0;border-radius:14px 14px 0 0}.pgr-bottom-nav button{font-size:11px}}
 
-/* Keep the primary navigation behind splash/login/update overlays. */
-#pgrBottomNav{z-index:900!important}
+/* Keep primary navigation completely hidden until splash/login screens are dismissed. */
+#pgrBottomNav{display:none!important;z-index:900!important}
+body.pgr-app-unlocked #pgrBottomNav{display:flex!important}
+
 #pgrMandatoryUpdate{position:fixed;inset:0;z-index:6000;display:none;align-items:center;justify-content:center;padding:22px;background:linear-gradient(135deg,#063f31,#0f8a6e);color:#fff;text-align:center}
 #pgrMandatoryUpdate.show{display:flex}
 #pgrMandatoryUpdate .pgr-update-card{width:min(430px,100%);padding:26px 20px;border:1px solid #ffffff40;border-radius:22px;background:#ffffff12;box-shadow:0 20px 60px #001b1470}
