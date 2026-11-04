@@ -1788,7 +1788,7 @@ onAuthStateChanged(auth,async user=>{
  async function check(){if(checking)return;checking=true;lock('Checking the latest official APK version…');try{
    const response=await fetch('https://pakgsmrepairs.github.io/Pak-GSM-Repair-3.5-Fin/android-web-update/update.json?mandatory='+Date.now(),{cache:'no-store'});
    if(!response.ok)throw new Error('Update server returned HTTP '+response.status+'.');
-   const data=await response.json();const target=String(data.apkVersion||data.version||'');if(!/^\\d+(?:\\.\\d+)*$/.test(target))throw new Error('Published APK version information is invalid.');
+   const data=await response.json();const target=String(data.apkVersion||data.version||'');if(!/^\d+(?:\.\d+)*$/.test(target))throw new Error('Published APK version information is invalid.');
    const installed=String(window.PGRNativeBluetooth.getInstalledApkVersion()||'');
    if(newer(target,installed)){release=data;title.textContent='Update Required — Version '+target;message.textContent='آپ کا موجودہ ورژن '+(installed||'پرانا')+' ہے۔ نئی اپڈیٹ انسٹال کیے بغیر ایپ استعمال نہیں ہو سکے گی۔';button.textContent='⬇ Download & Install v'+target;button.disabled=false;status.textContent='New version found. Update is required to continue.';gate.classList.add('show');}
    else{release=null;gate.classList.remove('show');}
