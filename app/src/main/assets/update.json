@@ -1,6 +1,6 @@
 {
-  "version": "9.8",
-  "apkVersion": "9.8",
-  "apkUrl": "https://github.com/pakgsmrepairs/Pak-GSM-Repair-3.5-Fin/releases/download/v9.8/Pak-GSM-Repair.apk",
-  "changelog": "Version 9.8: removed Master Admin-only order sign-in from Customer App, fixed login/loading navigation overlay, and made new APK versions mandatory before app use."
+  "version": "9.9",
+  "apkVersion": "9.9",
+  "apkUrl": "https://github.com/pakgsmrepairs/Pak-GSM-Repair-3.5-Fin/releases/download/v9.9/Pak-GSM-Repair.apk",
+  "changelog": "Version 9.9: restore full-width five-button bottom navigation and use compact product thumbnails/cards; actual product photos should be uploaded in Master Admin."
 }
